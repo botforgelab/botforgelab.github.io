@@ -5001,15 +5001,8 @@
     setTimeout(function () { box.remove(); }, 700);
   }
 
-  // Ролик показываем один раз за сессию: на второй заход человек
-  // попадает сразу на сайт.
-  try {
-    if (sessionStorage.getItem('botforgeRobotIntro') === '1') {
-      box.remove();
-      return;
-    }
-    sessionStorage.setItem('botforgeRobotIntro', '1');
-  } catch (e) {}
+  // Ролик играет при каждом открытии страницы — так решено.
+  // Кто торопится, нажимает «Пропустить».
 
   var conn = navigator.connection;
   if (conn && conn.saveData) { close(); return; }
