@@ -4915,13 +4915,12 @@
     z-index: 0;
     /* Размер задаём от высоты экрана, а не «заполнить любой ценой»:
        при заполнении кадр увеличивался и робота обрезало. */
-    background: url('media/robot.jpg') no-repeat;
-    background-position: right 2% center;
-    background-size: auto 86%;
-    /* У кадра свой почти чёрный фон, и он читался прямоугольной вставкой.
-       Режим screen делает тёмное прозрачным: фон кадра растворяется
-       в фоне сайта, а сам робот остаётся. */
-    mix-blend-mode: screen;
+    /* Картинка с вырезанным фоном: подложки нет, робот стоит прямо
+       в сцене сайта. Режим наложения больше не нужен — он был костылём
+       для кадра с собственным фоном. */
+    background: url('media/robot.webp') no-repeat;
+    background-position: right 6% center;
+    background-size: auto 78%;
     pointer-events: none;
   }
 
@@ -4971,11 +4970,9 @@
 
     .hero-robot {
       display: block;
-      width: 100%;
-      max-width: 420px;
-      margin: 8px auto 0;
-      /* Фон кадра почти совпадает с фоном страницы, поэтому края растворяем */
-      mix-blend-mode: screen;
+      width: auto;
+      max-height: 300px;
+      margin: 4px auto 0;
     }
   }
 </style>
@@ -5009,26 +5006,43 @@
 
   video.addEventListener('ended', close, { once: true });
   video.addEventListener('error', close, { once: true });
+  skip.addEventListener('click', close);
 
-  // Одна страховка ждёт начала воспроизведения, вторая — окончания
-  var guard = setTimeout(close, 9000);
+  // Пока файл не готов, на экране остаётся первый кадр — куб.
+  // Раньше ролик запускался сразу: время в нём шло, а кадры не успевали
+  // отрисовываться из-за загрузки сайта, и человек видел чёрный экран,
+  // а потом сразу конец.
+  var guard = setTimeout(close, 16000);
+  var launched = false;
+
+  function launch() {
+    if (launched || done) return;
+    launched = true;
+
+    try { video.currentTime = 0; } catch (e) {}
+
+    var started = video.play();
+    if (started && started.catch) {
+      started.catch(function () { close(); });
+    }
+  }
+
+  // Как только ролика хватает на всё проигрывание — запускаем
+  if (video.readyState >= 4) {
+    launch();
+  } else {
+    video.addEventListener('canplaythrough', launch, { once: true });
+    // Если готовность не наступит, пробуем всё равно — но не раньше,
+    // чем сайт успеет отрисоваться
+    setTimeout(launch, 7000);
+  }
+
+  // После старта считаем время до конца ролика
   video.addEventListener('playing', function () {
     clearTimeout(guard);
     var left = isFinite(video.duration) ? video.duration * 1000 : 8000;
-    guard = setTimeout(close, left + 4000);
+    guard = setTimeout(close, left + 3000);
   }, { once: true });
-
-  skip.addEventListener('click', close);
-
-  var started = video.play();
-  if (started && started.catch) {
-    started.catch(function () {
-      // Телефон часто отказывает, пока данных мало — пробуем ещё раз
-      video.addEventListener('canplay', function () {
-        video.play().catch(close);
-      }, { once: true });
-    });
-  }
 })();
 </script>
 
@@ -5617,7 +5631,7 @@
            стоит он, а не куб. Сам блок с кубом остаётся в разметке и просто
            скрыт стилями: его скрипт продолжает работать и ничего не ломает. -->
       <div id="threejs-cube-container"></div>
-      <img class="hero-robot" src="media/robot.jpg" alt="Робот botforge" loading="eager" />
+      <img class="hero-robot" src="media/robot.webp" alt="Робот botforge" loading="eager" />
     </div>
   </div>
 </section>
