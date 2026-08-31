@@ -4913,7 +4913,11 @@
     position: absolute;
     inset: 0;
     z-index: 0;
-    background: url('media/robot.jpg') right center / cover no-repeat;
+    /* Размер задаём от высоты экрана, а не «заполнить любой ценой»:
+       при заполнении кадр увеличивался и робота обрезало. */
+    background: url('media/robot.jpg') no-repeat;
+    background-position: right 2% center;
+    background-size: auto 86%;
     pointer-events: none;
   }
 
@@ -4921,10 +4925,10 @@
   .hero::after {
     background:
       linear-gradient(to right,
-        var(--bg, #0A0A18) 4%,
-        rgba(10,10,24,0.92) 30%,
+        rgba(10,10,24,0.96) 0%,
+        rgba(10,10,24,0.9) 28%,
         rgba(10,10,24,0.45) 58%,
-        rgba(10,10,24,0.25) 100%),
+        rgba(10,10,24,0.22) 100%),
       linear-gradient(to bottom, rgba(10,10,24,0.85), transparent 22%, transparent 76%, var(--bg, #0A0A18)) !important;
     width: 100% !important;
     z-index: 1 !important;
@@ -4939,18 +4943,36 @@
      он выглядит как случайная наклейка */
   #robot-assistant-css { display: none !important; }
 
+  /* На десктопе робот — фон, картинка не нужна */
+  .hero-robot { display: none; }
+
   @media (max-width: 900px) {
-    .hero::before {
-      background-position: center 22%;
-      background-size: contain;
+    /* Текста на первом экране много, спрятать за ним робота некуда:
+       на телефоне он получает собственное место под текстом. */
+    .hero {
+      display: block;
+      min-height: 0;
+      padding-top: 84px !important;
+      padding-bottom: 24px !important;
     }
 
+    .hero::before { display: none; }
+
     .hero::after {
-      background:
-        linear-gradient(to bottom,
-          rgba(10,10,24,0.35) 0%,
-          rgba(10,10,24,0.8) 42%,
-          var(--bg, #0A0A18) 72%) !important;
+      background: linear-gradient(to bottom,
+        rgba(10,10,24,0.9), transparent 30%) !important;
+    }
+
+    .hero-visual { display: block !important; }
+
+    .hero-robot {
+      display: block;
+      width: 100%;
+      max-width: 420px;
+      margin: 8px auto 0;
+      /* Фон кадра почти совпадает с фоном страницы, поэтому края растворяем */
+      -webkit-mask-image: radial-gradient(72% 72% at 50% 48%, #000 52%, transparent 100%);
+      mask-image: radial-gradient(72% 72% at 50% 48%, #000 52%, transparent 100%);
     }
   }
 </style>
@@ -5599,6 +5621,7 @@
            стоит он, а не куб. Сам блок с кубом остаётся в разметке и просто
            скрыт стилями: его скрипт продолжает работать и ничего не ломает. -->
       <div id="threejs-cube-container"></div>
+      <img class="hero-robot" src="media/robot.jpg" alt="Робот botforge" loading="eager" />
     </div>
   </div>
 </section>
