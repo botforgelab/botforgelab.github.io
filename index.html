@@ -4838,6 +4838,17 @@
      не трогаем — просто не показываем. */
   #preloader { display: none !important; }
 
+  /* В сайте есть правило, которое прячет ВСЁ содержимое, пока идёт старая
+     заставка: body.preloader-active > *:not(#preloader). Наш блок с роликом
+     тоже попадал под него и первые секунды был невидим — человек смотрел
+     в чёрный экран, пока ролик втихую проигрывался. Выводим его из-под
+     запрета. */
+  body.preloader-active > #robot-intro {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
   #robot-intro {
     position: fixed;
     inset: 0;
