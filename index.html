@@ -4991,9 +4991,161 @@
     }
   }
 </style>
+<style id="lab-popup-css">
+  /* Раздел с редактором убран из общего потока: на телефоне он занимал
+     полтора экрана, а нужен далеко не каждому. Открывается из меню. */
+  #python-lab { display: none; }
+
+  body.lab-open #python-lab {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 100001;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--bg, #0A0A18);
+    padding: 64px 0 40px;
+    animation: labIn 0.25s ease;
+  }
+
+  @keyframes labIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .lab-close {
+    position: fixed;
+    top: 14px;
+    right: 16px;
+    z-index: 100002;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    background: rgba(10, 10, 24, 0.9);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    color: #EEF1FF;
+    font: inherit;
+    font-size: 14px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+  }
+
+  body.lab-open .lab-close { display: inline-flex; }
+
+  .lab-close:hover { border-color: #00F0FF; }
+
+  @media (prefers-reduced-motion: reduce) {
+    body.lab-open #python-lab { animation: none; }
+  }
+</style>
+<style id="mobile-carousel-css">
+  /* Карусели только на телефоне: карточки равнозначные, порядок не важен,
+     читать все подряд необязательно. Соседняя карточка намеренно
+     выглядывает — без этого люди не догадываются свайпнуть. */
+  .swipe-dots { display: none; }
+
+  @media (max-width: 768px) {
+    .services-grid[data-swipe],
+    .testimonials-grid[data-swipe],
+    .blog-grid[data-swipe] {
+      display: flex !important;
+      grid-template-columns: none !important;
+      gap: 14px;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-padding-left: 20px;
+      margin-inline: -20px;
+      padding: 4px 20px 6px;
+      scrollbar-width: none;
+    }
+
+    .services-grid[data-swipe]::-webkit-scrollbar,
+    .testimonials-grid[data-swipe]::-webkit-scrollbar,
+    .blog-grid[data-swipe]::-webkit-scrollbar { display: none; }
+
+    .services-grid[data-swipe] > *,
+    .testimonials-grid[data-swipe] > *,
+    .blog-grid[data-swipe] > * {
+      flex: 0 0 84%;
+      scroll-snap-align: start;
+      margin: 0 !important;
+    }
+
+    /* Скрытые карточки блога в ленте не участвуют */
+    .blog-grid[data-swipe] > .hidden-card { display: none !important; }
+
+    .swipe-dots {
+      display: flex;
+      gap: 8px;
+      margin: 16px 0 0;
+      padding: 0;
+      justify-content: center;
+    }
+
+    .swipe-dots button {
+      position: relative;
+      width: 8px;
+      height: 8px;
+      padding: 0;
+      border: none;
+      border-radius: 50%;
+      background: rgba(238, 241, 255, 0.25);
+      cursor: pointer;
+      transition: width 0.3s ease, border-radius 0.3s ease, background 0.3s ease;
+    }
+
+    /* Палец меньше восьми пикселей не различает — зона нажатия больше точки */
+    .swipe-dots button::before {
+      content: '';
+      position: absolute;
+      inset: -14px -6px;
+    }
+
+    .swipe-dots button[aria-current='true'] {
+      width: 22px;
+      border-radius: 4px;
+      background: #00F0FF;
+    }
+  }
+</style>
+<style id="hero-cta-css">
+  /* На телефоне кнопки первого экрана стоят по центру: так они читаются
+     как главное действие, а не как продолжение текста слева. */
+  @media (max-width: 768px) {
+    .hero-cta {
+      justify-content: center !important;
+      text-align: center;
+    }
+
+    .hero-cta > a {
+      width: 100%;
+      max-width: 340px;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hero-text,
+    .hero-numbers,
+    .cta-note {
+      text-align: center;
+    }
+
+    .hero-numbers {
+      justify-content: center;
+    }
+
+    .hero-tag {
+      margin-inline: auto;
+    }
+  }
+</style>
 </head>
 <body>
 <div class="robot-layer" aria-hidden="true"></div>
+<button class="lab-close" id="labClose" type="button">✕ Закрыть редактор</button>
 <div id="robot-intro">
   <video id="robotIntroVideo" src="media/cube-to-robot.mp4" poster="media/cube.jpg"
          muted autoplay playsinline webkit-playsinline="true" preload="auto"></video>
@@ -5560,10 +5712,6 @@
             <span class="skin-dot dot-robotpage"></span>
             <span><div class="skin-name">Классическая</div><div class="skin-sub">Прежний первый экран</div></span>
           </a>
-          <a class="skin-link" href="robot.html">
-            <span class="skin-dot dot-robotpage"></span>
-            <span><div class="skin-name">Короткая</div><div class="skin-sub">Только главное, одна страница</div></span>
-          </a>
           <div class="skin-divider"></div>
 
           <button class="skin-option active" data-skin="neon">
@@ -5631,7 +5779,7 @@
         <div class="hero-num"><span class="hero-num-val"><span class="counter" data-target="3">0</span></span><span class="hero-num-label">платформы</span></div>
         <div class="hero-num"><span class="hero-num-val"><span class="counter" data-target="6">0</span></span><span class="hero-num-label">интеграций</span></div>
       </div>
-      <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:center;">
+      <div class="hero-cta" style="display:flex; gap:16px; flex-wrap:wrap; align-items:center;">
         <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%9F%D0%B8%D1%88%D1%83%20%D1%81%20%D1%81%D0%B0%D0%B9%D1%82%D0%B0%2C%20%D1%85%D0%BE%D1%87%D1%83%20%D0%BE%D0%B1%D1%81%D1%83%D0%B4%D0%B8%D1%82%D1%8C%20%D0%B1%D0%BE%D1%82%D0%B0" class="btn-primary magnetic ripple-btn" target="_blank">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
           Обсудить проект
@@ -5794,7 +5942,7 @@
   </div>
   
   <!-- DocuHelper Forex -->
-  <div class="project-card magnetic" data-category="ai" data-modal="ai">
+  <div class="project-card magnetic hidden-card" data-category="ai" data-modal="ai">
     <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/Rrjmn0v/Copilot-20260503-140821.webp');"></div>
     <div class="project-content">
       <div class="project-tag">AI · RAG · Telegram Mini App</div>
@@ -5805,7 +5953,7 @@
   </div>
 
   <!-- DocuHelper Mini App -->
-  <div class="project-card magnetic" data-category="ai miniapp" data-modal="docuhelper-mini">
+  <div class="project-card magnetic hidden-card" data-category="ai miniapp" data-modal="docuhelper-mini">
     <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/twhfpCt4/Copilot-2.png');"></div>
     <div class="project-content">
       <div class="project-tag">AI · RAG · Telegram Mini App · pgvector · Cohere</div>
@@ -5816,7 +5964,7 @@
   </div>
 
   <!-- ShopBot (исправленная карточка) -->
-  <div class="project-card magnetic" data-category="telegram crm" data-modal="shop">
+  <div class="project-card magnetic hidden-card" data-category="telegram crm" data-modal="shop">
     <div class="project-thumb" style="background-image: url('https://i.ibb.co/WN2xQj7Q/Copilot-20260513-223058.png');"></div>
     <div class="project-content">
       <div class="project-tag">Telegram · ЮKassa · PostgreSQL · Render</div>
@@ -5827,7 +5975,7 @@
   </div>
 
 
-  <div class="project-card magnetic" data-category="telegram miniapp crm" data-modal="realty">
+  <div class="project-card magnetic hidden-card" data-category="telegram miniapp crm" data-modal="realty">
     <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/ynbQ14D7/1.png');"></div>
     <div class="project-content">
       <div class="project-tag">Telegram · Mini App · FastAPI · PostgreSQL</div>
@@ -5838,7 +5986,7 @@
   </div>
 
   <!-- BookingBot CRM -->
-  <div class="project-card magnetic" data-category="telegram miniapp crm" data-modal="bookingbot">
+  <div class="project-card magnetic hidden-card" data-category="telegram miniapp crm" data-modal="bookingbot">
     <div class="project-thumb" style="background: linear-gradient(135deg, #1a0a2e 0%, #0d1f3c 50%, #0a2a1a 100%); display:flex; align-items:center; justify-content:center; font-size:48px;">💆‍♀️</div>
     <div class="project-content">
       <div class="project-tag">Python · aiogram 3 · Mini App · PostgreSQL · ЮКасса</div>
@@ -5851,7 +5999,7 @@
   <!-- Скрытые проекты roadmap -->
 
   <!-- EncarBot -->
-  <div class="project-card magnetic" data-category="telegram" data-modal="encar">
+  <div class="project-card magnetic hidden-card" data-category="telegram" data-modal="encar">
     <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/JRdpk1KS/Copilot-20260627-001754.png');"></div>
     <div class="project-content">
       <div class="project-tag">Python · aiogram 3 · Telegram · Encar API</div>
@@ -5863,7 +6011,7 @@
 
 
   <!-- VoiceBot -->
-  <div class="project-card magnetic" data-category="ai telegram miniapp" data-modal="voicebot">
+  <div class="project-card magnetic hidden-card" data-category="ai telegram miniapp" data-modal="voicebot">
     <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/23S30NbV/154.png');"></div>
     <div class="project-content">
       <div class="project-tag">AI · Python · aiogram 3 · ElevenLabs · Mini App · PostgreSQL</div>
@@ -10236,6 +10384,100 @@ sys.stderr = _stderr_cap
 
 })();
 
+</script>
+
+<script>
+(function () {
+  // Ссылка Lab в меню больше не прокручивает страницу, а открывает окно
+  var body = document.body;
+  var closeBtn = document.getElementById('labClose');
+
+  function openLab() {
+    body.classList.add('lab-open');
+    body.style.overflow = 'hidden';
+  }
+
+  function closeLab() {
+    body.classList.remove('lab-open');
+    body.style.overflow = '';
+  }
+
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest('a[href="#python-lab"]');
+    if (link) {
+      e.preventDefault();
+      openLab();
+      // Мобильное меню, если открыто, закрываем
+      var burger = document.querySelector('.nav-links.active, .mobile-menu.active');
+      if (burger) burger.classList.remove('active');
+      return;
+    }
+    if (e.target.closest('#labClose')) closeLab();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && body.classList.contains('lab-open')) closeLab();
+  });
+})();
+</script>
+
+<script>
+(function () {
+  // Ленты собираются на телефоне и разбираются обратно на широком экране,
+  // чтобы на компьютере остались обычные сетки.
+  var mq = window.matchMedia('(max-width: 768px)');
+  var targets = ['.services-grid', '.testimonials-grid', '.blog-grid'];
+
+  function build() {
+    targets.forEach(function (sel) {
+      var track = document.querySelector(sel);
+      if (!track || track.dataset.swipe) return;
+
+      var items = [].slice.call(track.children).filter(function (el) {
+        return !el.classList.contains('hidden-card');
+      });
+      if (items.length < 2) return;
+
+      track.dataset.swipe = '1';
+
+      var dots = document.createElement('div');
+      dots.className = 'swipe-dots';
+      dots.setAttribute('role', 'tablist');
+
+      items.forEach(function (item, i) {
+        var dot = document.createElement('button');
+        dot.type = 'button';
+        dot.setAttribute('role', 'tab');
+        dot.setAttribute('aria-label', 'Карточка ' + (i + 1) + ' из ' + items.length);
+        dot.setAttribute('aria-current', String(i === 0));
+        dot.addEventListener('click', function () {
+          track.scrollTo({ left: item.offsetLeft - track.offsetLeft, behavior: 'smooth' });
+        });
+        dots.appendChild(dot);
+      });
+
+      track.parentNode.insertBefore(dots, track.nextSibling);
+
+      // Активная точка определяется тем, что реально в ленте:
+      // свайп и нажатие дают одинаковый результат
+      var marks = [].slice.call(dots.children);
+      var io = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            var idx = items.indexOf(e.target);
+            marks.forEach(function (d, j) { d.setAttribute('aria-current', String(j === idx)); });
+          });
+        },
+        { root: track, threshold: 0.6 }
+      );
+      items.forEach(function (i) { io.observe(i); });
+    });
+  }
+
+  if (mq.matches) build();
+  mq.addEventListener('change', function (e) { if (e.matches) build(); });
+})();
 </script>
 </body>
 </html>
