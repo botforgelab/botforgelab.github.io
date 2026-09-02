@@ -5142,6 +5142,117 @@
     }
   }
 </style>
+<style id="skins-fix-css">
+  /* ---------- Починка тем на странице с роботом ----------
+     Первый экран тут переписан под робота, а темы писались под старую
+     вёрстку. Ниже — только то, что из-за этого разъехалось. */
+
+  /* 1. Завеса под текстом сделана тёмной (rgba(10,10,24)). На светлых
+        темах она ложилась серой пеленой на весь экран и глушила робота.
+        Светлым темам нужна светлая завеса того же назначения. */
+  html[data-skin='bento'] .hero::after {
+    background:
+      linear-gradient(to right,
+        rgba(245,245,247,0.97) 0%,
+        rgba(245,245,247,0.92) 30%,
+        rgba(245,245,247,0.4) 60%,
+        rgba(245,245,247,0) 82%),
+      linear-gradient(to bottom, transparent 70%, #f5f5f7 100%) !important;
+    opacity: 1 !important;
+  }
+
+  html[data-skin='brutal'] .hero::after {
+    background:
+      linear-gradient(to right,
+        rgba(255,254,240,0.97) 0%,
+        rgba(255,254,240,0.92) 30%,
+        rgba(255,254,240,0.4) 60%,
+        rgba(255,254,240,0) 82%),
+      linear-gradient(to bottom, transparent 70%, #fffef0 100%) !important;
+    opacity: 1 !important;
+  }
+
+  /* 2. Эти три темы задают заголовку до 80px. В старой вёрстке первый
+        экран рос вместе с текстом, а здесь он ровно в высоту окна —
+        и кнопка уезжала за нижний край. Возвращаем размер базовой темы. */
+  html[data-skin='bento'] .hero h1,
+  html[data-skin='brutal'] .hero h1,
+  html[data-skin='saas'] .hero h1 {
+    font-size: 54px !important;
+  }
+
+  /* Те же ступени, что у базовой темы, иначе на телефоне кнопка
+     снова уходит за край */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    html[data-skin='bento'] .hero h1,
+    html[data-skin='brutal'] .hero h1,
+    html[data-skin='saas'] .hero h1 {
+      font-size: clamp(32px, 4.5vw, 46px) !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    html[data-skin='bento'] .hero h1,
+    html[data-skin='brutal'] .hero h1,
+    html[data-skin='saas'] .hero h1 {
+      font-size: clamp(26px, 7vw, 38px) !important;
+    }
+  }
+
+  @media (max-width: 400px) {
+    html[data-skin='bento'] .hero h1,
+    html[data-skin='brutal'] .hero h1,
+    html[data-skin='saas'] .hero h1 {
+      font-size: clamp(22px, 7vw, 28px) !important;
+    }
+  }
+
+  /* 3. Отступ сверху у bento задан под старую шапку (120px) и на телефоне
+        сдвигал весь текст вниз. Ставим тот же, что у остальных тем. */
+  html[data-skin='bento'] .hero { padding-top: 90px !important; }
+
+  /* Светлые темы красят сам первый экран, и этот непрозрачный фон
+     закрашивал слой с роботом. Цвет тот же лежит на body, так что
+     достаточно сделать экран прозрачным — робот снова виден. */
+  html[data-skin='bento'] .hero,
+  html[data-skin='brutal'] .hero {
+    background: transparent !important;
+  }
+
+  @media (max-width: 900px) {
+    html[data-skin='bento'] .hero { padding-top: 84px !important; }
+  }
+
+  /* 4. saas увеличивает подпись до 18px и метку над заголовком — на
+        телефоне это лишние 80 пикселей, кнопка уходила за край. */
+  @media (max-width: 768px) {
+    html[data-skin='saas'] .hero-sub { font-size: 14px !important; line-height: 1.55 !important; }
+    html[data-skin='saas'] .hero-tag { font-size: 9px !important; padding: 5px 10px !important; }
+  }
+
+  /* 5. Иконки в плавающих кнопках заданы в разметке белым
+        (fill="white", stroke="white"). У saas кнопка белая, у brutal —
+        жёлтая: иконки на них не читались. Красим в чёрный. */
+  html[data-skin='saas'] .floating-telegram svg,
+  html[data-skin='brutal'] .floating-telegram svg {
+    fill: #0a0a0a !important;
+  }
+
+  html[data-skin='saas'] .livechat-toggle svg,
+  html[data-skin='brutal'] .livechat-toggle svg {
+    stroke: #0a0a0a !important;
+  }
+
+  /* 6. На телефоне завеса — короткая полоса сверху, тоже тёмная */
+  @media (max-width: 900px) {
+    html[data-skin='bento'] .hero::after {
+      background: linear-gradient(to bottom, rgba(245,245,247,0.9), transparent 30%) !important;
+    }
+    html[data-skin='brutal'] .hero::after {
+      background: linear-gradient(to bottom, rgba(255,254,240,0.9), transparent 30%) !important;
+    }
+  }
+</style>
 </head>
 <body>
 <div class="robot-layer" aria-hidden="true"></div>
@@ -5748,7 +5859,7 @@
           </button>
           <button class="skin-option" data-skin="y3k">
             <span class="skin-dot dot-y3k"></span>
-            <span><div class="skin-name">Y3K Holographic</div><div class="skin-sub">Chrome + иридescent</div></span>
+            <span><div class="skin-name">Y3K Holographic</div><div class="skin-sub">Хром и переливы</div></span>
           </button>
           <button class="skin-option" data-skin="saas">
             <span class="skin-dot dot-saas"></span>
