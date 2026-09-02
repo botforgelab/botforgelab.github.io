@@ -3606,113 +3606,6 @@
 [data-skin="y3k"] .poll-cta h2 { background: linear-gradient(135deg,#b8a8ff,#7efff5) !important; -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: transparent !important; }
 [data-skin="y3k"] .skin-panel { background: rgba(7,7,26,0.95) !important; backdrop-filter: blur(30px) !important; border-color: rgba(184,168,255,0.15) !important; }
 
-/* ================================================================
-   SKIN 10: SaaS / LINEAR STYLE
-   Clean dark, Linear.app / Vercel: crisp white text, subtle accents
-================================================================ */
-[data-skin="saas"] {
-  --bg:            #000000;
-  --surface:       #0a0a0a;
-  --surface-solid: #111111;
-  --text:          #ffffff;
-  --text-dim:      rgba(255,255,255,0.6);
-  --text-muted:    rgba(255,255,255,0.3);
-  --accent:        #ffffff;
-  --accent-2:      #888888;
-  --accent-glow:   rgba(255,255,255,0.08);
-  --border:        rgba(255,255,255,0.08);
-  --border-light:  rgba(255,255,255,0.04);
-  --shadow:        0 4px 20px rgba(0,0,0,0.8);
-  --shadow-hover:  0 8px 30px rgba(0,0,0,0.9);
-  --header-bg:     rgba(0,0,0,0.8);
-}
-[data-skin="saas"] body { background: #000 !important; cursor: auto !important; }
-[data-skin="saas"] .cursor, [data-skin="saas"] .cursor-dot { display: none !important; }
-[data-skin="saas"] #particles-js { display: none !important; }
-[data-skin="saas"] .gradient-bg { background: #000 !important; }
-[data-skin="saas"] header {
-  background: rgba(0,0,0,0.8) !important;
-  backdrop-filter: blur(20px) !important;
-  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
-}
-[data-skin="saas"] .logo span {
-  color: #fff !important; -webkit-text-fill-color: #fff !important;
-  background: none !important; font-weight: 800 !important;
-}
-[data-skin="saas"] .nav-links a { color: rgba(255,255,255,0.6) !important; font-size: 14px !important; }
-[data-skin="saas"] .nav-links a:hover { color: #fff !important; }
-[data-skin="saas"] .nav-links a::after { background: #fff !important; }
-[data-skin="saas"] .hero h1 {
-  color: #fff !important; -webkit-text-fill-color: #fff !important;
-  background: none !important;
-  font-size: clamp(40px,6vw,80px) !important;
-  font-weight: 800 !important; letter-spacing: -0.05em !important; line-height: 1 !important;
-}
-[data-skin="saas"] .hero h1 em { color: rgba(255,255,255,0.45) !important; -webkit-text-fill-color: rgba(255,255,255,0.45) !important; font-style: normal !important; }
-[data-skin="saas"] .hero-sub { color: rgba(255,255,255,0.55) !important; font-size: 18px !important; }
-[data-skin="saas"] .hero-sub span { color: #fff !important; }
-[data-skin="saas"] .hero-tag { background: rgba(255,255,255,0.06) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: rgba(255,255,255,0.7) !important; border-radius: 100px !important; font-size: 12px !important; }
-[data-skin="saas"] .hero-numbers { border-color: rgba(255,255,255,0.06) !important; background: rgba(255,255,255,0.02) !important; }
-[data-skin="saas"] .hero-num-val { color: #fff !important; -webkit-text-fill-color: #fff !important; text-shadow: none !important; }
-[data-skin="saas"] .hero-num-label { color: rgba(255,255,255,0.35) !important; }
-[data-skin="saas"] .section-title {
-  color: #fff !important; -webkit-text-fill-color: #fff !important;
-  background: none !important; letter-spacing: -0.04em !important; font-weight: 800 !important;
-}
-[data-skin="saas"] .section-title::after { background: rgba(255,255,255,0.15) !important; }
-[data-skin="saas"] .service-card,
-[data-skin="saas"] .project-card,
-[data-skin="saas"] .testimonial-card,
-[data-skin="saas"] .blog-card,
-[data-skin="saas"] .step,
-[data-skin="saas"] .faq-item {
-  background: rgba(255,255,255,0.02) !important;
-  border: 1px solid rgba(255,255,255,0.07) !important;
-  border-radius: 16px !important;
-  backdrop-filter: none !important;
-  box-shadow: none !important;
-}
-[data-skin="saas"] .service-card::before, [data-skin="saas"] .service-card::after { display:none !important; }
-[data-skin="saas"] .service-card:hover,
-[data-skin="saas"] .project-card:hover,
-[data-skin="saas"] .blog-card:hover {
-  background: rgba(255,255,255,0.04) !important;
-  border-color: rgba(255,255,255,0.15) !important;
-  transform: translateY(-4px) !important;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.8) !important;
-}
-[data-skin="saas"] .service-card h3 { color: #fff !important; font-weight: 700 !important; }
-[data-skin="saas"] .service-card p { color: rgba(255,255,255,0.5) !important; }
-[data-skin="saas"] .service-icon { background: rgba(255,255,255,0.06) !important; border-radius: 12px !important; }
-[data-skin="saas"] .btn-primary,
-[data-skin="saas"] .nav-cta,
-[data-skin="saas"] .btn-order,
-[data-skin="saas"] .telegram-btn {
-  background: #fff !important; background-image: none !important;
-  color: #000 !important; -webkit-text-fill-color: #000 !important;
-  border: none !important; border-radius: 8px !important;
-  font-weight: 700 !important; box-shadow: none !important; animation: none !important;
-}
-[data-skin="saas"] .btn-primary:hover { background: rgba(255,255,255,0.9) !important; transform: translateY(-2px) !important; box-shadow: 0 4px 20px rgba(255,255,255,0.15) !important; }
-[data-skin="saas"] .btn-outline, [data-skin="saas"] .btn-show-more { border-color: rgba(255,255,255,0.15) !important; color: rgba(255,255,255,0.7) !important; border-radius: 8px !important; }
-[data-skin="saas"] .btn-outline:hover, [data-skin="saas"] .btn-show-more:hover { border-color: rgba(255,255,255,0.4) !important; color: #fff !important; background: rgba(255,255,255,0.05) !important; }
-[data-skin="saas"] .filter-btn.active { background: #fff !important; border-color: #fff !important; color: #000 !important; }
-[data-skin="saas"] .modal-content { background: #0a0a0a !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 20px !important; backdrop-filter: none !important; box-shadow: 0 20px 60px rgba(0,0,0,0.9) !important; }
-[data-skin="saas"] .modal-header h3 { color: #fff !important; -webkit-text-fill-color: #fff !important; background: none !important; }
-[data-skin="saas"] .modal-body { color: rgba(255,255,255,0.6) !important; }
-[data-skin="saas"] .tab-btn.active { background: #fff !important; color: #000 !important; border-color: transparent !important; }
-[data-skin="saas"] .floating-telegram, [data-skin="saas"] .livechat-toggle { background: #fff !important; color: #000 !important; box-shadow: none !important; }
-[data-skin="saas"] .scroll-top { border-color: rgba(255,255,255,0.12) !important; color: #fff !important; }
-[data-skin="saas"] .poll-cta { background: rgba(255,255,255,0.02) !important; border-color: rgba(255,255,255,0.06) !important; box-shadow: none !important; }
-[data-skin="saas"] .poll-cta h2 { color: #fff !important; -webkit-text-fill-color: #fff !important; background: none !important; }
-[data-skin="saas"] .faq-question { color: #fff !important; }
-[data-skin="saas"] .faq-icon { color: rgba(255,255,255,0.5) !important; }
-[data-skin="saas"] .footer { background: #000 !important; border-top: 1px solid rgba(255,255,255,0.06) !important; }
-[data-skin="saas"] ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2) !important; }
-[data-skin="saas"] .skin-panel { background: #111 !important; border-color: rgba(255,255,255,0.1) !important; }
-[data-skin="saas"] .skin-option:hover { background: rgba(255,255,255,0.05) !important; }
-[data-skin="saas"] .skin-name { color: #fff !important; }
-[data-skin="saas"] .skin-btn { color: rgba(255,255,255,0.7) !important; }
 
 /* ================================================================
    SKIN 11: NEON ORANGE CYBER (Robot.co / Awwwards style)
@@ -3815,7 +3708,6 @@
 .dot-aurora  { background: linear-gradient(135deg,#a78bfa,#60a5fa,#34d399); }
 .dot-vapor   { background: linear-gradient(135deg,#ff2d9b,#7b00ff,#00e5ff); }
 .dot-y3k     { background: linear-gradient(90deg,#ff6ef7,#b8a8ff,#7efff5,#ffe97a); }
-.dot-saas    { background: linear-gradient(135deg,#333,#fff); }
 .dot-orange  { background: linear-gradient(135deg,#ff4500,#ff8c00); }
 
 </style>
@@ -3858,8 +3750,7 @@
   display: block;
 }
 [data-skin="bento"] #glsl-canvas,
-[data-skin="brutal"] #glsl-canvas,
-[data-skin="saas"] #glsl-canvas {
+  [data-skin="brutal"] #glsl-canvas {
   display: none;
 }
 
@@ -4610,8 +4501,7 @@
   margin-left: auto;
 }
 [data-skin="bento"] .chat-msg.user,
-[data-skin="brutal"] .chat-msg.user,
-[data-skin="saas"] .chat-msg.user { color: #fff !important; }
+  [data-skin="brutal"] .chat-msg.user { color: #fff !important; }
 .chat-msg .msg-time {
   font-size: 9px;
   opacity: 0.5;
@@ -5383,10 +5273,6 @@
           <button class="skin-option" data-skin="y3k">
             <span class="skin-dot dot-y3k"></span>
             <span><div class="skin-name">Y3K Holographic</div><div class="skin-sub">Chrome + иридescent</div></span>
-          </button>
-          <button class="skin-option" data-skin="saas">
-            <span class="skin-dot dot-saas"></span>
-            <span><div class="skin-name">SaaS / Linear</div><div class="skin-sub">Как Linear.app</div></span>
           </button>
           <button class="skin-option" data-skin="orange">
             <span class="skin-dot dot-orange"></span>
@@ -8711,7 +8597,6 @@ function switchBookingTab(tab, btn) {
     aurora: { icon: '🌌', label: 'Aurora UI' },
     vapor:  { icon: '🌊', label: 'Vaporwave' },
     y3k:    { icon: '🤍', label: 'Y3K Holographic' },
-    saas:   { icon: '⬛', label: 'SaaS / Linear' },
     orange: { icon: '⚡', label: 'Neon Orange' },
   };
 
@@ -8725,7 +8610,10 @@ function switchBookingTab(tab, btn) {
   if (!btn) return;
 
   // Restore saved skin
-  const saved = localStorage.getItem('botforgeSkin') || 'neon';
+  // Тема saas удалена: у выбравших её раньше в памяти браузера
+  // остался неизвестный ключ — возвращаем на базовую.
+  let saved = localStorage.getItem('botforgeSkin') || 'neon';
+  if (saved === 'saas') { saved = 'neon'; localStorage.removeItem('botforgeSkin'); }
   applySkin(saved);
 
   // Toggle panel
@@ -8909,7 +8797,7 @@ function switchBookingTab(tab, btn) {
     requestAnimationFrame(render);
     const skin = document.documentElement.getAttribute('data-skin') || 'neon';
     // Hide on light skins
-    if (['bento','brutal','saas'].includes(skin)) {
+    if (['bento','brutal'].includes(skin)) {
       canvas.style.display = 'none'; return;
     }
     canvas.style.display = 'block';
@@ -9602,7 +9490,6 @@ sys.stderr = _stderr_cap
       case 'aurora':  return startAurora();
       case 'vapor':   return startVapor();
       case 'y3k':     return startY3k();
-      case 'saas':    return startSaas();
       case 'orange':  return startOrange();
       default:        return startNeon();
     }
@@ -9911,43 +9798,6 @@ sys.stderr = _stderr_cap
     draw();
   }
 
-  // ── SAAS: Dark grid with rare spark pulses ──
-  function startSaas() {
-    const sparks = [];
-    let sparkTimer = 0;
-    const gs = 40;
-    function draw() {
-      animId = requestAnimationFrame(draw);
-      ctx.fillStyle = '#000';
-      ctx.fillRect(0,0,W,H);
-      // Grid
-      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-      ctx.lineWidth = 0.5;
-      for (let x=0; x<W; x+=gs) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
-      for (let y=0; y<H; y+=gs) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
-      // Sparks
-      sparkTimer++;
-      if (sparkTimer % 90 === 0 && sparks.length < 5) {
-        const gx = Math.floor(Math.random()*(W/gs))*gs;
-        const gy = Math.floor(Math.random()*(H/gs))*gs;
-        sparks.push({ x: gx, y: gy, life: 1.0 });
-      }
-      sparks.forEach((s,i) => {
-        s.life -= 0.02;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, 3*(1-s.life), 0, Math.PI*2);
-        ctx.fillStyle = `rgba(255,255,255,${s.life*0.6})`;
-        ctx.fill();
-        // ripple
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, 20*(1-s.life), 0, Math.PI*2);
-        ctx.strokeStyle = `rgba(255,255,255,${s.life*0.15})`;
-        ctx.lineWidth = 0.5; ctx.stroke();
-        if (s.life <= 0) sparks.splice(i,1);
-      });
-    }
-    draw();
-  }
 
   // ── ORANGE: Fire sparks rising ──
   function startOrange() {
@@ -10008,7 +9858,8 @@ sys.stderr = _stderr_cap
   }
 
   // Start with saved/default skin
-  const savedSkin = localStorage.getItem('botforgeSkin') || 'neon';
+  let savedSkin = localStorage.getItem('botforgeSkin') || 'neon';
+  if (savedSkin === 'saas') savedSkin = 'neon';
   start(savedSkin);
   hookSkinSwitcher();
 
