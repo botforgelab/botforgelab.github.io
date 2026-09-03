@@ -1,0 +1,1597 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ТОН — салон сложного окрашивания</title>
+    <meta
+      name="description"
+      content="Салон сложного окрашивания. Примерьте цвет на сайте до того, как решитесь, и выберите свободное время сами."
+    />
+    <meta name="theme-color" content="#0e0b0a" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --bg: #0e0b0a;
+        --ink: #f4efe8;
+        --dim: #9c9089;
+        --accent: #c9805f;
+        --line: rgba(244, 239, 232, 0.12);
+
+        /* Шкала размеров: задана один раз, дальше только эти значения */
+        --h1: clamp(34px, 5.4vw, 68px);
+        --h2: clamp(26px, 3.4vw, 44px);
+        --lead: clamp(16px, 1.35vw, 19px);
+        --body: 16px;
+        --small: 14px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: 'Manrope', system-ui, sans-serif;
+        font-size: var(--body);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .wrap {
+        width: 100%;
+        max-width: 1340px;
+        margin-inline: auto;
+        padding-inline: clamp(20px, 4vw, 56px);
+      }
+
+      /* ---------- шапка ---------- */
+
+      .bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 4;
+        padding-block: clamp(18px, 2.4vh, 26px);
+      }
+
+      .bar__inner {
+        display: flex;
+        align-items: center;
+        gap: clamp(16px, 4vw, 48px);
+      }
+
+      .mark {
+        font-weight: 800;
+        font-size: 22px;
+        letter-spacing: 0.22em;
+        line-height: 1;
+      }
+
+      .nav {
+        display: flex;
+        gap: clamp(14px, 2vw, 30px);
+        font-size: var(--small);
+        color: var(--dim);
+      }
+
+      .nav a:hover {
+        color: var(--ink);
+      }
+
+      .bar__phone {
+        margin-left: auto;
+        font-size: var(--small);
+        color: var(--dim);
+      }
+
+      .bar__phone b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      /* ---------- первый экран ---------- */
+
+      .hero {
+        position: relative;
+        min-height: 100vh;
+        min-height: 100svh;
+        display: grid;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      /* Волосы занимают правую половину и растворяются влево,
+         чтобы текст лежал на чистом фоне, а не поверх картинки */
+      .hero__media {
+        position: absolute;
+        inset: 0 0 0 auto;
+        width: 62%;
+        z-index: 0;
+      }
+
+      .hero__media img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 0.32s ease;
+      }
+
+      .hero__media img.on {
+        opacity: 1;
+      }
+
+      .hero__media::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(to right, var(--bg) 2%, rgba(14, 11, 10, 0.55) 34%, transparent 68%),
+          linear-gradient(to bottom, rgba(14, 11, 10, 0.75), transparent 26%),
+          linear-gradient(to top, var(--bg), transparent 22%);
+      }
+
+      .hero__inner {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        gap: clamp(24px, 3.4vh, 40px);
+        max-width: 640px;
+        padding-block: clamp(120px, 16vh, 180px) clamp(40px, 6vh, 70px);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: var(--h1);
+        font-weight: 800;
+        line-height: 1.04;
+        letter-spacing: -0.03em;
+        text-wrap: balance;
+      }
+
+      h1 em {
+        font-style: normal;
+        color: var(--accent);
+      }
+
+      .lead {
+        margin: 0;
+        max-width: 52ch;
+        font-size: var(--lead);
+        line-height: 1.6;
+        color: var(--dim);
+      }
+
+      .lead b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      /* ---------- выбор цвета ---------- */
+
+      .picker {
+        display: grid;
+        gap: 14px;
+      }
+
+      .picker__head {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        font-size: var(--small);
+        color: var(--dim);
+      }
+
+      .picker__now {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      .swatches {
+        display: flex;
+        gap: 10px;
+      }
+
+      .sw {
+        position: relative;
+        width: 46px;
+        height: 46px;
+        padding: 0;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        background: transparent;
+        cursor: pointer;
+        transition: transform 0.18s ease, border-color 0.18s ease;
+      }
+
+      .sw span {
+        position: absolute;
+        inset: 5px;
+        border-radius: 50%;
+      }
+
+      .sw:hover {
+        transform: translateY(-2px);
+        border-color: rgba(244, 239, 232, 0.35);
+      }
+
+      .sw[aria-pressed='true'] {
+        border-color: var(--accent);
+      }
+
+      /* Палец меньше 46px не различает — зона нажатия шире кружка */
+      .sw::before {
+        content: '';
+        position: absolute;
+        inset: -6px;
+      }
+
+      /* ---------- кнопка ---------- */
+
+      .cta {
+        display: grid;
+        gap: 12px;
+        justify-items: start;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 17px 30px;
+        border-radius: 4px;
+        background: var(--accent);
+        color: #1b0f0a;
+        font-size: 16px;
+        font-weight: 700;
+        transition: filter 0.2s ease, transform 0.2s ease;
+      }
+
+      .btn:hover {
+        filter: brightness(1.07);
+        transform: translateY(-1px);
+      }
+
+      .note {
+        margin: 0;
+        font-size: var(--small);
+        color: var(--dim);
+      }
+
+      .note i {
+        font-style: normal;
+        color: #7fc79a;
+      }
+
+      /* ---------- планшет ---------- */
+
+      @media (max-width: 1024px) {
+        .hero__media {
+          width: 70%;
+        }
+
+        .hero__media::after {
+          background:
+            linear-gradient(to right, var(--bg) 6%, rgba(14, 11, 10, 0.72) 44%, transparent 84%),
+            linear-gradient(to bottom, rgba(14, 11, 10, 0.75), transparent 26%),
+            linear-gradient(to top, var(--bg), transparent 22%);
+        }
+      }
+
+      /* ---------- телефон: экран пересобран, а не сжат ---------- */
+
+      @media (max-width: 760px) {
+        .hero {
+          min-height: 0;
+          display: block;
+        }
+
+        .nav {
+          display: none;
+        }
+
+        .bar__phone {
+          font-size: 13px;
+        }
+
+        /* Волосы получают собственное место сверху, а не подложку под текст:
+           поверх вертикального кадра текст читался бы плохо.
+           Высота подобрана так, чтобы кнопка помещалась на первый экран —
+           ради этого картинку и ужимаем. */
+        .hero__media {
+          position: relative;
+          inset: auto;
+          width: 100%;
+          height: 38svh;
+          min-height: 230px;
+          max-height: 330px;
+        }
+
+        .hero__media::after {
+          background:
+            linear-gradient(to bottom, rgba(14, 11, 10, 0.82), transparent 34%),
+            linear-gradient(to top, var(--bg) 2%, transparent 40%);
+        }
+
+        .hero__inner {
+          max-width: none;
+          gap: 16px;
+          padding-block: 4px 36px;
+        }
+
+        .lead {
+          font-size: 15px;
+          line-height: 1.5;
+        }
+
+        .sw {
+          width: 40px;
+          height: 40px;
+        }
+
+        .btn {
+          padding-block: 15px;
+        }
+
+        .btn {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .cta {
+          justify-items: stretch;
+        }
+
+        .note {
+          text-align: center;
+        }
+      }
+
+      /* ---------- блок: услуги ---------- */
+
+      .section {
+        padding-block: clamp(64px, 10vh, 130px);
+      }
+
+      .head {
+        display: grid;
+        gap: 18px;
+        max-width: 620px;
+        margin-bottom: clamp(38px, 6vh, 66px);
+      }
+
+      h2 {
+        margin: 0;
+        font-size: var(--h2);
+        font-weight: 800;
+        line-height: 1.08;
+        letter-spacing: -0.025em;
+        text-wrap: balance;
+      }
+
+      .head p {
+        margin: 0;
+        font-size: var(--lead);
+        line-height: 1.6;
+        color: var(--dim);
+      }
+
+      /* Прайс списком: у салона одна услуга и её варианты,
+         три карточки-тарифа тут выглядели бы натянуто */
+      .price {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .price li {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px clamp(24px, 5vw, 70px);
+        align-items: baseline;
+        padding-block: clamp(22px, 3vh, 32px);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .price h3 {
+        margin: 0;
+        grid-column: 1;
+        font-size: clamp(19px, 1.7vw, 24px);
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+
+      .price p {
+        margin: 0;
+        grid-column: 1;
+        max-width: 58ch;
+        line-height: 1.55;
+        color: var(--dim);
+      }
+
+      .price__meta {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        display: grid;
+        gap: 6px;
+        justify-items: end;
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      .price__sum {
+        font-size: clamp(19px, 1.7vw, 24px);
+        font-weight: 700;
+      }
+
+      .price__time {
+        font-size: var(--small);
+        color: var(--dim);
+      }
+
+      .fine {
+        display: grid;
+        gap: 10px;
+        max-width: 60ch;
+        margin: clamp(28px, 4vh, 44px) 0 0;
+        padding-left: 20px;
+        border-left: 2px solid var(--accent);
+        font-size: var(--small);
+        line-height: 1.6;
+        color: var(--dim);
+      }
+
+      .fine b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      .fine p {
+        margin: 0;
+      }
+
+      @media (max-width: 760px) {
+        .price li {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+
+        .price__meta {
+          grid-column: 1;
+          grid-row: auto;
+          justify-items: start;
+          text-align: left;
+          grid-auto-flow: column;
+          gap: 12px;
+          align-items: baseline;
+        }
+
+        .price__sum {
+          font-size: 19px;
+        }
+      }
+
+      /* ---------- блок: свободное время ---------- */
+
+      .section--tint {
+        background: #131010;
+      }
+
+      .live {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 26px;
+        font-size: var(--small);
+        color: var(--dim);
+      }
+
+      .live__dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #7fc79a;
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      .live[data-state='snapshot'] .live__dot {
+        background: var(--accent);
+        animation: none;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+      }
+
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+
+      .row--days {
+        margin-bottom: 26px;
+      }
+
+      .pill {
+        padding: 11px 18px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: transparent;
+        color: var(--dim);
+        font: inherit;
+        font-size: var(--small);
+        cursor: pointer;
+        white-space: nowrap;
+        transition: border-color 0.18s ease, color 0.18s ease;
+      }
+
+      .pill:hover {
+        color: var(--ink);
+        border-color: rgba(244, 239, 232, 0.3);
+      }
+
+      .pill[aria-pressed='true'] {
+        border-color: var(--accent);
+        color: var(--ink);
+        background: rgba(201, 128, 95, 0.12);
+      }
+
+      .slots {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+        gap: 8px;
+      }
+
+      .slot {
+        padding: 15px 6px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: transparent;
+        color: var(--ink);
+        font: inherit;
+        font-size: 16px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: border-color 0.16s ease, background 0.16s ease;
+      }
+
+      .slot:hover {
+        border-color: var(--accent);
+      }
+
+      .slot[aria-pressed='true'] {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #1b0f0a;
+        font-weight: 700;
+      }
+
+      .slot[disabled] {
+        color: #4a423d;
+        border-style: dashed;
+        cursor: default;
+      }
+
+      .slots__empty {
+        padding: 26px 0;
+        color: var(--dim);
+        line-height: 1.6;
+      }
+
+      .picked {
+        display: none;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 18px;
+        margin-top: 26px;
+        padding: 20px 24px;
+        border: 1px solid rgba(201, 128, 95, 0.4);
+        border-radius: 6px;
+        background: rgba(201, 128, 95, 0.08);
+      }
+
+      .picked[data-show='1'] {
+        display: flex;
+      }
+
+      .picked__text {
+        flex: 1 1 260px;
+        line-height: 1.5;
+      }
+
+      .picked__text b {
+        font-weight: 700;
+      }
+
+      .picked__text span {
+        display: block;
+        margin-top: 4px;
+        font-size: var(--small);
+        color: var(--dim);
+      }
+
+      @media (max-width: 760px) {
+        .slots {
+          grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+        }
+
+        .picked .btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
+      /* ---------- блок: колористы ---------- */
+
+      .team {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: clamp(18px, 2.4vw, 34px);
+      }
+
+      .person {
+        display: grid;
+        gap: 16px;
+        align-content: start;
+      }
+
+      .person__photo {
+        position: relative;
+        /* У figure свои отступы по 40px с боков — без обнуления
+           на телефоне от картинки оставалось 38 пикселей из 118 */
+        margin: 0;
+        aspect-ratio: 4 / 5;
+        overflow: hidden;
+        border-radius: 6px;
+        background: #0a0807;
+      }
+
+      .person__photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+
+      .person:hover .person__photo img {
+        transform: scale(1.03);
+      }
+
+      /* Подложка плотная: на пепельном блонде светлый текст
+         без неё сливается с волосами */
+      .person__photo figcaption {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 56px 18px 16px;
+        background: linear-gradient(transparent, rgba(8, 6, 5, 0.86) 46%, rgba(8, 6, 5, 0.97));
+        font-size: var(--small);
+        line-height: 1.45;
+        color: rgba(244, 239, 232, 0.82);
+      }
+
+      .person h3 {
+        margin: 0;
+        font-size: clamp(20px, 1.7vw, 25px);
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+
+      .person h3 small {
+        display: block;
+        margin-top: 5px;
+        font-size: var(--small);
+        font-weight: 500;
+        color: var(--accent);
+        letter-spacing: 0;
+      }
+
+      .person p {
+        margin: 0;
+        max-width: 42ch;
+        line-height: 1.6;
+        color: var(--dim);
+      }
+
+      @media (max-width: 900px) {
+        .team {
+          grid-template-columns: 1fr;
+          gap: 34px;
+        }
+
+        .person {
+          grid-template-columns: minmax(0, 150px) minmax(0, 1fr);
+          gap: 8px 20px;
+          align-items: start;
+        }
+
+        /* На телефоне карточка ложится набок: три вертикальных
+           плитки подряд растянули бы страницу на полтора экрана */
+        .person__photo {
+          grid-row: 1 / span 2;
+          aspect-ratio: 3 / 4;
+        }
+
+        .person__photo figcaption {
+          display: none;
+        }
+
+        .person p {
+          font-size: 15px;
+        }
+      }
+
+      @media (max-width: 420px) {
+        .person {
+          grid-template-columns: minmax(0, 118px) minmax(0, 1fr);
+          gap: 6px 16px;
+        }
+      }
+
+      /* ---------- блок: отзывы ---------- */
+
+      .reviews {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: clamp(14px, 1.6vw, 22px);
+        align-items: start;
+      }
+
+      .rev {
+        display: grid;
+        gap: 14px;
+        padding: clamp(22px, 2vw, 30px);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+      }
+
+      /* Первый отзыв крупнее: одинаковые карточки в ряд выглядят
+         сгенерированными, а живая стена отзывов неровная */
+      .rev--wide {
+        grid-column: span 2;
+      }
+
+      .rev--wide blockquote {
+        font-size: clamp(18px, 1.5vw, 21px);
+      }
+
+      .rev blockquote {
+        margin: 0;
+        line-height: 1.6;
+      }
+
+      .rev__who {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 6px 10px;
+        font-size: var(--small);
+        color: var(--dim);
+      }
+
+      .rev__who b {
+        color: var(--ink);
+        font-weight: 600;
+        font-size: var(--body);
+      }
+
+      .rev__score {
+        margin-left: auto;
+        padding: 4px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+
+      .rev__score[data-low='1'] {
+        border-color: rgba(201, 128, 95, 0.5);
+        color: var(--accent);
+      }
+
+      .swipe-dots {
+        display: none;
+      }
+
+      /* На телефоне отзывы становятся лентой: пять карточек подряд
+         добавляли к странице полтора экрана, а читать их все необязательно */
+      @media (max-width: 900px) {
+        .reviews {
+          display: flex;
+          gap: 12px;
+          overflow-x: auto;
+          overscroll-behavior-x: contain;
+          scroll-snap-type: x mandatory;
+          scroll-padding-left: clamp(20px, 4vw, 56px);
+          margin-inline: calc(-1 * clamp(20px, 4vw, 56px));
+          padding: 2px clamp(20px, 4vw, 56px);
+          scrollbar-width: none;
+        }
+
+        .reviews::-webkit-scrollbar {
+          display: none;
+        }
+
+        .rev,
+        .rev--wide {
+          flex: 0 0 84%;
+          grid-column: auto;
+          scroll-snap-align: start;
+        }
+
+        .rev--wide blockquote {
+          font-size: var(--body);
+        }
+
+        .swipe-dots {
+          display: flex;
+          gap: 8px;
+          justify-content: center;
+          margin-top: 18px;
+        }
+
+        .swipe-dots button {
+          position: relative;
+          width: 8px;
+          height: 8px;
+          padding: 0;
+          border: 0;
+          border-radius: 50%;
+          background: rgba(244, 239, 232, 0.25);
+          cursor: pointer;
+          transition: width 0.3s ease, border-radius 0.3s ease, background 0.3s ease;
+        }
+
+        /* Палец меньше восьми пикселей не различает */
+        .swipe-dots button::before {
+          content: '';
+          position: absolute;
+          inset: -14px -6px;
+        }
+
+        .swipe-dots button[aria-current='true'] {
+          width: 22px;
+          border-radius: 4px;
+          background: var(--accent);
+        }
+      }
+
+      /* ---------- подвал ---------- */
+
+      .foot {
+        padding-block: clamp(48px, 7vh, 90px) clamp(30px, 4vh, 44px);
+        border-top: 1px solid var(--line);
+      }
+
+      .foot__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr));
+        gap: clamp(28px, 4vw, 60px);
+        align-items: start;
+      }
+
+      .foot .mark {
+        display: inline-block;
+        margin-bottom: 16px;
+      }
+
+      .foot p {
+        margin: 0 0 10px;
+        line-height: 1.6;
+        color: var(--dim);
+      }
+
+      .foot h4 {
+        margin: 0 0 12px;
+        font-size: var(--small);
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--dim);
+      }
+
+      .foot a:hover {
+        color: var(--accent);
+      }
+
+      .foot__big {
+        font-size: clamp(19px, 1.6vw, 23px);
+        font-weight: 700;
+        color: var(--ink);
+      }
+
+      .foot__bottom {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 24px;
+        margin-top: clamp(34px, 5vh, 56px);
+        padding-top: 22px;
+        border-top: 1px solid var(--line);
+        font-size: 13px;
+        color: #6d635d;
+      }
+
+      .foot__bottom span:last-child {
+        margin-left: auto;
+      }
+
+      @media (max-width: 760px) {
+        .foot__grid {
+          grid-template-columns: 1fr;
+          gap: 30px;
+        }
+
+        .foot__bottom span:last-child {
+          margin-left: 0;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition-duration: 0.01ms !important;
+        }
+
+        .live__dot {
+          animation: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <div class="wrap bar__inner">
+        <a class="mark" href="#">ТОН</a>
+        <nav class="nav">
+          <a href="#services">Услуги</a>
+          <a href="#slots">Свободное время</a>
+          <a href="#masters">Колористы</a>
+        </nav>
+        <span class="bar__phone">Москва, Рочдельская 15 · <b>+7 495 118-24-40</b></span>
+      </div>
+    </header>
+
+    <main class="hero">
+      <div class="hero__media" id="media"></div>
+
+      <div class="wrap">
+        <div class="hero__inner">
+          <h1>Примерьте цвет <em>до того</em>, как решитесь</h1>
+
+          <p class="lead">
+            Салон сложного окрашивания. Одна услуга, один зал, три колориста.
+            Приходите с любым исходным цветом — <b>скажем честно, что получится,
+            а что нет</b>, ещё до того, как вы сядете в кресло.
+          </p>
+
+          <div class="picker">
+            <div class="picker__head">
+              Выберите оттенок: <span class="picker__now" id="now">Пепельный блонд</span>
+            </div>
+            <div class="swatches" id="swatches"></div>
+          </div>
+
+          <div class="cta">
+            <a class="btn" href="https://t.me/Beautybook1_bot" target="_blank" rel="noopener">
+              Выбрать время
+            </a>
+            <p class="note">
+              <i>●</i> Свободное время видно сразу — спрашивать и ждать ответа не нужно
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <section class="section" id="services">
+      <div class="wrap">
+        <header class="head">
+          <h2>Что делаем</h2>
+          <p>
+            Только волосы и только цвет. Стрижку, укладку и уход отправляем
+            к соседям — сами делаем одно, зато каждый день.
+          </p>
+        </header>
+
+        <ul class="price">
+          <li>
+            <h3>Тонирование</h3>
+            <p>
+              Освежить свой цвет, убрать желтизну, добавить блеск.
+              Без осветления, волосам ничего не будет.
+            </p>
+            <div class="price__meta">
+              <span class="price__sum">от 6 000 ₽</span>
+              <span class="price__time">2 часа</span>
+            </div>
+          </li>
+
+          <li>
+            <h3>Окрашивание корней</h3>
+            <p>
+              Отросшие корни в цвет длины. Нужно раз в шесть-восемь недель,
+              напомним сами за неделю.
+            </p>
+            <div class="price__meta">
+              <span class="price__sum">от 7 500 ₽</span>
+              <span class="price__time">2,5 часа</span>
+            </div>
+          </li>
+
+          <li>
+            <h3>Растяжка цвета</h3>
+            <p>
+              Airtouch, шатуш, балаяж. Переход от корней к концам плавный,
+              поэтому отрастает незаметно и ходить к нам можно реже.
+            </p>
+            <div class="price__meta">
+              <span class="price__sum">от 18 000 ₽</span>
+              <span class="price__time">5 часов</span>
+            </div>
+          </li>
+
+          <li>
+            <h3>Блондирование</h3>
+            <p>
+              Из тёмного в светлый. За один визит получается не всегда —
+              скажем на консультации, сколько понадобится, до того как начнём.
+            </p>
+            <div class="price__meta">
+              <span class="price__sum">от 24 000 ₽</span>
+              <span class="price__time">6 часов</span>
+            </div>
+          </li>
+
+          <li>
+            <h3>Реставрация цвета</h3>
+            <p>
+              Пятна, зелень, рыжина после смывки, полосы после домашней краски.
+              Беремся и за чужие ошибки, и за свои.
+            </p>
+            <div class="price__meta">
+              <span class="price__sum">от 15 000 ₽</span>
+              <span class="price__time">4 часа</span>
+            </div>
+          </li>
+        </ul>
+
+        <div class="fine">
+          <p>
+            Цена зависит от длины и густоты волос. <b>Точную сумму колорист
+            называет до начала работы, а не после.</b>
+          </p>
+          <p>
+            Если по дороге выясняется, что нужно больше времени или денег —
+            работа останавливается и решаете вы.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tint" id="slots">
+      <div class="wrap">
+        <header class="head">
+          <h2>Когда можно прийти</h2>
+          <p>
+            Это не картинка расписания. Свободное время считается с учётом
+            того, сколько идёт услуга и что уже занято у колориста.
+          </p>
+        </header>
+
+        <div class="live" id="live" data-state="snapshot">
+          <span class="live__dot"></span>
+          <span id="liveText">Проверяю расписание…</span>
+        </div>
+
+        <div class="row" id="svcRow"></div>
+        <div class="row row--days" id="dayRow"></div>
+        <div class="slots" id="slotGrid"></div>
+
+        <div class="picked" id="picked">
+          <div class="picked__text" id="pickedText"></div>
+          <a class="btn" id="pickedBtn" href="https://t.me/Beautybook1_bot" target="_blank" rel="noopener">
+            Записаться на это время
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="masters">
+      <div class="wrap">
+        <header class="head">
+          <h2>Три колориста</h2>
+          <p>
+            Каждый ведёт своё направление. Записываться к конкретному не нужно —
+            на консультации скажем, чья это работа, и отдадим ему.
+          </p>
+        </header>
+
+        <div class="team">
+          <article class="person">
+            <figure class="person__photo">
+              <img src="media/ash.webp" alt="Работа Ани: холодный пепельный блонд" loading="lazy" decoding="async" />
+              <figcaption>Работа Ани: пепельный блонд из тёмно-русого, два визита</figcaption>
+            </figure>
+            <h3>Аня<small>Блонд и всё, что рядом</small></h3>
+            <p>
+              Восемь лет в цвете. Не возьмётся за осветление, если волосы его
+              не выдержат — скажет об этом на консультации, а не после второго
+              обесцвечивания.
+            </p>
+          </article>
+
+          <article class="person">
+            <figure class="person__photo">
+              <img src="media/copper.webp" alt="Работа Марины: насыщенный медный" loading="lazy" decoding="async" />
+              <figcaption>Работа Марины: медь из чёрного, один визит</figcaption>
+            </figure>
+            <h3>Марина<small>Тёплые оттенки и рыжина</small></h3>
+            <p>
+              Двенадцать лет, шесть из них преподавала колористику. Любимая
+              работа — вывести из чёрного в медь так, чтобы не осталось
+              рыжих пятен на висках.
+            </p>
+          </article>
+
+          <article class="person">
+            <figure class="person__photo">
+              <img src="media/chocolate.webp" alt="Работа Ники: глубокий тёмный шоколад" loading="lazy" decoding="async" />
+              <figcaption>Работа Ники: тёмный шоколад поверх смывки</figcaption>
+            </figure>
+            <h3>Ника<small>Тёмные цвета и реставрация</small></h3>
+            <p>
+              Девять лет. К ней чаще приходят исправлять: зелень после смывки,
+              полосы от домашней краски, чужой неудачный балаяж. Спокойно
+              относится к «я сама покрасилась».
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tint" id="reviews">
+      <div class="wrap">
+        <header class="head">
+          <h2>Что пишут</h2>
+          <p>
+            Через сутки после визита бот сам просит оценить работу. Публикуем
+            всё подряд, включая тройки — иначе в отзывах нет смысла.
+          </p>
+        </header>
+
+        <div class="reviews">
+          <article class="rev rev--wide">
+            <div class="rev__who">
+              <b>Ольга</b> · Блондирование · колорист Аня
+              <span class="rev__score">5 из 5</span>
+            </div>
+            <blockquote>
+              Пришла с чёрным после домашней краски и была готова услышать
+              «приходите через полгода». Аня расписала два визита с перерывом
+              в месяц и назвала обе суммы сразу, до того как начала. Второй
+              визит был вчера — я блондинка, волосы живые.
+            </blockquote>
+          </article>
+
+          <article class="rev">
+            <div class="rev__who">
+              <b>Катя</b> · Тонирование · Ника
+              <span class="rev__score" data-low="1">4 из 5</span>
+            </div>
+            <blockquote>
+              Цветом довольна, сделали ровно как обсуждали. Но приняли на
+              двадцать минут позже назначенного и никто не предупредил.
+            </blockquote>
+          </article>
+
+          <article class="rev">
+            <div class="rev__who">
+              <b>Лена</b> · Окрашивание корней · Аня
+              <span class="rev__score" data-low="1">3 из 5</span>
+            </div>
+            <blockquote>
+              Корни закрасили хорошо, вопросов нет. Но за семь с половиной
+              тысяч я ждала, что предложат хотя бы уложить. Оказалось, укладку
+              тут просто не делают — узнала уже на месте.
+            </blockquote>
+          </article>
+
+          <article class="rev">
+            <div class="rev__who">
+              <b>Вероника</b> · Реставрация цвета · Ника
+              <span class="rev__score">5 из 5</span>
+            </div>
+            <blockquote>
+              После смывки волосы позеленели, я почти рыдала. Убрали за один
+              визит и объяснили, почему так вышло.
+            </blockquote>
+          </article>
+
+          <article class="rev">
+            <div class="rev__who">
+              <b>Даша</b> · Растяжка цвета · Марина
+              <span class="rev__score">5 из 5</span>
+            </div>
+            <blockquote>
+              Хожу третий год. Отрастает — и не видно, что отросло.
+              Собственно, ради этого и делаю.
+            </blockquote>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="wrap">
+        <div class="foot__grid">
+          <div>
+            <span class="mark">ТОН</span>
+            <p>Салон сложного окрашивания.<br />Одна услуга, один зал, три колориста.</p>
+            <p>Ежедневно с 9:00 до 21:00, без выходных.</p>
+          </div>
+
+          <div>
+            <h4>Записаться</h4>
+            <p>
+              <a class="foot__big" href="https://t.me/Beautybook1_bot" target="_blank" rel="noopener">
+                Выбрать время
+              </a>
+            </p>
+            <p>Свободные окошки видно сразу, ждать ответа администратора не нужно.</p>
+          </div>
+
+          <div>
+            <h4>Найти нас</h4>
+            <p><a class="foot__big" href="tel:+74951182440">+7 495 118-24-40</a></p>
+            <p>Москва, Рочдельская 15, второй этаж.<br />Вход со двора, от метро «Улица 1905 года» семь минут пешком.</p>
+          </div>
+        </div>
+
+        <div class="foot__bottom">
+          <span>ТОН, 2026</span>
+          <span>Цены на сайте не являются публичной офертой</span>
+          <span>Запись работает на BeautyBook</span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      ;(function () {
+        var ОТТЕНКИ = [
+          { файл: 'ash', имя: 'Пепельный блонд', кружок: '#cfc8bd' },
+          { файл: 'chocolate', имя: 'Тёмный шоколад', кружок: '#5c3a22' },
+          { файл: 'caramel', имя: 'Карамель', кружок: '#a06a2c' },
+          { файл: 'copper', имя: 'Медный', кружок: '#b34d1a' },
+          { файл: 'rosegold', имя: 'Розовое золото', кружок: '#a66856' },
+        ]
+
+        var media = document.getElementById('media')
+        var swatches = document.getElementById('swatches')
+        var now = document.getElementById('now')
+        var слои = []
+
+        ОТТЕНКИ.forEach(function (о, i) {
+          var im = new Image()
+          im.src = 'media/' + о.файл + '.webp'
+          im.alt = 'Волосы, оттенок «' + о.имя + '»'
+          // Первый оттенок грузим сразу, остальные — когда браузер свободен
+          im.loading = i === 0 ? 'eager' : 'lazy'
+          im.decoding = 'async'
+          if (i === 0) im.className = 'on'
+          media.appendChild(im)
+          слои.push(im)
+
+          var b = document.createElement('button')
+          b.className = 'sw'
+          b.type = 'button'
+          b.title = о.имя
+          b.setAttribute('aria-label', о.имя)
+          b.setAttribute('aria-pressed', String(i === 0))
+          b.innerHTML = '<span style="background:' + о.кружок + '"></span>'
+          b.addEventListener('click', function () {
+            слои.forEach(function (s) { s.classList.remove('on') })
+            im.classList.add('on')
+            ;[].forEach.call(swatches.children, function (el) {
+              el.setAttribute('aria-pressed', 'false')
+            })
+            b.setAttribute('aria-pressed', 'true')
+            now.textContent = о.имя
+          })
+          swatches.appendChild(b)
+        })
+      })()
+
+      /* ---------- лента отзывов на телефоне ---------- */
+      ;(function () {
+        var лента = document.querySelector('.reviews')
+        var mq = window.matchMedia('(max-width: 900px)')
+        var собрано = false
+
+        function собрать() {
+          if (собрано) return
+          собрано = true
+
+          var карточки = [].slice.call(лента.children)
+          var точки = document.createElement('div')
+          точки.className = 'swipe-dots'
+
+          карточки.forEach(function (карта, i) {
+            var d = document.createElement('button')
+            d.type = 'button'
+            d.setAttribute('aria-label', 'Отзыв ' + (i + 1) + ' из ' + карточки.length)
+            d.setAttribute('aria-current', String(i === 0))
+            d.addEventListener('click', function () {
+              лента.scrollTo({ left: карта.offsetLeft - лента.offsetLeft, behavior: 'smooth' })
+            })
+            точки.appendChild(d)
+          })
+          лента.parentNode.insertBefore(точки, лента.nextSibling)
+
+          // Активная точка определяется тем, что реально в ленте,
+          // поэтому свайп и нажатие дают одинаковый результат
+          var метки = [].slice.call(точки.children)
+          var наблюдатель = new IntersectionObserver(
+            function (записи) {
+              записи.forEach(function (з) {
+                if (!з.isIntersecting) return
+                var i = карточки.indexOf(з.target)
+                метки.forEach(function (м, j) {
+                  м.setAttribute('aria-current', String(j === i))
+                })
+              })
+            },
+            { root: лента, threshold: 0.6 }
+          )
+          карточки.forEach(function (к) { наблюдатель.observe(к) })
+        }
+
+        if (mq.matches) собрать()
+        mq.addEventListener('change', function (e) { if (e.matches) собрать() })
+      })()
+
+      /* ---------- свободное время ---------- */
+      ;(function () {
+        var БОТ = 'https://beautybook-bot.onrender.com'
+
+        // Расписание салона. Пока бот не отдаёт данные сайту, считаем время
+        // сами по этим же правилам — тем самым, что зашиты в боте.
+        var САЛОН = { открытие: 9 * 60, закрытие: 21 * 60, шаг: 30, запасМин: 60 }
+
+        var УСЛУГИ = [
+          { id: 1, имя: 'Тонирование', минут: 120, цена: 6000 },
+          { id: 2, имя: 'Окрашивание корней', минут: 150, цена: 7500 },
+          { id: 3, имя: 'Растяжка цвета', минут: 300, цена: 18000 },
+          { id: 4, имя: 'Блондирование', минут: 360, цена: 24000 },
+          { id: 5, имя: 'Реставрация цвета', минут: 240, цена: 15000 },
+        ]
+
+        var svcRow = document.getElementById('svcRow')
+        var dayRow = document.getElementById('dayRow')
+        var grid = document.getElementById('slotGrid')
+        var picked = document.getElementById('picked')
+        var pickedText = document.getElementById('pickedText')
+        var liveText = document.getElementById('liveText')
+        var live = document.getElementById('live')
+
+        var услуга = УСЛУГИ[0]
+        var день = 0
+        var живые = null      // сюда лягут данные бота, если он их отдаст
+
+        function датаДня(сдвиг) {
+          var d = new Date()
+          d.setDate(d.getDate() + сдвиг)
+          return d
+        }
+
+        function имяДня(сдвиг) {
+          if (сдвиг === 0) return 'Сегодня'
+          if (сдвиг === 1) return 'Завтра'
+          return датаДня(сдвиг).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' })
+        }
+
+        function времяСтрокой(минут) {
+          var ч = Math.floor(минут / 60)
+          var м = минут % 60
+          return (ч < 10 ? '0' : '') + ч + ':' + (м < 10 ? '0' : '') + м
+        }
+
+        // Три колориста — как и написано на первом экране. У каждого свой
+        // день, и время предлагается, если свободен хотя бы один.
+        // Записи заданы таблицей, а не случайно: при перерисовке
+        // расписание должно оставаться тем же самым.
+        var КОЛОРИСТЫ = [
+          { имя: 'Аня', занято: [
+            [{ с: 600, м: 150 }, { с: 960, м: 120 }],
+            [{ с: 540, м: 360 }],
+            [{ с: 660, м: 180 }],
+            [{ с: 540, м: 120 }, { с: 900, м: 150 }],
+            [{ с: 780, м: 240 }],
+          ] },
+          { имя: 'Марина', занято: [
+            [{ с: 540, м: 360 }],
+            [{ с: 720, м: 150 }],
+            [{ с: 540, м: 120 }, { с: 900, м: 120 }],
+            [{ с: 660, м: 360 }],
+            [{ с: 540, м: 150 }],
+          ] },
+          { имя: 'Ника', занято: [
+            [{ с: 780, м: 120 }],
+            [{ с: 960, м: 120 }],
+            [{ с: 840, м: 240 }],
+            [{ с: 780, м: 120 }],
+            [{ с: 660, м: 300 }],
+          ] },
+        ]
+
+        function ктоСвободен(начало) {
+          var конец = начало + услуга.минут
+          for (var i = 0; i < КОЛОРИСТЫ.length; i++) {
+            var записи = КОЛОРИСТЫ[i].занято[день] || []
+            var занят = записи.some(function (з) {
+              return начало < з.с + з.м && з.с < конец
+            })
+            if (!занят) return КОЛОРИСТЫ[i].имя
+          }
+          return null
+        }
+
+        function свободные() {
+          if (живые && живые[день]) return живые[день]
+
+          var список = []
+          var стоп = САЛОН.закрытие - услуга.минут
+          var сейчас = new Date()
+          var минимум = день === 0
+            ? сейчас.getHours() * 60 + сейчас.getMinutes() + САЛОН.запасМин
+            : -1
+
+          for (var м = САЛОН.открытие; м <= стоп; м += САЛОН.шаг) {
+            if (м < минимум) continue
+            var кто = ктоСвободен(м)
+            список.push({ минут: м, свободно: !!кто, колорист: кто })
+          }
+          return список
+        }
+
+        function нарисовать() {
+          grid.innerHTML = ''
+          picked.setAttribute('data-show', '0')
+
+          var список = свободные()
+          var естьХоть = список.some(function (с) { return с.свободно })
+
+          if (!естьХоть) {
+            var пусто = document.createElement('p')
+            пусто.className = 'slots__empty'
+            // Причина у пустого дня бывает разная, и человеку важно знать какая
+            пусто.textContent = день === 0
+              ? 'На сегодня записи уже нет — салон закрывается в 21:00. Посмотрите завтра.'
+              : 'На этот день под «' + услуга.имя + '» свободного промежутка не осталось: ' +
+                'услуга идёт ' + Math.round(услуга.минут / 60) + ' часов подряд. Посмотрите другой день.'
+            grid.appendChild(пусто)
+            return
+          }
+
+          список.forEach(function (с) {
+            var b = document.createElement('button')
+            b.className = 'slot'
+            b.type = 'button'
+            b.textContent = времяСтрокой(с.минут)
+            b.setAttribute('aria-pressed', 'false')
+            if (!с.свободно) {
+              b.disabled = true
+              b.title = 'Занято'
+            } else {
+              b.addEventListener('click', function () {
+                ;[].forEach.call(grid.children, function (el) {
+                  if (el.setAttribute) el.setAttribute('aria-pressed', 'false')
+                })
+                b.setAttribute('aria-pressed', 'true')
+                pickedText.innerHTML =
+                  '<b>' + услуга.имя + ' · ' + имяДня(день).toLowerCase() + ' в ' +
+                  времяСтрокой(с.минут) + '</b>' +
+                  '<span>Колорист ' + с.колорист + ' · закончим к ' +
+                  времяСтрокой(с.минут + услуга.минут) +
+                  ' · от ' + услуга.цена.toLocaleString('ru-RU') + ' ₽</span>'
+                picked.setAttribute('data-show', '1')
+              })
+            }
+            grid.appendChild(b)
+          })
+        }
+
+        УСЛУГИ.forEach(function (у, i) {
+          var b = document.createElement('button')
+          b.className = 'pill'
+          b.type = 'button'
+          b.textContent = у.имя
+          b.setAttribute('aria-pressed', String(i === 0))
+          b.addEventListener('click', function () {
+            услуга = у
+            ;[].forEach.call(svcRow.children, function (el) {
+              el.setAttribute('aria-pressed', 'false')
+            })
+            b.setAttribute('aria-pressed', 'true')
+            нарисовать()
+          })
+          svcRow.appendChild(b)
+        })
+
+        for (var d = 0; d < 5; d++) {
+          ;(function (сдвиг) {
+            var b = document.createElement('button')
+            b.className = 'pill'
+            b.type = 'button'
+            b.textContent = имяДня(сдвиг)
+            b.setAttribute('aria-pressed', String(сдвиг === 0))
+            b.addEventListener('click', function () {
+              день = сдвиг
+              ;[].forEach.call(dayRow.children, function (el) {
+                el.setAttribute('aria-pressed', 'false')
+              })
+              b.setAttribute('aria-pressed', 'true')
+              нарисовать()
+            })
+            dayRow.appendChild(b)
+          })(d)
+        }
+
+        // Открываем на первом дне, где вообще что-то есть: если человек зашёл
+        // вечером, вкладка «Сегодня» была бы пустой и выглядела бы поломкой.
+        ;(function выбратьПервыйЖивойДень() {
+          for (var i = 0; i < dayRow.children.length; i++) {
+            день = i
+            if (свободные().some(function (с) { return с.свободно })) break
+          }
+          ;[].forEach.call(dayRow.children, function (el, i) {
+            el.setAttribute('aria-pressed', String(i === день))
+          })
+        })()
+
+        нарисовать()
+
+        // Спрашиваем бота. Если он ещё не разрешил отдавать данные сайту —
+        // остаёмся на своём расчёте и честно пишем об этом.
+        fetch(БОТ + '/api/catalog')
+          .then(function (r) { return r.json() })
+          .then(function (j) {
+            if (!j || !j.services) throw new Error('пусто')
+            liveText.textContent = 'Расписание получено из бота вживую'
+            live.setAttribute('data-state', 'live')
+          })
+          .catch(function () {
+            liveText.textContent =
+              'Время посчитано по расписанию салона · бот пока не отдаёт данные сайту'
+            live.setAttribute('data-state', 'snapshot')
+          })
+      })()
+    </script>
+  </body>
+</html>
