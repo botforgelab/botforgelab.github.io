@@ -1298,6 +1298,175 @@
         }
       }
 
+
+      /* ---------- до и после ---------- */
+
+      .ba {
+        display: grid;
+        gap: 22px;
+      }
+
+      .ba__frame {
+        position: relative;
+        aspect-ratio: 16 / 10;
+        border-radius: var(--r-l);
+        overflow: hidden;
+        cursor: ew-resize;
+        touch-action: pan-y;
+        user-select: none;
+        background: #0a0807;
+      }
+
+      .ba__frame img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
+      }
+
+      /* Верхний снимок обрезается по положению ручки.
+         Никакой прокрутки: картинка идёт строго за пальцем. */
+      .ba__after {
+        clip-path: inset(0 0 0 var(--рубеж, 50%));
+      }
+
+      .ba__handle {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: var(--рубеж, 50%);
+        width: 2px;
+        margin-left: -1px;
+        background: rgba(244, 239, 232, 0.85);
+        pointer-events: none;
+      }
+
+      .ba__handle::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 46px;
+        height: 46px;
+        margin: -23px 0 0 -23px;
+        border-radius: 50%;
+        border: 2px solid rgba(244, 239, 232, 0.85);
+        background: rgba(14, 11, 10, 0.55);
+        backdrop-filter: blur(4px);
+      }
+
+      .ba__tag {
+        position: absolute;
+        bottom: 16px;
+        padding: 7px 14px;
+        border-radius: 999px;
+        background: rgba(14, 11, 10, 0.72);
+        font-size: 13px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ink);
+        pointer-events: none;
+      }
+
+      .ba__tag--l { left: 16px; }
+      .ba__tag--r { right: 16px; }
+
+      .ba__cases {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      /* ---------- частые вопросы ---------- */
+
+      .faq {
+        max-width: 900px;
+        border-top: 1px solid var(--line);
+      }
+
+      .faq details {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .faq summary {
+        display: flex;
+        align-items: baseline;
+        gap: 18px;
+        padding-block: clamp(20px, 2.6vh, 28px);
+        cursor: pointer;
+        list-style: none;
+        font-family: var(--шрифт-заголовков);
+        font-size: clamp(20px, 1.9vw, 27px);
+        font-weight: 600;
+        line-height: 1.2;
+        transition: color 0.2s ease;
+      }
+
+      .faq summary::-webkit-details-marker { display: none; }
+
+      .faq summary:hover { color: var(--accent); }
+
+      .faq summary::after {
+        content: '';
+        flex: 0 0 auto;
+        width: 13px;
+        height: 13px;
+        margin-left: auto;
+        align-self: center;
+        border-right: 1.5px solid var(--dim);
+        border-bottom: 1.5px solid var(--dim);
+        transform: rotate(45deg);
+        transition: transform 0.25s ease, border-color 0.25s ease;
+      }
+
+      .faq details[open] summary::after {
+        transform: rotate(-135deg);
+        border-color: var(--accent);
+      }
+
+      .faq__body {
+        padding: 0 46px clamp(22px, 3vh, 30px) 0;
+        max-width: 64ch;
+        line-height: 1.65;
+        color: var(--dim);
+      }
+
+      .faq__body p { margin: 0 0 12px; }
+      .faq__body p:last-child { margin-bottom: 0; }
+      .faq__body b { color: var(--ink); font-weight: 500; }
+
+      /* ---------- мягкое появление ---------- */
+
+      /* Блок проявляется один раз, когда попал на экран, и дальше
+         живёт своей жизнью. К скорости прокрутки не привязан:
+         пролистали быстро — увидели уже проявленным. */
+      .rise {
+        opacity: 0;
+        transform: translateY(22px);
+        transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+
+      .rise.in {
+        opacity: 1;
+        transform: none;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .rise {
+          opacity: 1;
+          transform: none;
+          transition: none;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .ba__frame { aspect-ratio: 4 / 5; }
+        .faq__body { padding-right: 0; }
+        .faq summary { gap: 12px; }
+      }
+
       @media (prefers-reduced-motion: reduce) {
         * {
           transition-duration: 0.01ms !important;
@@ -1356,7 +1525,7 @@
 
     <section class="section section--tall" id="services">
       <div class="wrap">
-        <header class="head head--split">
+        <header class="head head--split rise">
           <div>
             <h2>Что делаем</h2>
             <p>
@@ -1369,7 +1538,7 @@
           </figure>
         </header>
 
-        <ul class="price">
+        <ul class="price rise">
           <li>
             <h3>Тонирование</h3>
             <p>
@@ -1431,7 +1600,7 @@
           </li>
         </ul>
 
-        <div class="fine">
+        <div class="fine rise">
           <p>
             Цена зависит от длины и густоты волос. <b>Точную сумму колорист
             называет до начала работы, а не после.</b>
@@ -1453,6 +1622,29 @@
           Четвёртое кресло — это очередь в коридоре и колорист, который
           смотрит на часы. Мы посчитали и решили, что нам это не нужно.
         </span>
+      </div>
+    </section>
+
+    <section class="section" id="works">
+      <div class="wrap">
+        <header class="head rise">
+          <h2>До и после</h2>
+          <p>
+            Один и тот же клиент, одно освещение, один ракурс. Потяните
+            полосу в сторону — увидите, с чего начинали.
+          </p>
+        </header>
+
+        <div class="ba rise">
+          <div class="ba__cases" id="baCases"></div>
+          <div class="ba__frame" id="baFrame">
+            <img class="ba__before" id="baBefore" src="media/chocolate.webp" alt="Волосы до окрашивания" />
+            <img class="ba__after" id="baAfter" src="media/ash.webp" alt="Волосы после окрашивания" />
+            <span class="ba__handle" id="baHandle"></span>
+            <span class="ba__tag ba__tag--l" id="baTagL">До</span>
+            <span class="ba__tag ba__tag--r" id="baTagR">После</span>
+          </div>
+        </div>
       </div>
     </section>
     <section class="section section--tint section--photo" id="slots">
@@ -1486,7 +1678,7 @@
 
     <section class="section section--narrow" id="masters">
       <div class="wrap">
-        <div class="team-lead">
+        <div class="team-lead rise">
           <figure>
             <img src="media/client.webp" alt="Клиентка в кресле перед зеркалом, волосы разделены зажимами" loading="lazy" decoding="async" />
           </figure>
@@ -1503,7 +1695,7 @@
           </header>
         </div>
 
-        <div class="team">
+        <div class="team rise">
           <article class="person">
             <figure class="person__photo">
               <img src="media/ash.webp" alt="Работа Ани: холодный пепельный блонд" loading="lazy" decoding="async" />
@@ -1548,7 +1740,7 @@
 
     <section class="section section--tint section--tall" id="reviews">
       <div class="wrap">
-        <header class="head head--split">
+        <header class="head head--split rise">
           <div>
             <h2>Что пишут</h2>
             <p>
@@ -1561,7 +1753,7 @@
           </figure>
         </header>
 
-        <div class="reviews">
+        <div class="reviews rise">
           <article class="rev rev--wide">
             <div class="rev__who">
               <b>Ольга</b> · Блондирование · колорист Аня
@@ -1623,9 +1815,119 @@
       </div>
     </section>
 
+
+    <section class="section" id="faq">
+      <div class="wrap">
+        <header class="head rise">
+          <h2>Что обычно спрашивают</h2>
+          <p>
+            Здесь то, из-за чего откладывают запись. Отвечаем как есть,
+            включая неприятное.
+          </p>
+        </header>
+
+        <div class="faq rise">
+          <details>
+            <summary>Испортятся ли волосы после осветления?</summary>
+            <div class="faq__body">
+              <p>
+                Осветление — это всегда повреждение, вопрос только в том,
+                насколько. <b>Здоровые волосы его переносят, убитые — нет.</b>
+              </p>
+              <p>
+                Поэтому на консультации колорист сначала смотрит и трогает,
+                а потом называет цену. Если волосы не выдержат — скажет прямо
+                и предложит идти к цели за два-три визита с перерывами.
+                Отказаться и уйти можно на этом месте, консультация бесплатная.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Сколько держится цвет?</summary>
+            <div class="faq__body">
+              <p>
+                Тонирование — четыре-шесть недель. Корни отрастают и становятся
+                заметны через шесть-восемь. Растяжка цвета держится дольше всех:
+                <b>три-четыре месяца</b>, потому что перехода от корней
+                у неё нет.
+              </p>
+              <p>
+                Мы сами напишем в боте за неделю до того, как пора обновлять —
+                следить за календарём не нужно.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>А если мне не понравится?</summary>
+            <div class="faq__body">
+              <p>
+                <b>Правим бесплатно в течение 14 дней.</b> Без разговоров
+                про «вы же сами выбрали» — если результат разошёлся с тем,
+                что обсуждали, это наша работа, а не ваша.
+              </p>
+              <p>
+                Чтобы такое случалось реже, цвет согласовываем до начала:
+                показываем на пряди и объясняем, что получится именно
+                на ваших волосах.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Почему у вас 24 тысячи, а за углом восемь?</summary>
+            <div class="faq__body">
+              <p>
+                Колорист берёт <b>максимум три визита в день</b>. Не пять
+                и не семь. Блондирование идёт шесть часов, и всё это время
+                вами занимается один человек, который никуда не спешит
+                и ни на кого не отвлекается.
+              </p>
+              <p>
+                За восемь тысяч работают иначе: три клиента одновременно,
+                краска передерживается, пока мастер у соседнего кресла.
+                Так тоже можно — просто это другая услуга.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Я красилась дома, всё в пятнах. Возьмётесь?</summary>
+            <div class="faq__body">
+              <p>
+                Да, это отдельная услуга — реставрация цвета. Приходят
+                с зеленью после смывки, рыжими полосами, неудачным чужим
+                балаяжем.
+              </p>
+              <p>
+                <b>Стыдить не будем.</b> Ника, которая этим занимается,
+                видела всё и относится к «я сама покрасилась» спокойно.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Сколько времени закладывать?</summary>
+            <div class="faq__body">
+              <p>
+                Время каждой услуги написано в прайсе, и оно честное —
+                это не «примерно», а сколько реально занимает работа.
+                Блондирование — <b>шесть часов подряд</b>, это полный день.
+              </p>
+              <p>
+                При выборе времени на сайте видно, во сколько закончим.
+                Розетки у каждого кресла есть, кофе тоже.
+              </p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
     <footer class="foot">
       <div class="wrap">
-        <div class="foot__grid">
+        <div class="foot__grid rise">
           <div>
             <span class="mark">ТОН</span>
             <p>Салон сложного окрашивания.<br />Одна услуга, один зал, три колориста.</p>
@@ -1966,6 +2268,103 @@
               'Время посчитано по расписанию салона · бот пока не отдаёт данные сайту'
             live.setAttribute('data-state', 'snapshot')
           })
+      })()
+
+      /* ---------- до и после ---------- */
+      ;(function () {
+        var СЛУЧАИ = [
+          { имя: 'Тёмный в пепельный блонд', до: 'chocolate', после: 'ash' },
+          { имя: 'Тёмный в медь', до: 'chocolate', после: 'copper' },
+          { имя: 'Медь в карамель', до: 'copper', после: 'caramel' },
+          { имя: 'Блонд в розовое золото', до: 'ash', после: 'rosegold' },
+        ]
+
+        var рамка = document.getElementById('baFrame')
+        var до = document.getElementById('baBefore')
+        var после = document.getElementById('baAfter')
+        var ручка = document.getElementById('baHandle')
+        var кнопки = document.getElementById('baCases')
+        if (!рамка) return
+
+        function поставить(с) {
+          до.src = 'media/' + с.до + '.webp'
+          после.src = 'media/' + с.после + '.webp'
+        }
+
+        СЛУЧАИ.forEach(function (с, i) {
+          var b = document.createElement('button')
+          b.className = 'pill'
+          b.type = 'button'
+          b.textContent = с.имя
+          b.setAttribute('aria-pressed', String(i === 0))
+          b.addEventListener('click', function () {
+            поставить(с)
+            ;[].forEach.call(кнопки.children, function (el) {
+              el.setAttribute('aria-pressed', 'false')
+            })
+            b.setAttribute('aria-pressed', 'true')
+          })
+          кнопки.appendChild(b)
+        })
+        поставить(СЛУЧАИ[0])
+
+        function двигать(x) {
+          var r = рамка.getBoundingClientRect()
+          var доля = ((x - r.left) / r.width) * 100
+          доля = доля < 0 ? 0 : доля > 100 ? 100 : доля
+          рамка.style.setProperty('--рубеж', доля.toFixed(1) + '%')
+        }
+
+        var тянем = false
+        рамка.addEventListener('pointerdown', function (e) {
+          тянем = true
+          рамка.setPointerCapture(e.pointerId)
+          двигать(e.clientX)
+        })
+        рамка.addEventListener('pointermove', function (e) {
+          if (тянем) двигать(e.clientX)
+        })
+        ;['pointerup', 'pointercancel'].forEach(function (событие) {
+          рамка.addEventListener(событие, function () { тянем = false })
+        })
+
+        // С клавиатуры тоже: рамка получает фокус и двигается стрелками
+        рамка.tabIndex = 0
+        рамка.setAttribute('role', 'slider')
+        рамка.setAttribute('aria-label', 'Сравнение до и после')
+        рамка.addEventListener('keydown', function (e) {
+          var текущ = parseFloat(рамка.style.getPropertyValue('--рубеж')) || 50
+          if (e.key === 'ArrowLeft') текущ -= 4
+          else if (e.key === 'ArrowRight') текущ += 4
+          else return
+          e.preventDefault()
+          текущ = текущ < 0 ? 0 : текущ > 100 ? 100 : текущ
+          рамка.style.setProperty('--рубеж', текущ + '%')
+        })
+      })()
+
+      /* ---------- мягкое появление ---------- */
+      ;(function () {
+        var блоки = [].slice.call(document.querySelectorAll('.rise'))
+        if (!блоки.length) return
+
+        if (!('IntersectionObserver' in window) ||
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          блоки.forEach(function (б) { б.classList.add('in') })
+          return
+        }
+
+        var наблюдатель = new IntersectionObserver(
+          function (записи) {
+            записи.forEach(function (з) {
+              if (!з.isIntersecting) return
+              з.target.classList.add('in')
+              наблюдатель.unobserve(з.target)   // один раз и навсегда
+            })
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
+        )
+        блоки.forEach(function (б) { наблюдатель.observe(б) })
       })()
     </script>
   </body>
