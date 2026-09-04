@@ -3,12 +3,39 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ТОН — салон сложного окрашивания</title>
+    <title>ТОН — салон сложного окрашивания в Москве</title>
     <meta
       name="description"
-      content="Салон сложного окрашивания. Примерьте цвет на сайте до того, как решитесь, и выберите свободное время сами."
+      content="Салон сложного окрашивания на Рочдельской. Примерьте цвет прямо на сайте до того, как решитесь, и выберите свободное время сами — без звонков и ожидания ответа."
     />
+    <link rel="canonical" href="https://botforgelab.github.io/ton/" />
     <meta name="theme-color" content="#0e0b0a" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- Иконка вкладки: рисуется прямо в адресе, отдельный файл не нужен -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230e0b0a'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-weight='600' font-size='40' text-anchor='middle' fill='%23c9805f'%3E%D0%A2%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="apple-touch-icon" href="media/icon-180.png" />
+    <meta name="apple-mobile-web-app-title" content="ТОН" />
+
+    <!-- Превью ссылки: без него в мессенджерах показывается пустой блок -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ТОН" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:title" content="ТОН — салон сложного окрашивания" />
+    <meta
+      property="og:description"
+      content="Примерьте цвет прямо на сайте до того, как решитесь. Свободное время видно сразу — звонить и ждать ответа не нужно."
+    />
+    <meta property="og:url" content="https://botforgelab.github.io/ton/" />
+    <meta property="og:image" content="https://botforgelab.github.io/ton/media/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Зал салона ТОН: три кресла и зеркала с тёплой подсветкой" />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -37,6 +64,20 @@
         --lead: clamp(16px, 1.35vw, 19px);
         --body: 16px;
         --small: 14px;
+
+        /* Скругления одной шкалой: раньше радиусы были 4 и 6 пикселей
+           вразнобой, и всё выглядело обрубленным */
+        --r-s: 10px;
+        --r-m: 16px;
+        --r-l: 22px;
+
+        /* Цвет, в который растворяются края фотографий.
+           В затемнённых секциях он свой — переопределяется ниже. */
+        --под: #0e0b0a;
+      }
+
+      .section--tint {
+        --под: #131010;
       }
 
       * {
@@ -285,7 +326,7 @@
         align-items: center;
         gap: 10px;
         padding: 17px 30px;
-        border-radius: 4px;
+        border-radius: var(--r-s);
         background: var(--accent);
         color: #1b0f0a;
         font-size: 16px;
@@ -663,7 +704,7 @@
       .slot {
         padding: 15px 6px;
         border: 1px solid var(--line);
-        border-radius: 4px;
+        border-radius: var(--r-s);
         background: transparent;
         color: var(--ink);
         font: inherit;
@@ -704,7 +745,7 @@
         margin-top: 26px;
         padding: 20px 24px;
         border: 1px solid rgba(201, 128, 95, 0.4);
-        border-radius: 6px;
+        border-radius: var(--r-m);
         background: rgba(201, 128, 95, 0.08);
       }
 
@@ -776,7 +817,7 @@
         margin: 0;
         aspect-ratio: 4 / 5;
         overflow: hidden;
-        border-radius: 6px;
+        border-radius: var(--r-l);
         background: #0a0807;
       }
 
@@ -878,7 +919,7 @@
         gap: 14px;
         padding: clamp(22px, 2vw, 30px);
         border: 1px solid var(--line);
-        border-radius: 6px;
+        border-radius: var(--r-m);
       }
 
       /* Первый отзыв крупнее: одинаковые карточки в ряд выглядят
@@ -1081,11 +1122,15 @@
         align-content: end;
       }
 
+      /* Фотография не обрывается рамкой, а растворяется в фоне.
+         Резкий прямоугольник на почти чёрной странице читался
+         как наклеенная картинка, а не как часть страницы. */
       .head__photo {
+        position: relative;
         margin: 0;
         aspect-ratio: 3 / 2;
+        border-radius: var(--r-l);
         overflow: hidden;
-        border-radius: 4px;
       }
 
       .head__photo img {
@@ -1093,6 +1138,18 @@
         height: 100%;
         object-fit: cover;
         display: block;
+      }
+
+      .head__photo::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          linear-gradient(to right, var(--под), rgba(0, 0, 0, 0) 34%),
+          linear-gradient(to bottom, var(--под), rgba(0, 0, 0, 0) 22%),
+          linear-gradient(to top, var(--под), rgba(0, 0, 0, 0) 26%),
+          linear-gradient(to left, var(--под), rgba(0, 0, 0, 0) 18%);
       }
 
       /* Полоса во всю ширину: единственное место, где картинка
@@ -1113,13 +1170,15 @@
         object-fit: cover;
       }
 
+      /* Полоса входит и выходит из фона плавно, без стыка-линии */
       .band::after {
         content: '';
         position: absolute;
         inset: 0;
         background:
           linear-gradient(to top, rgba(14, 11, 10, 0.95) 4%, rgba(14, 11, 10, 0.25) 55%, transparent),
-          linear-gradient(to right, rgba(14, 11, 10, 0.7), transparent 60%);
+          linear-gradient(to right, rgba(14, 11, 10, 0.7), transparent 60%),
+          linear-gradient(to bottom, var(--bg), rgba(0, 0, 0, 0) 16%);
       }
 
       .band__text {
@@ -1184,10 +1243,23 @@
       }
 
       .team-lead figure {
+        position: relative;
         margin: 0;
         aspect-ratio: 3 / 4;
+        border-radius: var(--r-l);
         overflow: hidden;
-        border-radius: 4px;
+      }
+
+      .team-lead figure::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          linear-gradient(to left, var(--под), rgba(0, 0, 0, 0) 30%),
+          linear-gradient(to bottom, var(--под), rgba(0, 0, 0, 0) 20%),
+          linear-gradient(to top, var(--под), rgba(0, 0, 0, 0) 22%),
+          linear-gradient(to right, var(--под), rgba(0, 0, 0, 0) 16%);
       }
 
       .team-lead img {
