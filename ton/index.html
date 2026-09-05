@@ -1,4 +1,17 @@
 <!doctype html>
+<!--
+  ============================================================
+   Сайт салона «ТОН»
+
+   Разработка, вёрстка и тексты — Владислав, botforge
+   Портфолио:  https://botforgelab.github.io
+   Telegram:   https://t.me/Bro_piton
+
+   Сделано вручную: ни конструктора, ни шаблона, ни сторонних
+   библиотек — только HTML, CSS и JavaScript.
+   Запись работает на собственной системе BeautyBook.
+  ============================================================
+-->
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
@@ -446,6 +459,13 @@
         padding-block: clamp(90px, 16vh, 190px);
       }
 
+      /* Секция, за которой сразу идёт полоса во всю ширину,
+         снизу поджимается: иначе между текстом и фотографией
+         оставалось до 190 пикселей пустоты */
+      .section--to-band {
+        padding-bottom: clamp(44px, 6vh, 76px);
+      }
+
       .section--narrow .head,
       .section--narrow .team,
       .section--narrow .reviews {
@@ -574,7 +594,9 @@
       .fine {
         display: grid;
         gap: 10px;
-        max-width: 60ch;
+        /* По ширине прайса, а не уже него: короткая колонка
+           под длинным списком выглядела обрезанной */
+        max-width: 980px;
         margin: clamp(28px, 4vh, 44px) 0 0;
         padding-left: 20px;
         border-left: 2px solid var(--accent);
@@ -1156,7 +1178,7 @@
          выходит за контейнер — сбивает ритм резко и намеренно */
       .band {
         position: relative;
-        min-height: clamp(320px, 56vh, 560px);
+        min-height: clamp(300px, 46vh, 460px);
         display: grid;
         align-items: end;
         overflow: hidden;
@@ -1178,7 +1200,7 @@
         background:
           linear-gradient(to top, rgba(14, 11, 10, 0.95) 4%, rgba(14, 11, 10, 0.25) 55%, transparent),
           linear-gradient(to right, rgba(14, 11, 10, 0.7), transparent 60%),
-          linear-gradient(to bottom, var(--bg), rgba(0, 0, 0, 0) 16%);
+          linear-gradient(to bottom, var(--bg), rgba(0, 0, 0, 0) 9%);
       }
 
       .band__text {
@@ -1523,7 +1545,7 @@
       </div>
     </main>
 
-    <section class="section section--tall" id="services">
+    <section class="section section--tall section--to-band" id="services">
       <div class="wrap">
         <header class="head head--split rise">
           <div>
@@ -1764,7 +1786,7 @@
 
           <article class="rev">
             <div class="rev__who">
-              <b>Катя</b> · Тонирование · Ника
+              <b>Полина</b> · Тонирование · Ника
               <span class="rev__score" data-low="1">4 из 5</span>
             </div>
             <blockquote>
