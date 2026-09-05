@@ -1,0 +1,1032 @@
+<!doctype html>
+<!--
+  ============================================================
+   Сайт агентства недвижимости «КЛЮЧ»
+
+   Разработка, вёрстка и тексты — Владислав, botforge
+   Портфолио:  https://botforgelab.github.io
+   Telegram:   https://t.me/Bro_piton
+
+   Сделано вручную: ни конструктора, ни шаблона, ни сторонних
+   библиотек — только HTML, CSS и JavaScript.
+   Подбор и заявки работают на собственной системе RealtyBotCRM.
+  ============================================================
+-->
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>КЛЮЧ — агентство недвижимости</title>
+    <meta
+      name="description"
+      content="Агентство недвижимости КЛЮЧ. Аренда, покупка, новостройки. Четыре вопроса — и мы начинаем искать. Отвечаем на первое сообщение за 15 минут."
+    />
+    <meta name="theme-color" content="#0b0d12" />
+    <meta name="color-scheme" content="dark" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        /* Палитра снята с фотографий: холодные сумерки снаружи,
+           тёплый свет ламп изнутри */
+        --bg: #0b0d12;
+        --ink: #f2ede5;
+        --dim: #97918a;
+        --accent: #e0a45c;
+        --line: rgba(242, 237, 229, 0.12);
+
+        --h1: clamp(36px, 6vw, 84px);
+        --lead: clamp(16px, 1.35vw, 19px);
+        --body: 16px;
+        --small: 14px;
+
+        --r-s: 10px;
+        --r-m: 16px;
+        --r-l: 22px;
+
+        --двери: 350ms;
+      }
+
+      * { box-sizing: border-box; }
+
+      html {
+        -webkit-text-size-adjust: 100%;
+        scrollbar-color: #2b3038 var(--bg);
+        scrollbar-width: thin;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: 'Onest', system-ui, sans-serif;
+        font-size: var(--body);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+
+      a { color: inherit; text-decoration: none; }
+
+      .wrap {
+        width: 100%;
+        max-width: 1340px;
+        margin-inline: auto;
+        padding-inline: clamp(20px, 4vw, 56px);
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+        border-radius: 3px;
+      }
+
+      ::selection { background: rgba(224, 164, 92, 0.4); color: var(--ink); }
+
+      /* ---------- шапка ---------- */
+
+      .bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 6;
+        padding-block: clamp(18px, 2.4vh, 26px);
+      }
+
+      .bar__inner { display: flex; align-items: center; gap: clamp(16px, 4vw, 48px); }
+
+      .mark {
+        font-weight: 800;
+        font-size: 21px;
+        letter-spacing: 0.24em;
+        line-height: 1;
+      }
+
+      .nav { display: flex; gap: clamp(14px, 2vw, 30px); font-size: var(--small); color: var(--dim); }
+      .nav a { transition: color 0.2s ease; }
+      .nav a:hover { color: var(--ink); }
+
+      .bar__phone { margin-left: auto; font-size: var(--small); color: var(--dim); }
+      .bar__phone b { color: var(--ink); font-weight: 500; }
+
+      /* ---------- первый экран ---------- */
+
+      .hero {
+        position: relative;
+        min-height: 100vh;
+        min-height: 100svh;
+        display: grid;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      /* Ролик и его последний кадр лежат друг на друге */
+      .hero__media { position: absolute; inset: 0; z-index: 0; }
+
+      .hero__media img,
+      .hero__media video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      /* Видео лежит поверх последнего кадра и после проигрывания
+         просто гаснет — под ним уже та же картинка */
+      .hero__media video {
+        z-index: 1;
+        transition: opacity 0.5s ease;
+      }
+
+      .hero__media video.off { opacity: 0; }
+
+      /* Текст проявляется, когда ролик отыграл */
+      .hero__inner {
+        opacity: 0;
+        transform: translateY(16px);
+        transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+
+      .hero[data-готово='1'] .hero__inner {
+        opacity: 1;
+        transform: none;
+      }
+
+      .skip {
+        position: absolute;
+        right: clamp(20px, 4vw, 56px);
+        bottom: clamp(20px, 4vh, 40px);
+        z-index: 5;
+        padding: 10px 20px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(11, 13, 18, 0.6);
+        backdrop-filter: blur(8px);
+        color: var(--dim);
+        font: inherit;
+        font-size: 13px;
+        cursor: pointer;
+        transition: color 0.2s ease, border-color 0.2s ease;
+      }
+
+      .skip:hover { color: var(--ink); border-color: var(--accent); }
+      .hero[data-готово='1'] .skip { display: none; }
+
+      .hero__media::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(to right, rgba(11, 13, 18, 0.94) 8%, rgba(11, 13, 18, 0.6) 46%, rgba(11, 13, 18, 0.25) 78%),
+          linear-gradient(to bottom, rgba(11, 13, 18, 0.8), transparent 28%),
+          linear-gradient(to top, var(--bg) 2%, transparent 34%);
+      }
+
+      .hero__inner {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        gap: clamp(22px, 3.2vh, 38px);
+        max-width: 680px;
+        padding-block: clamp(120px, 16vh, 180px) clamp(40px, 6vh, 70px);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: var(--h1);
+        font-weight: 800;
+        line-height: 1.02;
+        letter-spacing: -0.035em;
+        text-wrap: balance;
+      }
+
+      h1 em { font-style: normal; color: var(--accent); }
+
+      .lead {
+        margin: 0;
+        max-width: 54ch;
+        font-size: var(--lead);
+        line-height: 1.6;
+        color: var(--dim);
+      }
+
+      .lead b { color: var(--ink); font-weight: 500; }
+
+      .cta { display: grid; gap: 14px; justify-items: start; }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 17px 30px;
+        border-radius: var(--r-s);
+        background: var(--accent);
+        color: #1a1206;
+        font-size: 16px;
+        font-weight: 600;
+        transition: filter 0.2s ease, transform 0.2s ease;
+      }
+
+      .btn:hover { filter: brightness(1.07); transform: translateY(-1px); }
+      .btn:active { transform: translateY(1px); }
+
+      .note { margin: 0; font-size: var(--small); color: var(--dim); }
+      .note i { font-style: normal; color: #7fc79a; }
+
+      /* Четыре шага анкеты — то, что реально спрашивает бот */
+      .steps {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+
+      .steps li {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        padding: 9px 16px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        font-size: var(--small);
+        color: var(--dim);
+      }
+
+      .steps b {
+        color: var(--accent);
+        font-weight: 600;
+        font-size: 12px;
+      }
+
+      /* ---------- двери ---------- */
+
+      /* Створки схлопываются, под ними меняется раздел, створки
+         разъезжаются. Весь путь — 350 мс: ощущение дверей есть,
+         ожидания нет. */
+      .doors {
+        position: fixed;
+        inset: 0;
+        z-index: 90;
+        pointer-events: none;
+        display: none;
+      }
+
+      .doors.go { display: block; }
+
+      .doors span {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 50.5%;
+        background: #14171e;
+        background-image:
+          linear-gradient(rgba(224, 164, 92, 0.05), rgba(0, 0, 0, 0.35)),
+          repeating-linear-gradient(90deg, rgba(0,0,0,0.16) 0 2px, transparent 2px 26px);
+        transition: transform var(--двери) cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .doors span:first-child { left: 0; transform: translateX(-101%); }
+      .doors span:last-child { right: 0; transform: translateX(101%); }
+
+      .doors.shut span { transform: none; }
+
+      /* Тонкая тёплая щель между створками — как свет из-за двери */
+      .doors::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 2px;
+        margin-left: -1px;
+        background: linear-gradient(transparent, rgba(224, 164, 92, 0.55), transparent);
+        opacity: 0;
+        transition: opacity 160ms ease;
+      }
+
+      .doors.shut::after { opacity: 1; }
+
+      /* ---------- заглушки разделов ---------- */
+
+      .section {
+        min-height: 70vh;
+        padding-block: clamp(64px, 10vh, 130px);
+        display: grid;
+        align-content: center;
+      }
+
+      .section--tint { background: #0f1218; }
+
+      h2 {
+        margin: 0 0 16px;
+        font-size: clamp(28px, 4vw, 50px);
+        font-weight: 800;
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+      }
+
+      .stub {
+        margin: 0;
+        max-width: 60ch;
+        font-size: var(--lead);
+        line-height: 1.6;
+        color: var(--dim);
+      }
+
+
+      /* ---------- направления ---------- */
+
+      .head {
+        display: grid;
+        gap: 16px;
+        max-width: 640px;
+        margin-bottom: clamp(34px, 5vh, 60px);
+      }
+
+      .head p {
+        margin: 0;
+        font-size: var(--lead);
+        line-height: 1.6;
+        color: var(--dim);
+      }
+
+      .ways {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: clamp(14px, 1.6vw, 22px);
+      }
+
+      /* Карточка — комната дома: фото во всю плитку, текст внизу
+         на затемнении, как свет из окна в темноте */
+      .way {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        min-height: clamp(340px, 46vh, 460px);
+        padding: clamp(22px, 2vw, 30px);
+        border-radius: var(--r-l);
+        overflow: hidden;
+        isolation: isolate;
+      }
+
+      .way img {
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+
+      .way:hover img { transform: scale(1.04); }
+
+      .way::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient(
+          to top,
+          rgba(11, 13, 18, 0.96) 6%,
+          rgba(11, 13, 18, 0.72) 42%,
+          rgba(11, 13, 18, 0.18) 82%
+        );
+      }
+
+      .way h3 {
+        margin: 0 0 10px;
+        font-size: clamp(23px, 2vw, 30px);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+
+      .way p {
+        margin: 0;
+        max-width: 34ch;
+        font-size: 15px;
+        line-height: 1.55;
+        color: rgba(242, 237, 229, 0.72);
+      }
+
+      .way__tag {
+        position: absolute;
+        top: clamp(18px, 1.8vw, 24px);
+        left: clamp(22px, 2vw, 30px);
+        padding: 6px 13px;
+        border: 1px solid rgba(242, 237, 229, 0.22);
+        border-radius: 999px;
+        background: rgba(11, 13, 18, 0.5);
+        backdrop-filter: blur(6px);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+
+      @media (max-width: 900px) {
+        .ways { grid-template-columns: 1fr; gap: 12px; }
+        .way { min-height: 260px; }
+        .way p { max-width: none; }
+      }
+
+
+      /* ---------- этапы сделки ---------- */
+
+      .path {
+        display: grid;
+        grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+        gap: clamp(30px, 5vw, 80px);
+        align-items: start;
+      }
+
+      /* Заголовок держится на месте, пока читаются шаги —
+         так виден весь путь целиком, а не кусок */
+      .path__head { position: sticky; top: clamp(90px, 12vh, 130px); }
+
+      .steps-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .step {
+        position: relative;
+        display: grid;
+        grid-template-columns: 62px minmax(0, 1fr);
+        gap: 4px clamp(16px, 2vw, 28px);
+        padding-block: clamp(22px, 3vh, 32px);
+      }
+
+      .step + .step { border-top: 1px solid var(--line); }
+
+      .step__num {
+        grid-row: 1 / span 2;
+        font-size: clamp(26px, 2.4vw, 34px);
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.04em;
+        color: rgba(242, 237, 229, 0.2);
+        transition: color 0.3s ease;
+      }
+
+      .step:hover .step__num { color: var(--accent); }
+
+      .step h3 {
+        margin: 0;
+        font-size: clamp(19px, 1.7vw, 24px);
+        font-weight: 700;
+        letter-spacing: -0.015em;
+      }
+
+      .step p {
+        margin: 0;
+        max-width: 52ch;
+        line-height: 1.6;
+        color: var(--dim);
+      }
+
+      .step p b { color: var(--ink); font-weight: 500; }
+
+      @media (max-width: 900px) {
+        .path { grid-template-columns: 1fr; gap: 24px; }
+        .path__head { position: static; }
+        .step { grid-template-columns: 44px minmax(0, 1fr); }
+        .step__num { font-size: 22px; }
+        .step p { font-size: 15px; }
+      }
+
+
+      /* ---------- вопросы ---------- */
+
+      .faq { max-width: 940px; border-top: 1px solid var(--line); }
+      .faq details { border-bottom: 1px solid var(--line); }
+
+      .faq summary {
+        display: flex;
+        align-items: baseline;
+        gap: 18px;
+        padding-block: clamp(20px, 2.6vh, 28px);
+        cursor: pointer;
+        list-style: none;
+        font-size: clamp(18px, 1.7vw, 24px);
+        font-weight: 700;
+        line-height: 1.25;
+        letter-spacing: -0.015em;
+        transition: color 0.2s ease;
+      }
+
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary:hover { color: var(--accent); }
+
+      .faq summary::after {
+        content: '';
+        flex: 0 0 auto;
+        width: 12px;
+        height: 12px;
+        margin-left: auto;
+        align-self: center;
+        border-right: 1.5px solid var(--dim);
+        border-bottom: 1.5px solid var(--dim);
+        transform: rotate(45deg);
+        transition: transform 0.25s ease, border-color 0.25s ease;
+      }
+
+      .faq details[open] summary::after {
+        transform: rotate(-135deg);
+        border-color: var(--accent);
+      }
+
+      .faq__body {
+        padding: 0 44px clamp(22px, 3vh, 30px) 0;
+        max-width: 66ch;
+        line-height: 1.65;
+        color: var(--dim);
+      }
+
+      .faq__body p { margin: 0 0 12px; }
+      .faq__body p:last-child { margin-bottom: 0; }
+      .faq__body b { color: var(--ink); font-weight: 500; }
+
+      /* ---------- подвал ---------- */
+
+      .foot {
+        padding-block: clamp(48px, 7vh, 90px) clamp(28px, 4vh, 42px);
+        border-top: 1px solid var(--line);
+      }
+
+      .foot__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) repeat(2, minmax(0, 1fr));
+        gap: clamp(28px, 4vw, 60px);
+        align-items: start;
+      }
+
+      .foot .mark { display: inline-block; margin-bottom: 16px; }
+      .foot p { margin: 0 0 10px; line-height: 1.6; color: var(--dim); }
+
+      .foot h4 {
+        margin: 0 0 12px;
+        font-size: var(--small);
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--dim);
+      }
+
+      .foot a:hover { color: var(--accent); }
+
+      .foot__big {
+        font-size: clamp(18px, 1.6vw, 22px);
+        font-weight: 700;
+        color: var(--ink);
+      }
+
+      .foot__bottom {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 24px;
+        margin-top: clamp(32px, 5vh, 54px);
+        padding-top: 22px;
+        border-top: 1px solid var(--line);
+        font-size: 13px;
+        color: #6b6660;
+      }
+
+      .foot__bottom span:last-child { margin-left: auto; }
+
+      @media (max-width: 760px) {
+        .faq__body { padding-right: 0; }
+        .faq summary { gap: 12px; }
+        .foot__grid { grid-template-columns: 1fr; gap: 30px; }
+        .foot__bottom span:last-child { margin-left: 0; }
+      }
+
+      /* ---------- планшет и телефон ---------- */
+
+      @media (max-width: 1024px) {
+        .hero__media::after {
+          background:
+            linear-gradient(to right, rgba(11, 13, 18, 0.94) 12%, rgba(11, 13, 18, 0.72) 56%, rgba(11, 13, 18, 0.4) 92%),
+            linear-gradient(to bottom, rgba(11, 13, 18, 0.8), transparent 28%),
+            linear-gradient(to top, var(--bg) 2%, transparent 34%);
+        }
+      }
+
+      @media (max-width: 760px) {
+        .nav { display: none; }
+        .bar__phone { font-size: 13px; }
+        .hero__inner { max-width: none; gap: 18px; padding-block: 96px 44px; }
+        .btn { width: 100%; justify-content: center; }
+        .cta { justify-items: stretch; }
+        .note { text-align: center; }
+      }
+
+      @media (hover: none) {
+        .btn:hover { transform: none; filter: none; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * { transition-duration: 0.01ms !important; }
+        .doors { display: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="doors" id="doors" aria-hidden="true"><span></span><span></span></div>
+
+    <header class="bar">
+      <div class="wrap bar__inner">
+        <a class="mark" href="#top">КЛЮЧ</a>
+        <nav class="nav">
+          <a href="#how">Направления</a>
+          <a href="#deal">Как проходит сделка</a>
+          <a href="#faq">Вопросы</a>
+        </nav>
+        <span class="bar__phone">Москва · <b>+7 495 402-19-70</b></span>
+      </div>
+    </header>
+
+    <main class="hero" id="top" data-готово="0">
+      <div class="hero__media">
+        <!-- Ролик играет один раз. Под ним лежит его же последний кадр:
+             когда видео заканчивается, стыка не видно. -->
+        <img id="heroEnd" src="media/hero-end.jpg" alt="Открытая дверь дома, из неё льётся тёплый свет"
+             width="1280" height="720" />
+        <video
+          id="intro"
+          src="media/intro.webm"
+          poster="media/hero-start.jpg"
+          muted
+          autoplay
+          playsinline
+          webkit-playsinline="true"
+          preload="auto"
+        ></video>
+      </div>
+
+      <button class="skip" id="skip" type="button">Пропустить</button>
+
+      <div class="wrap">
+        <div class="hero__inner">
+          <h1>Четыре вопроса — <em>и мы начинаем искать</em></h1>
+
+          <p class="lead">
+            Агентство недвижимости. Аренда, покупка, новостройки.
+            <b>На первое сообщение отвечаем за 15 минут</b> — это не обещание
+            в рекламе, а норматив, по которому мы проверяем сами себя.
+          </p>
+
+          <ul class="steps">
+            <li><b>01</b> Что ищете</li>
+            <li><b>02</b> Город</li>
+            <li><b>03</b> Комнат</li>
+            <li><b>04</b> Бюджет</li>
+          </ul>
+
+          <div class="cta">
+            <a class="btn" href="https://t.me/realty1_crm_bot" target="_blank" rel="noopener">
+              Подобрать квартиру
+            </a>
+            <p class="note">
+              <i>●</i> Без звонков и анкет на сайте — четыре вопроса в телеграме
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <section class="section section--tint" id="how">
+      <div class="wrap">
+        <header class="head">
+          <h2>С чем приходят</h2>
+          <p>
+            Три направления. В боте это первый вопрос — с него и начинается
+            подбор, чтобы не показывать вам чужое.
+          </p>
+        </header>
+
+        <div class="ways">
+          <article class="way">
+            <img src="media/cityview.webp" alt="Квартира с видом на вечерний город"
+                 width="1500" height="844" loading="lazy" decoding="async" />
+            <span class="way__tag">Аренда</span>
+            <h3>Снять</h3>
+            <p>
+              Показываем только то, что реально свободно сегодня. Собственник
+              или агент — говорим сразу, комиссию называем до показа, а не в дверях.
+            </p>
+          </article>
+
+          <article class="way">
+            <img src="media/living.webp" alt="Гостиная с тёплым светом"
+                 width="1500" height="844" loading="lazy" decoding="async" />
+            <span class="way__tag">Покупка</span>
+            <h3>Купить</h3>
+            <p>
+              Документы проверяем до задатка: историю собственников, обременения,
+              перепланировки. Если с квартирой что-то не так — отговорим.
+            </p>
+          </article>
+
+          <article class="way">
+            <img src="media/kitchen.webp" alt="Кухня в новой квартире"
+                 width="1500" height="844" loading="lazy" decoding="async" />
+            <span class="way__tag">Новостройки</span>
+            <h3>Взять у застройщика</h3>
+            <p>
+              Работаем напрямую, цена для вас та же, что в отделе продаж.
+              По ипотеке подбираем программу в пятнадцати банках — бесплатно.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="deal">
+      <div class="wrap">
+        <div class="path">
+          <header class="path__head head">
+            <h2>Как проходит сделка</h2>
+            <p>
+              Пять шагов от первого сообщения до ключей. Денег не берём
+              до четвёртого.
+            </p>
+          </header>
+
+          <ol class="steps-list">
+            <li class="step">
+              <span class="step__num">01</span>
+              <h3>Заявка</h3>
+              <p>
+                Четыре вопроса в телеграме: что ищете, город, сколько комнат,
+                бюджет. <b>На первое сообщение отвечаем за 15 минут</b> —
+                в рабочее время это норматив, а не пожелание.
+              </p>
+            </li>
+
+            <li class="step">
+              <span class="step__num">02</span>
+              <h3>Консультация</h3>
+              <p>
+                Риэлтор уточняет то, что в анкету не влезло: этаж, район,
+                школа рядом, можно ли с собакой. И честно говорит, что за ваш
+                бюджет реально найти, а что нет.
+              </p>
+            </li>
+
+            <li class="step">
+              <span class="step__num">03</span>
+              <h3>Показы</h3>
+              <p>
+                Перед каждым показом присылаем адрес, этаж и что уже знаем
+                про дом. Чтобы вы не тратили выходной на вариант, который
+                не подойдёт с порога.
+              </p>
+            </li>
+
+            <li class="step">
+              <span class="step__num">04</span>
+              <h3>Задаток</h3>
+              <p>
+                Передаётся <b>только после проверки документов</b>: история
+                собственников, обременения, согласие супруга, перепланировки.
+                До этого момента вы не платите ничего.
+              </p>
+            </li>
+
+            <li class="step">
+              <span class="step__num">05</span>
+              <h3>Сделка</h3>
+              <p>
+                Договор, регистрация, передача ключей. Сопровождаем до момента,
+                когда вы закрываете за собой дверь — уже свою.
+              </p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--tint" id="faq">
+      <div class="wrap">
+        <header class="head">
+          <h2>Что обычно спрашивают</h2>
+          <p>Отвечаем как есть, включая неудобное.</p>
+        </header>
+
+        <div class="faq">
+          <details>
+            <summary>Откуда мне знать, что вы не обманете?</summary>
+            <div class="faq__body">
+              <p>
+                Ниоткуда — на слово верить не нужно. Смотрите на порядок работы:
+                <b>деньги вы платите только на четвёртом шаге</b>, после того как
+                мы проверили документы и показали вам результат проверки.
+              </p>
+              <p>
+                До этого момента вы ничем не рискуете. Не понравилось, как мы
+                работаем, — уходите на любом шаге, ничего не должны.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Одобрят ли мне ипотеку?</summary>
+            <div class="faq__body">
+              <p>
+                Заранее не скажет никто, но <b>проверить ситуацию можно бесплатно
+                и без заявки в банк</b>. Мы подбираем программу в пятнадцати банках
+                и видим, у кого какие требования к первому взносу, стажу и истории.
+              </p>
+              <p>
+                Напишите город и примерный бюджет — риэлтор скажет, на что
+                рассчитывать, до того как вы начнёте собирать документы.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Не потеряю ли я задаток?</summary>
+            <div class="faq__body">
+              <p>
+                Задаток передаётся <b>только после проверки квартиры</b>: смотрим
+                историю собственников, обременения, согласие супруга, законность
+                перепланировки.
+              </p>
+              <p>
+                Если на любом из этих пунктов всплывает проблема — мы говорим
+                об этом до передачи денег, а не после. Такую квартиру просто
+                не доводим до задатка.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Сколько стоят ваши услуги?</summary>
+            <div class="faq__body">
+              <p>
+                В аренде — фиксированная комиссия, размер называем
+                <b>до показа</b>. В покупке и новостройках комиссию платит
+                продавец или застройщик, для вас цена та же, что в отделе продаж.
+              </p>
+              <p>
+                Консультация и проверка документов до задатка денег не стоят.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>А если проблема вылезет уже после покупки?</summary>
+            <div class="faq__body">
+              <p>
+                Поэтому мы и проверяем до задатка, а не после. Результат проверки
+                отдаём вам на руки — с ним можно пойти к своему юристу,
+                если хотите второе мнение.
+              </p>
+              <p>
+                <b>Это нормальная просьба</b>, мы к ней спокойно относимся.
+                Агентство, которое обижается на такой вопрос, — плохой знак.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Я не в Москве. Вы работаете?</summary>
+            <div class="faq__body">
+              <p>
+                Город — второй вопрос в анкете. Напишите свой, и риэлтор сразу
+                скажет, есть ли у нас там база. <b>Если не работаем — так
+                и ответим</b>, а не будем тянуть.
+              </p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="wrap">
+        <div class="foot__grid">
+          <div>
+            <span class="mark">КЛЮЧ</span>
+            <p>Агентство недвижимости.<br />Аренда, покупка, новостройки.</p>
+            <p>Будни с 9:00 до 21:00, суббота до 18:00.</p>
+          </div>
+
+          <div>
+            <h4>Начать подбор</h4>
+            <p>
+              <a class="foot__big" href="https://t.me/realty1_crm_bot" target="_blank" rel="noopener">
+                Четыре вопроса в телеграме
+              </a>
+            </p>
+            <p>На первое сообщение отвечаем за 15 минут.</p>
+          </div>
+
+          <div>
+            <h4>Связаться</h4>
+            <p><a class="foot__big" href="tel:+74954021970">+7 495 402-19-70</a></p>
+            <p>Москва, Пресненская набережная, 12.<br />Приём по записи — так вас точно дождутся.</p>
+          </div>
+        </div>
+
+        <div class="foot__bottom">
+          <span>КЛЮЧ, 2026</span>
+          <span>Информация на сайте не является публичной офертой</span>
+          <span>Подбор работает на RealtyBotCRM</span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      /* ---------- заставка ---------- */
+      ;(function () {
+        var экран = document.querySelector('.hero')
+        var видео = document.getElementById('intro')
+        var пропустить = document.getElementById('skip')
+        var показано = false
+
+        function открыть() {
+          if (показано) return
+          показано = true
+          экран.setAttribute('data-готово', '1')
+          if (видео) videoГасим()
+        }
+
+        function videoГасим() {
+          видео.classList.add('off')
+          setTimeout(function () { try { видео.pause() } catch (e) {} }, 600)
+        }
+
+        if (!видео) return открыть()
+
+        // Медленный интернет или экономия трафика — ролик не грузим
+        var связь = navigator.connection
+        if (связь && (связь.saveData || /2g/.test(связь.effectiveType || ''))) {
+          видео.remove()
+          return открыть()
+        }
+
+        видео.addEventListener('ended', открыть)
+        пропустить.addEventListener('click', открыть)
+
+        // Страховка: если ролик завис или автозапуск запрещён,
+        // текст всё равно появится
+        var сторож = setTimeout(открыть, 9000)
+        видео.addEventListener('playing', function () {
+          clearTimeout(сторож)
+          сторож = setTimeout(открыть, (видео.duration || 5) * 1000 + 2500)
+        })
+
+        var пуск = видео.play()
+        if (пуск && пуск.catch) пуск.catch(открыть)
+      })()
+
+      ;(function () {
+        var двери = document.getElementById('doors')
+        var резко = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        var ПОЛОВИНА = 350
+
+        function перейти(цель) {
+          if (резко) {
+            цель.scrollIntoView({ block: 'start' })
+            return
+          }
+          // Створки сходятся, под ними меняется раздел, створки расходятся
+          двери.classList.add('go')
+          requestAnimationFrame(function () {
+            двери.classList.add('shut')
+          })
+          setTimeout(function () {
+            цель.scrollIntoView({ block: 'start' })
+            двери.classList.remove('shut')
+            setTimeout(function () {
+              двери.classList.remove('go')
+            }, ПОЛОВИНА)
+          }, ПОЛОВИНА)
+        }
+
+        document.addEventListener('click', function (e) {
+          var ссылка = e.target.closest('a[href^="#"]')
+          if (!ссылка) return
+          var цель = document.querySelector(ссылка.getAttribute('href'))
+          if (!цель) return
+          e.preventDefault()
+          перейти(цель)
+        })
+      })()
+    </script>
+  </body>
+</html>

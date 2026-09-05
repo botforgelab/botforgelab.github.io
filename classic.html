@@ -5427,7 +5427,7 @@
 
 <div class="portfolio-grid" id="portfolioGrid">
   <!-- Шахтёрская глубина -->
-  <div class="project-card magnetic" data-category="site" data-modal="peregon">
+  <div class="project-card magnetic hidden-card" data-category="site" data-modal="peregon">
     <div class="project-thumb" style="background-image: url('media/peregon-thumb.webp');"></div>
     <div class="project-content">
       <div class="project-tag">Сайт · видео-заставка · калькулятор</div>
@@ -5442,6 +5442,15 @@
       <div class="project-tag">Telegram · Mini App · PostgreSQL · парсинг</div>
       <h4>Парсер авто с аукционов</h4>
       <p>Следит за Copart, Auto.ru, Дромом и Авито. Новый подходящий лот — сразу в Telegram со сметой.</p>
+      <span class="project-link">Подробнее →</span>
+    </div>
+  </div>
+  <div class="project-card magnetic" data-category="site" data-modal="klyuch">
+    <div class="project-thumb" style="background-image: url('media/klyuch-thumb.webp');"></div>
+    <div class="project-content">
+      <div class="project-tag">Сайт · Видео-заставка · HTML/CSS/JS</div>
+      <h4>КЛЮЧ — агентство недвижимости</h4>
+      <p>Камера въезжает в дом, последний кадр становится фоном. Переходы через раздвижные двери.</p>
       <span class="project-link">Подробнее →</span>
     </div>
   </div>
@@ -5753,6 +5762,61 @@
         <a href="https://t.me/yasuperparserbot" target="_blank" rel="noopener" class="btn-outline" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">🤖 Попробовать бота</a>
         <a href="https://vladislavbropiton.github.io/car/" target="_blank" rel="noopener" class="btn-outline" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">🌐 Сайт к этому боту</a>
         <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%9D%D1%83%D0%B6%D0%B5%D0%BD%20%D0%BF%D0%BE%D1%85%D0%BE%D0%B6%D0%B8%D0%B9%20%D0%BF%D0%B0%D1%80%D1%81%D0%B5%D1%80" target="_blank" class="btn-primary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">💬 Нужен похожий</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- КЛЮЧ Modal -->
+<div class="modal" id="modal-klyuch">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>КЛЮЧ — сайт агентства недвижимости</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img src="media/klyuch-thumb.webp" alt="Первый экран сайта КЛЮЧ" />
+
+      <h4>📋 Что это</h4>
+      <p>Лендинг агентства недвижимости. Задача — снять недоверие, из-за которого
+      люди боятся риэлторов: что обманут, что возьмут деньги вперёд, что потеряется
+      задаток.</p>
+
+      <h4>✨ Первый экран</h4>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li><strong>Камера въезжает в дом.</strong> Ролик играет один раз и
+        останавливается у открытой двери. Его последний кадр становится фоном
+        страницы — стыка не видно, разница между кадром и фоном 1,7 из 255.</li>
+        <li><strong>Переходы через двери.</strong> Нажали пункт меню — створки
+        сошлись, под ними сменился раздел, разъехались. Весь путь 350 мс:
+        ощущение дверей есть, ожидания нет.</li>
+        <li>Заголовок повторяет анкету бота: четыре вопроса, с которых
+        начинается подбор.</li>
+      </ul>
+
+      <h4>⚙️ Как сделано</h4>
+      <p><strong>Вёрстка:</strong> чистый HTML, CSS и JavaScript, ни одной внешней
+      библиотеки.<br>
+      <strong>Ролик:</strong> сгенерирован по одному кадру, сжат с 3,5 МБ до 809 КБ
+      без потери разрешения.<br>
+      <strong>Фотографии:</strong> комнаты того же дома — они же фоны разделов.<br>
+      <strong>Страховки:</strong> кнопка «Пропустить», сторож на случай зависшего
+      ролика, отключение при экономии трафика и при запрете автозапуска.</p>
+
+      <h4>🤖 За сайтом</h4>
+      <p>Подбор ведёт Telegram-бот с CRM: анкета из четырёх шагов, автоответы
+      про ипотеку и задаток, UTM с Авито и Циана, лид-скоринг, норматив
+      15 минут на первый ответ, воронка и аналитика для руководителя.</p>
+
+      <h4>📦 Результат</h4>
+      <p>Пять блоков, тексты, мобильная версия, связка с системой подбора.
+      Так же собирается под любое агентство — меняются фотографии,
+      города и условия.</p>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+        <a href="klyuch/" target="_blank" class="btn-outline" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">🌐 Открыть сайт</a>
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B9%20%D0%B6%D0%B5%20%D1%81%D0%B0%D0%B9%D1%82" target="_blank" class="btn-primary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">💬 Хочу такой же</a>
       </div>
     </div>
   </div>
@@ -7761,7 +7825,9 @@ function switchBookingTab(tab, btn) {
         }
         const matchesFilter = filter === 'all' || categories.includes(filter);
         const isHiddenCard = p.classList.contains('hidden-card');
-        const show = matchesFilter && (!isHiddenCard || portfolioExpanded);
+        // Внутри выбранной категории показываем всё: ограничение в три
+        // карточки нужно только на общем виде, иначе фильтр врёт
+        const show = matchesFilter && (!isHiddenCard || portfolioExpanded || filter !== 'all');
         p.style.display = show ? 'block' : 'none';
       });
     }
