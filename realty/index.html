@@ -653,8 +653,14 @@
           background:
             linear-gradient(to bottom, rgba(11, 13, 18, 0.62),
                             rgba(11, 13, 18, 0.24) 12%, transparent 28%),
-            linear-gradient(to top, var(--bg) 6%, rgba(11, 13, 18, 0.78) 26%, transparent 56%);
+            linear-gradient(to top, var(--bg) 4%, rgba(11, 13, 18, 0.88) 36%,
+                            rgba(11, 13, 18, 0.62) 58%, rgba(11, 13, 18, 0.22) 78%,
+                            transparent 92%);
         }
+
+        /* Подпись частью лежит на кадре: серый цвет там пропадает,
+           на телефоне делаем её светлее, чем на компьютере */
+        .hero .lead { color: rgba(242, 237, 229, 0.88); }
 
         /* Заголовок заезжает на нижнюю часть кадра */
         .hero__inner {
@@ -662,7 +668,7 @@
           z-index: 2;
           max-width: none;
           gap: 13px;
-          margin-top: -178px;
+          margin-top: -301px;
           padding-block: 0 26px;
         }
         /* Четыре метки анкеты вставали в две строки и съедали
