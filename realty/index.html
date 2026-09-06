@@ -320,11 +320,11 @@
 
       /* ---------- заглушки разделов ---------- */
 
+      /* min-height: 70vh и align-content: center остались от заглушек:
+         короткий блок растягивался до 70% высоты экрана, содержимое
+         вставало по центру, а сверху и снизу зияла пустота. */
       .section {
-        min-height: 70vh;
         padding-block: clamp(64px, 10vh, 130px);
-        display: grid;
-        align-content: center;
       }
 
       .section--tint { background: #0f1218; }
@@ -646,27 +646,35 @@
          как дыры: 84 сверху плюс 84 снизу — это 168 пикселей пустоты
          на стыке двух блоков при ширине экрана 390. */
       @media (max-width: 760px) {
-        .section { padding-block: 52px; }
-        .section--tint { padding-block: 52px; }
+        /* 52 снизу плюс 52 сверху давали 104 пикселя пустоты на каждом
+           стыке — на телефоне это читается как обрыв страницы */
+        .section { padding-block: 32px; }
+        .section--tint { padding-block: 32px; }
 
-        .head { margin-bottom: 24px; gap: 12px; }
+        /* Соседние блоки делят один отступ, а не складывают два */
+        .section + .section { padding-top: 26px; }
+
+        .head { margin-bottom: 18px; gap: 10px; }
         .head p { font-size: 16px; }
 
         .ways { gap: 10px; }
         .way { min-height: 232px; padding: 20px; }
         .way h3 { font-size: 21px; margin-bottom: 8px; }
 
-        .path { gap: 18px; }
-        .step { padding-block: 18px; }
+        .path { gap: 14px; }
+        .step { padding-block: 15px; }
         .step h3 { font-size: 18px; }
 
-        .faq summary { padding-block: 16px; font-size: 17px; }
-        .faq__body { padding-bottom: 18px; }
+        .faq summary { padding-block: 14px; font-size: 17px; }
+        .faq__body { padding-bottom: 15px; }
         .faq__body p { margin-bottom: 9px; }
 
-        .foot { padding-block: 44px 26px; }
-        .foot__grid { gap: 24px; }
-        .foot__bottom { margin-top: 26px; padding-top: 18px; }
+        .foot { padding-block: 32px 22px; }
+        .foot__grid { gap: 20px; }
+        .foot__bottom { margin-top: 20px; padding-top: 15px; }
+
+        /* Первый экран снизу тоже дышал слишком широко */
+        .hero__inner { padding-block: 90px 30px; }
       }
 
       @media (prefers-reduced-motion: reduce) {
