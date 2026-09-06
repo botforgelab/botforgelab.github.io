@@ -642,17 +642,23 @@
         .hero__media {
           position: relative;
           inset: auto;
-          height: 52svh;
-          min-height: 310px;
-          max-height: 400px;
+          /* Ролик почти квадратный. Полоса выше ширины экрана:
+             заголовок наезжает снизу, а дом остаётся виден сверху */
+          /* Ролик почти квадратный: при высоте около ширины экрана
+             он показывается целиком, без обрезки по бокам */
+          height: 108vw;
+          min-height: 320px;
+          max-height: 440px;
         }
 
         /* Заголовок ложится на нижнюю часть кадра, поэтому низ
            затемняем плотнее — иначе текст пропадает в светлом проёме */
+        /* Сверху гасим только шапку, снизу — полосу под заголовком.
+           Середину кадра не трогаем, иначе дом уходит в темноту. */
         .hero__media::after {
           background:
-            linear-gradient(to bottom, rgba(11, 13, 18, 0.8), transparent 30%),
-            linear-gradient(to top, var(--bg) 10%, rgba(11, 13, 18, 0.86) 46%, transparent 84%);
+            linear-gradient(to bottom, rgba(11, 13, 18, 0.72), transparent 18%),
+            linear-gradient(to top, var(--bg) 6%, rgba(11, 13, 18, 0.78) 26%, transparent 56%);
         }
 
         /* Текст заезжает на фотографию, а не начинается под ней */
@@ -661,7 +667,7 @@
           z-index: 2;
           max-width: none;
           gap: 13px;
-          margin-top: -205px;
+          margin-top: -135px;
           padding-block: 0 26px;
         }
         /* Четыре метки анкеты вставали в две строки и съедали
@@ -741,8 +747,11 @@
       <div class="hero__media">
         <!-- Ролик играет один раз. Под ним лежит его же последний кадр:
              когда видео заканчивается, стыка не видно. -->
-        <img id="heroEnd" src="media/hero-end.jpg" alt="Открытая дверь дома, из неё льётся тёплый свет"
-             width="1280" height="720" />
+        <picture>
+          <source media="(max-width: 760px)" srcset="media/hero-end-mob.jpg" />
+          <img id="heroEnd" src="media/hero-end.jpg" alt="Открытая дверь дома, из неё льётся тёплый свет"
+               width="1280" height="720" />
+        </picture>
         <video
           id="intro"
           src="media/intro.webm"
@@ -1050,6 +1059,20 @@
         }
 
         if (!видео) return открыть()
+
+        // На телефоне свой ролик: горизонтальный кадр 16:9 на вертикальном
+        // экране обрезался так, что от дома оставалась узкая полоса.
+        // Квадратный показывается почти целиком. Грузится только один.
+        if (window.matchMedia('(max-width: 760px)').matches) {
+          видео.src = 'media/intro-mob.webm'
+          видео.poster = 'media/hero-start-mob.jpg'
+          // Если мобильного файла нет — молча возвращаемся к обычному
+          видео.addEventListener('error', function () {
+            if (видео.src.indexOf('intro-mob') === -1) return
+            видео.src = 'media/intro.webm'
+            видео.play().catch(открыть)
+          }, { once: true })
+        }
 
         // Медленный интернет или экономия трафика — ролик не грузим
         var связь = navigator.connection
