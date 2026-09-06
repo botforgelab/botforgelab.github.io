@@ -631,42 +631,40 @@
         .nav { display: none; }
         .bar__phone { font-size: 13px; }
 
-        /* Ролик занимает весь экран, текст лежит поверх него.
-           Квадратный кадр при этом обрезается по бокам — это плата
-           за то, что текст на видео, а не под ним. */
+        /* Ролик почти квадратный: в полосе высотой чуть больше ширины
+           экрана он показывается целиком, без обрезки по бокам.
+           Ради этого он и генерировался отдельно под телефон. */
         .hero {
-          display: grid;
-          align-items: end;
-          min-height: 100svh;
+          display: block;
+          min-height: 0;
         }
 
         .hero__media {
-          position: absolute;
-          inset: 0;
+          position: relative;
+          inset: auto;
+          height: 108vw;
+          min-height: 320px;
+          max-height: 440px;
         }
 
-        /* Низ затемняем плотно: под текстом кадр ещё движется,
-           и без этого белые буквы теряются в светлом проёме */
+        /* Сверху гасим только шапку, снизу — полосу под заголовком.
+           Середину кадра не трогаем, иначе дом уходит в темноту. */
         .hero__media::after {
           background:
-            linear-gradient(to bottom, rgba(11, 13, 18, 0.62), rgba(11, 13, 18, 0.28) 12%, transparent 30%),
-            linear-gradient(to top, var(--bg) 4%, rgba(11, 13, 18, 0.9) 48%,
-                            rgba(11, 13, 18, 0.6) 68%, rgba(11, 13, 18, 0.2) 84%,
-                            transparent 94%);
+            linear-gradient(to bottom, rgba(11, 13, 18, 0.62),
+                            rgba(11, 13, 18, 0.24) 12%, transparent 28%),
+            linear-gradient(to top, var(--bg) 6%, rgba(11, 13, 18, 0.78) 26%, transparent 56%);
         }
 
+        /* Заголовок заезжает на нижнюю часть кадра */
         .hero__inner {
           position: relative;
           z-index: 2;
           max-width: none;
           gap: 13px;
-          margin-top: 0;
-          padding-block: 0 30px;
+          margin-top: -135px;
+          padding-block: 0 26px;
         }
-
-        /* Поверх движущегося кадра серый текст читается хуже всего —
-           на телефоне подпись светлее, чем на компьютере */
-        .hero .lead { color: rgba(242, 237, 229, 0.86); }
         /* Четыре метки анкеты вставали в две строки и съедали
            высоту, из-за которой кнопка уходила за край */
         .steps { gap: 7px; }
