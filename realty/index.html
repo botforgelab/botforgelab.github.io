@@ -631,45 +631,42 @@
         .nav { display: none; }
         .bar__phone { font-size: 13px; }
 
-        /* Ролик 16:9 на вертикальном экране обрезался так, что от дома
-           оставалось 26% ширины. Даём видео собственную полосу сверху —
-           кадр отдаляется, дом виден целиком, текст уходит под него. */
+        /* Ролик занимает весь экран, текст лежит поверх него.
+           Квадратный кадр при этом обрезается по бокам — это плата
+           за то, что текст на видео, а не под ним. */
         .hero {
-          display: block;
-          min-height: 0;
+          display: grid;
+          align-items: end;
+          min-height: 100svh;
         }
 
         .hero__media {
-          position: relative;
-          inset: auto;
-          /* Ролик почти квадратный. Полоса выше ширины экрана:
-             заголовок наезжает снизу, а дом остаётся виден сверху */
-          /* Ролик почти квадратный: при высоте около ширины экрана
-             он показывается целиком, без обрезки по бокам */
-          height: 108vw;
-          min-height: 320px;
-          max-height: 440px;
+          position: absolute;
+          inset: 0;
         }
 
-        /* Заголовок ложится на нижнюю часть кадра, поэтому низ
-           затемняем плотнее — иначе текст пропадает в светлом проёме */
-        /* Сверху гасим только шапку, снизу — полосу под заголовком.
-           Середину кадра не трогаем, иначе дом уходит в темноту. */
+        /* Низ затемняем плотно: под текстом кадр ещё движется,
+           и без этого белые буквы теряются в светлом проёме */
         .hero__media::after {
           background:
-            linear-gradient(to bottom, rgba(11, 13, 18, 0.72), transparent 18%),
-            linear-gradient(to top, var(--bg) 6%, rgba(11, 13, 18, 0.78) 26%, transparent 56%);
+            linear-gradient(to bottom, rgba(11, 13, 18, 0.62), rgba(11, 13, 18, 0.28) 12%, transparent 30%),
+            linear-gradient(to top, var(--bg) 4%, rgba(11, 13, 18, 0.9) 48%,
+                            rgba(11, 13, 18, 0.6) 68%, rgba(11, 13, 18, 0.2) 84%,
+                            transparent 94%);
         }
 
-        /* Текст заезжает на фотографию, а не начинается под ней */
         .hero__inner {
           position: relative;
           z-index: 2;
           max-width: none;
           gap: 13px;
-          margin-top: -135px;
-          padding-block: 0 26px;
+          margin-top: 0;
+          padding-block: 0 30px;
         }
+
+        /* Поверх движущегося кадра серый текст читается хуже всего —
+           на телефоне подпись светлее, чем на компьютере */
+        .hero .lead { color: rgba(242, 237, 229, 0.86); }
         /* Четыре метки анкеты вставали в две строки и съедали
            высоту, из-за которой кнопка уходила за край */
         .steps { gap: 7px; }
@@ -752,12 +749,11 @@
           <img id="heroEnd" src="media/hero-end.jpg" alt="Открытая дверь дома, из неё льётся тёплый свет"
                width="1280" height="720" />
         </picture>
+        <!-- Адрес ролика ставит скрипт: телефону и компьютеру нужны разные,
+             а прописанный в разметке успевал начать качаться до подмены -->
         <video
           id="intro"
-          src="media/intro.webm"
-          poster="media/hero-start.jpg"
           muted
-          autoplay
           playsinline
           webkit-playsinline="true"
           preload="auto"
@@ -1046,16 +1042,23 @@
         var пропустить = document.getElementById('skip')
         var показано = false
 
-        function открыть() {
+        // Текст и ролик разведены: на телефоне текст выходит раньше,
+        // а ролик продолжает идти и замирает на последнем кадре
+        function показатьТекст() {
           if (показано) return
           показано = true
           экран.setAttribute('data-готово', '1')
-          if (видео) videoГасим()
         }
 
-        function videoГасим() {
+        function погасить() {
+          if (!видео) return
           видео.classList.add('off')
           setTimeout(function () { try { видео.pause() } catch (e) {} }, 600)
+        }
+
+        function открыть() {
+          показатьТекст()
+          погасить()
         }
 
         if (!видео) return открыть()
@@ -1063,16 +1066,25 @@
         // На телефоне свой ролик: горизонтальный кадр 16:9 на вертикальном
         // экране обрезался так, что от дома оставалась узкая полоса.
         // Квадратный показывается почти целиком. Грузится только один.
-        if (window.matchMedia('(max-width: 760px)').matches) {
-          видео.src = 'media/intro-mob.webm'
-          видео.poster = 'media/hero-start-mob.jpg'
-          // Если мобильного файла нет — молча возвращаемся к обычному
-          видео.addEventListener('error', function () {
-            if (видео.src.indexOf('intro-mob') === -1) return
-            видео.src = 'media/intro.webm'
-            видео.play().catch(открыть)
+        var телефон = window.matchMedia('(max-width: 760px)').matches
+        видео.src = телефон ? 'media/intro-mob.webm' : 'media/intro.webm'
+        видео.poster = телефон ? 'media/hero-start-mob.jpg' : 'media/hero-start.jpg'
+
+        // На телефоне текст выходит поверх ещё идущего ролика через секунду.
+        // На компьютере он по-прежнему ждёт конца: там ролик — отдельная
+        // сцена, а на телефоне никто не будет пять секунд смотреть в пустоту.
+        if (телефон) {
+          видео.addEventListener('playing', function () {
+            setTimeout(показатьТекст, 1000)
           }, { once: true })
         }
+
+        // Если мобильного файла нет — молча возвращаемся к обычному
+        видео.addEventListener('error', function () {
+          if (видео.src.indexOf('intro-mob') === -1) return открыть()
+          видео.src = 'media/intro.webm'
+          видео.play().catch(открыть)
+        }, { once: true })
 
         // Медленный интернет или экономия трафика — ролик не грузим
         var связь = navigator.connection
