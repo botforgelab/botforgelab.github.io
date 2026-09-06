@@ -639,6 +639,36 @@
         .btn:hover { transform: none; filter: none; }
       }
 
+
+      /* ---------- плотность на телефоне ---------- */
+
+      /* На узком экране отступы, красивые на компьютере, читаются
+         как дыры: 84 сверху плюс 84 снизу — это 168 пикселей пустоты
+         на стыке двух блоков при ширине экрана 390. */
+      @media (max-width: 760px) {
+        .section { padding-block: 52px; }
+        .section--tint { padding-block: 52px; }
+
+        .head { margin-bottom: 24px; gap: 12px; }
+        .head p { font-size: 16px; }
+
+        .ways { gap: 10px; }
+        .way { min-height: 232px; padding: 20px; }
+        .way h3 { font-size: 21px; margin-bottom: 8px; }
+
+        .path { gap: 18px; }
+        .step { padding-block: 18px; }
+        .step h3 { font-size: 18px; }
+
+        .faq summary { padding-block: 16px; font-size: 17px; }
+        .faq__body { padding-bottom: 18px; }
+        .faq__body p { margin-bottom: 9px; }
+
+        .foot { padding-block: 44px 26px; }
+        .foot__grid { gap: 24px; }
+        .foot__bottom { margin-top: 26px; padding-top: 18px; }
+      }
+
       @media (prefers-reduced-motion: reduce) {
         * { transition-duration: 0.01ms !important; }
         .doors { display: none !important; }
