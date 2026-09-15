@@ -5916,6 +5916,15 @@
       <span class="project-link">Подробнее →</span>
     </div>
   </div>
+  <div class="project-card magnetic" data-category="site miniapp" data-modal="levelup">
+    <div class="project-thumb" style="background-image: url('media/levelup-thumb.webp');"></div>
+    <div class="project-content">
+      <div class="project-tag">Веб-приложение · геймификация · HTML/CSS/JS</div>
+      <h4>LevelUp — обучение и покупки как игра</h4>
+      <p>Уровни, рейтинг и награды для школ, компаний, фитнеса и кофеен. Ниша, стиль и язык переключаются на лету.</p>
+      <span class="project-link">Подробнее →</span>
+    </div>
+  </div>
   <div class="project-card magnetic" data-category="site" data-modal="realty">
     <div class="project-thumb" style="background-image: url('media/realty-thumb.webp');"></div>
     <div class="project-content">
@@ -5998,7 +6007,7 @@
   </div>
 
 
-  <div class="project-card magnetic hidden-card" data-category="telegram miniapp crm" data-modal="realty">
+  <div class="project-card magnetic hidden-card" data-category="telegram miniapp crm" data-modal="realtybot">
     <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/ynbQ14D7/1.png');"></div>
     <div class="project-content">
       <div class="project-tag">Telegram · Mini App · FastAPI · PostgreSQL</div>
@@ -6238,6 +6247,63 @@
   </div>
 </div>
 
+
+<!-- LevelUp Modal -->
+<div class="modal" id="modal-levelup">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>LevelUp — игровое приложение для бизнеса</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img src="media/levelup-thumb.webp" alt="LevelUp в четырёх стилях: онлайн-школа, адаптация сотрудников, фитнес-клуб, кофейня" />
+
+      <h4>📋 Что это</h4>
+      <p>Демо игрового приложения, которое держит людей до конца: учеников курса,
+      новых сотрудников, участников фитнес-челленджа, гостей кофейни. Вместо
+      скучного списка — уровни, статусы, серия дней, рейтинг и награды за очки.</p>
+
+      <h4>✨ Можно всё потрогать самому</h4>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li><strong>4 ниши.</strong> Онлайн-школа, обучение сотрудников, фитнес
+        и программа лояльности. Отличаются не только словами: у кофейни визиты,
+        подарки и «сэкономлено ₽», у фитнеса — серия дней, у компании — аттестация.</li>
+        <li><strong>4 стиля.</strong> Тёмный игровой, светлый деловой, яркий
+        дружелюбный и премиум. Переключаются мгновенно, на любом экране.</li>
+        <li><strong>Весь путь за три клика.</strong> «Первый день», «Через месяц»
+        и «Финал» — видно, как выглядит приложение у новичка и у того, кто
+        дошёл до конца. Ничего не нужно проходить.</li>
+        <li><strong>Шесть экранов:</strong> главная, задания, карта пути,
+        рейтинг, витрина наград и профиль с достижениями. Задания можно
+        отмечать — очки, уровень и статус меняются сразу.</li>
+      </ul>
+
+      <h4>⚙️ Как сделано</h4>
+      <p><strong>Вёрстка:</strong> один файл, чистый HTML, CSS и JavaScript,
+      ни одной внешней библиотеки.<br>
+      <strong>Стили:</strong> собраны на переменных — новый стиль под фирменные
+      цвета клиента добавляется набором цветов, а не переписыванием страницы.<br>
+      <strong>Ниши:</strong> это данные. Своё направление — это свои задания,
+      статусы и награды, код приложения не меняется.<br>
+      <strong>Языки:</strong> русский и английский, суммы в рублях или долларах.</p>
+
+      <h4>📱 Проверено</h4>
+      <p>Все сочетания ниш, стилей, этапов и языков прогнаны на телефонах от
+      320 px, планшете и компьютере. Текст читается в каждом стиле: контраст
+      проверен по стандарту доступности WCAG.</p>
+
+      <h4>📦 Результат</h4>
+      <p>Готовая основа под школу, компанию, клуб или сеть кафе: подставляем
+      ваши задания, награды и цвета. Дальше можно подключить Telegram-бота
+      для напоминаний или сделать из приложения Mini App.</p>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+        <a href="levelup/" target="_blank" class="btn-outline" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">🎮 Открыть демо</a>
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B8%D0%B3%D1%80%D0%BE%D0%B2%D0%BE%D0%B5%20%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5%20%D0%BA%D0%B0%D0%BA%20LevelUp" target="_blank" class="btn-primary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">💬 Хочу такое же</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- REALTY Modal -->
 <div class="modal" id="modal-realty">
@@ -6780,7 +6846,7 @@
 
 
 <!-- RealtyBotCRM Modal -->
-<div class="modal" id="modal-realty">
+<div class="modal" id="modal-realtybot">
   <div class="modal-content">
     <div class="modal-header">
       <h3>RealtyBotCRM — CRM для недвижимости</h3>
@@ -8616,7 +8682,7 @@ function switchBookingTab(tab, btn) {
     };
 
     window.switchRealtyTab = function(tabId, btn) {
-      const modal = document.getElementById('modal-realty');
+      const modal = document.getElementById('modal-realtybot');
       if (!modal) return;
       modal.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       modal.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
