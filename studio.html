@@ -1,0 +1,3386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>botforge — сайты и Telegram-боты</title>
+  <meta name="description" content="Делаю сайты, Telegram-ботов, AI-ассистентов и CRM, которые работают вместе: клиент приходит с сайта, бот принимает заявку, вы видите её в системе.">
+  <meta name="theme-color" content="#F1F1F1">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%231A1B1C'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-weight='700' font-size='34' text-anchor='middle' fill='%23F1F1F1'%3Eb%3C/text%3E%3Ccircle cx='47' cy='41' r='4' fill='%237C3AED'/%3E%3C/svg%3E">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="botforge — сайты и Telegram-боты">
+  <meta property="og:description" content="Сайты, Telegram-боты, AI-ассистенты и CRM, которые работают вместе.">
+  <meta property="og:image" content="og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Разработка: botforge (t.me/Bro_piton) -->
+
+  <script>document.documentElement.classList.add('js')</script>
+
+  <link rel="preload" href="fonts/inter-tight-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+
+  <style>
+    @font-face {
+      font-family: 'Inter Tight';
+      font-weight: 400 500;
+      font-display: swap;
+      src: url(fonts/inter-tight-cyrillic.woff2) format('woff2');
+      unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+    }
+    @font-face {
+      font-family: 'Inter Tight';
+      font-weight: 400 500;
+      font-display: swap;
+      src: url(fonts/inter-tight-latin.woff2) format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    @font-face {
+      font-family: 'Inter Tight';
+      font-weight: 400 500;
+      font-display: swap;
+      src: url(fonts/inter-tight-symbols.woff2) format('woff2');
+      unicode-range: U+20BD, U+2192, U+2197;
+    }
+
+    :root {
+      --bg: #F1F1F1;
+      --ink: #1A1B1C;
+      --muted: #8A8B8D;
+      --line: rgba(26, 27, 28, 0.22);
+      --chip: #FFFFFF;
+      --accent: #7C3AED;
+      --text: var(--ink);
+      --text-dim: #4A4B4E;
+      --text-muted: var(--muted);
+      --gutter: 30px;
+      --rail: 80px;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; }
+    button { font: inherit; color: inherit; }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .skip {
+      position: absolute;
+      left: -9999px;
+    }
+    .skip:focus {
+      left: var(--gutter);
+      top: 10px;
+      z-index: 100;
+      background: var(--ink);
+      color: var(--bg);
+      padding: 8px 14px;
+      border-radius: 99px;
+    }
+
+    /* ---------- Шапка ---------- */
+
+    .top {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+    }
+
+    .top__row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 80px;
+      margin: 0 var(--gutter);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .wordmark {
+      font-size: 24px;
+      font-weight: 500;
+      letter-spacing: -0.04em;
+      text-decoration: none;
+    }
+
+    .top__actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      height: 40px;
+      padding: 0 20px;
+      border-radius: 99px;
+      background: var(--ink);
+      color: var(--bg);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.25s;
+    }
+
+    .round {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: var(--chip);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* Три полоски превращаются в крестик */
+    .burger {
+      position: relative;
+      width: 14px;
+      height: 8px;
+    }
+    .burger::before, .burger::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1.5px;
+      background: currentColor;
+      transition: transform 0.35s var(--ease), top 0.35s var(--ease);
+    }
+    .burger::before { top: 0; }
+    .burger::after { top: 6.5px; }
+    [aria-expanded="true"] .burger::before { top: 3.25px; transform: rotate(45deg); }
+    [aria-expanded="true"] .burger::after { top: 3.25px; transform: rotate(-45deg); }
+
+    /* ---------- Меню ---------- */
+
+    .menu {
+      position: fixed;
+      top: 70px;
+      right: var(--gutter);
+      z-index: 60;
+      width: 320px;
+      max-width: calc(100vw - 2 * var(--gutter));
+      padding: 10px;
+      border-radius: 22px;
+      background: var(--chip);
+      box-shadow: 0 30px 60px -20px rgba(26, 27, 28, 0.25);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: opacity 0.25s, transform 0.35s var(--ease), visibility 0s 0.35s;
+    }
+    .menu.open {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition: opacity 0.25s, transform 0.35s var(--ease);
+    }
+
+    .menu__label {
+      padding: 12px 12px 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .menu a {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 12px;
+      border-radius: 12px;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+    .menu a small {
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0;
+    }
+    .menu a[aria-current] small::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-right: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      vertical-align: 1px;
+    }
+    .menu hr {
+      margin: 8px 12px;
+      border: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    /* ---------- Первый экран ---------- */
+
+    .hero {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr var(--rail);
+      min-height: calc(100svh - 80px);
+      margin: 0 var(--gutter);
+    }
+
+    .hero__body {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: auto 1fr auto;
+      column-gap: 20px;
+      padding: 40px 0 34px;
+    }
+
+    .hero__lead {
+      grid-column: 8 / span 4;
+      grid-row: 1;
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+    }
+    .hero__lead p { margin: 0 0 22px; }
+    .hero__lead p:last-child { margin: 0; }
+
+    .hero__art {
+      grid-column: 8 / -1;
+      grid-row: 2 / 4;
+      align-self: stretch;
+      position: relative;
+      min-height: 260px;
+      margin-top: 20px;
+    }
+    .hero__art canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero__title-wrap {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      position: relative;
+      z-index: 1;
+      align-self: end;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+      margin: 0 0 18px;
+      padding: 0;
+      list-style: none;
+    }
+    .chips li {
+      padding: 4px 14px;
+      border-radius: 99px;
+      background: var(--chip);
+      font-size: 13px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(44px, 6.2vw, 116px);
+      font-weight: 500;
+      line-height: 0.96;
+      letter-spacing: -0.035em;
+    }
+    .hero h1 span { display: block; }
+
+    .hero__note {
+      margin: 30px 0 0;
+      color: var(--muted);
+      font-size: 15px;
+      letter-spacing: -0.02em;
+    }
+
+    /* Правая рейка: тонкая линия и круглая кнопка «дальше» */
+    .rail {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 40px;
+      border-left: 1px solid var(--line);
+    }
+    .rail__word {
+      color: var(--muted);
+      font-size: 12px;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+    .rail__btn {
+      display: grid;
+      place-items: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+    }
+    .rail__btn svg { width: 18px; height: 26px; }
+    .rail__btn .wheel { animation: wheel 1.8s var(--ease) infinite; }
+    @keyframes wheel {
+      0%, 100% { transform: translateY(-2px); }
+      50% { transform: translateY(3px); }
+    }
+
+    /* Появление первого экрана: строки заголовка выезжают снизу по очереди */
+    .rise {
+      display: block;
+      overflow: hidden;
+      padding-bottom: 0.08em;
+      margin-bottom: -0.08em;
+    }
+    .rise > span {
+      display: block;
+      transform: translateY(105%);
+      transition: transform 1.1s var(--ease);
+    }
+    .fade {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    }
+    .is-in .rise > span, .is-in .fade { transform: none; opacity: 1; }
+    .is-in .d1 { transition-delay: 0.08s; }
+    .is-in .d2 { transition-delay: 0.16s; }
+    .is-in .d3 { transition-delay: 0.3s; }
+    .is-in .d4 { transition-delay: 0.45s; }
+    .is-in .d5 { transition-delay: 0.6s; }
+
+
+    /* ---------- Журнальная сетка разделов ---------- */
+
+    .sec {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      column-gap: 20px;
+      margin: 0 var(--gutter);
+      padding: 28px 0 150px;
+      border-top: 1px solid var(--line);
+      scroll-margin-top: 80px;
+    }
+
+    .sec__side {
+      grid-column: 1 / span 3;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-self: start;
+      position: sticky;
+      top: 108px;
+    }
+    .sec__name {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    .sec__count {
+      color: var(--muted);
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .sec__main {
+      grid-column: 4 / -1;
+      min-width: 0;
+    }
+
+    .sec__title {
+      max-width: 17em;
+      margin: 0 0 56px;
+      font-size: clamp(32px, 3.4vw, 56px);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+    .sec__title em {
+      font-style: normal;
+      color: var(--muted);
+    }
+
+    /* Метки-переключатели: у выбранной слева фиолетовая точка */
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin: 0 0 30px;
+      padding: 0;
+      list-style: none;
+    }
+    .tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 38px;
+      padding: 0 16px;
+      border: 0;
+      border-radius: 99px;
+      background: var(--chip);
+      cursor: pointer;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+      transition: background 0.2s, color 0.2s;
+    }
+    .tab::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      margin-left: -3px;
+      border-radius: 50%;
+      background: var(--accent);
+      transform: scale(0);
+      transition: transform 0.25s var(--ease);
+    }
+    .tab[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+    .tab[aria-selected="true"]::before { transform: none; }
+    .tab sup {
+      margin-left: -3px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .arrow {
+      display: inline-grid;
+      place-items: center;
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--chip);
+      transition: background 0.25s, color 0.25s;
+    }
+    .arrow svg { width: 16px; height: 16px; }
+
+    /* ---------- 01. Что делаю ---------- */
+
+    .rows {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--line);
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 60px minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: 20px;
+      padding: 26px 0 30px;
+      border-bottom: 1px solid var(--line);
+    }
+    .row__num {
+      color: var(--muted);
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+      padding-top: 8px;
+    }
+    .row__name {
+      margin: 0;
+      font-size: clamp(24px, 2.2vw, 34px);
+      font-weight: 500;
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+    }
+    .row__text p { margin: 0 0 10px; font-size: 16px; line-height: 1.35; }
+    .row__text .fmt { margin: 0; color: var(--muted); font-size: 13px; }
+
+    /* ---------- 02. Проекты ---------- */
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 40px 20px;
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      border: 0;
+      background: none;
+      text-align: left;
+      cursor: pointer;
+    }
+    .card[hidden] { display: none; }
+    .card__pic {
+      position: relative;
+      aspect-ratio: 800 / 520;
+      overflow: hidden;
+      border-radius: 18px;
+      background: #E4E4E4;
+    }
+    .card__pic img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(1) contrast(1.05);
+      transition: filter 0.6s var(--ease), transform 0.8s var(--ease);
+    }
+    .card:focus-visible .card__pic img {
+      filter: none;
+      transform: scale(1.03);
+    }
+    .card__pic--type {
+      display: grid;
+      place-items: center;
+      background: var(--ink);
+      color: var(--bg);
+      font-size: clamp(26px, 2.6vw, 40px);
+      font-weight: 500;
+      letter-spacing: -0.04em;
+    }
+    .card__meta {
+      display: flex;
+      gap: 10px;
+      margin: 16px 0 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .card__title {
+      margin: 0 0 6px;
+      font-size: 22px;
+      font-weight: 500;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+    .card__text {
+      margin: 0;
+      color: var(--text-dim);
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .more {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 50px 0 0;
+      padding: 0;
+      border: 0;
+      background: none;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    .more .arrow { width: 64px; height: 64px; background: var(--ink); color: var(--bg); }
+    .more[hidden] { display: none; }
+
+    /* ---------- 03. Попробовать вживую ---------- */
+
+    .live {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--line);
+    }
+    .live a {
+      display: grid;
+      grid-template-columns: 60px minmax(0, 1.1fr) minmax(0, 1fr) 170px;
+      align-items: center;
+      column-gap: 20px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+      text-decoration: none;
+    }
+    .live__name { font-size: 20px; font-weight: 500; letter-spacing: -0.03em; }
+    .live__name small {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0;
+    }
+    .live__what { color: var(--text-dim); font-size: 15px; }
+    .live__go {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    /* ---------- 04. Как работаю ---------- */
+
+    .steps {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 20px 40px;
+      padding: 34px 0 0;
+      border-top: 1px solid var(--line);
+    }
+    .steps__big {
+      margin: 0;
+      font-size: clamp(22px, 2vw, 30px);
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+    }
+    .steps__label {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .steps__list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .steps__list li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 15px;
+    }
+
+    /* ---------- 05. Цены и сроки: строки-капсулы ---------- */
+
+    .spec {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .spec li {
+      display: grid;
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr) minmax(0, 1.3fr);
+      align-items: center;
+      column-gap: 20px;
+      margin-bottom: 6px;
+      padding: 16px 28px;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+    }
+    .spec__label { color: var(--muted); font-size: 14px; }
+    .spec__value {
+      font-size: clamp(20px, 1.8vw, 28px);
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+    }
+    .spec__note { color: var(--text-dim); font-size: 14px; line-height: 1.35; }
+
+    /* ---------- 06. Какой бот нужен ---------- */
+
+    .pick {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .pick__options {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid var(--line);
+    }
+    .pick__opt {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      column-gap: 10px;
+      padding: 16px 0;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: none;
+      text-align: left;
+      cursor: pointer;
+    }
+    .pick__opt::before {
+      content: '';
+      grid-row: 1 / 3;
+      width: 9px;
+      height: 9px;
+      margin-top: 8px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .pick__opt[aria-selected="true"]::before { background: var(--accent); border-color: var(--accent); }
+    .pick__opt b { font-size: 20px; font-weight: 500; letter-spacing: -0.03em; }
+    .pick__opt span { color: var(--muted); font-size: 13px; }
+    .pick__opt:not([aria-selected="true"]) b { color: var(--muted); }
+
+    .pick__panel {
+      padding: 34px 36px 36px;
+      border-radius: 28px;
+      background: var(--chip);
+    }
+    .pick__panel h3 {
+      margin: 0 0 18px;
+      font-size: 30px;
+      font-weight: 500;
+      letter-spacing: -0.04em;
+    }
+    .pick__panel ul {
+      margin: 0 0 24px;
+      padding: 0;
+      list-style: none;
+    }
+    .pick__panel li {
+      padding: 9px 0;
+      border-bottom: 1px solid var(--line);
+      font-size: 15px;
+    }
+    .pick__try {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 0 0 26px;
+    }
+    .pick__try a {
+      padding: 7px 14px;
+      border-radius: 99px;
+      background: var(--bg);
+      font-size: 13px;
+      text-decoration: none;
+    }
+    .pick__note { margin: 12px 0 0; color: var(--muted); font-size: 13px; }
+
+    /* ---------- 07. Статьи ---------- */
+
+    .posts {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--line);
+    }
+    .post {
+      display: grid;
+      grid-template-columns: 60px minmax(0, 1.2fr) minmax(0, 1fr) auto;
+      align-items: center;
+      column-gap: 20px;
+      width: 100%;
+      padding: 20px 0;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: none;
+      text-align: left;
+      cursor: pointer;
+    }
+    .post__title { font-size: 20px; font-weight: 500; line-height: 1.12; letter-spacing: -0.03em; }
+    .post__text { color: var(--muted); font-size: 14px; }
+
+    /* ---------- 08. Финал ---------- */
+
+    .final {
+      padding-bottom: 40px;
+    }
+    .final__lead {
+      max-width: 30em;
+      margin: 0 0 40px;
+      font-size: 20px;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+    .final__big {
+      font-size: clamp(52px, 10.4vw, 190px);
+      font-weight: 500;
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+      text-decoration: none;
+      /* Линия — фон, а не text-decoration: так её можно прорисовать.
+         На двух строках она идёт одной полосой: сначала первая строка, потом вторая */
+      background: linear-gradient(currentColor, currentColor) 0 94% / 100% 0.045em no-repeat;
+      transition: color 0.3s, background-size 1.4s var(--ease) 0.25s;
+    }
+    .js .final__big:not(.in) { background-size: 0% 0.045em; }
+
+    .foot {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 0 var(--gutter);
+      padding: 22px 0 30px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+    }
+    .foot__copy { display: flex; align-items: center; gap: 10px; }
+    .foot__copy i {
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-style: normal;
+    }
+    .foot nav { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+    .foot a { text-decoration: none; color: var(--muted); }
+
+    /* ---------- Окна проектов и статей ---------- */
+
+    body.modal-open { overflow: hidden; }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+      overflow-y: auto;
+      background: rgba(26, 27, 28, 0.35);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s, visibility 0s 0.25s;
+      overscroll-behavior: contain;
+    }
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.25s;
+    }
+    .modal-content {
+      position: relative;
+      width: 100%;
+      max-width: 780px;
+      border-radius: 28px;
+      background: var(--bg);
+      transform: translateY(24px);
+      transition: transform 0.45s var(--ease);
+    }
+    .modal.active .modal-content { transform: none; }
+    .modal-header {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 22px 26px 18px 34px;
+      border-radius: 28px 28px 0 0;
+      background: var(--bg);
+    }
+    .modal-header h3 {
+      margin: 0;
+      font-size: 26px;
+      font-weight: 500;
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+    }
+    .modal-close {
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      padding: 0 0 3px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--bg);
+      cursor: pointer;
+      font-size: 26px;
+      line-height: 1;
+    }
+    .modal-body {
+      padding: 0 34px 36px;
+      font-size: 16px;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+    .modal-body img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 480px;
+      margin: 0 0 24px;
+      border-radius: 18px;
+      object-fit: cover;
+      background: #E4E4E4;
+    }
+    .modal-body h4 {
+      margin: 30px 0 10px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0;
+    }
+    .modal-body p { margin: 0 0 12px; }
+    .modal-body ul { margin: 0 0 12px; }
+    .modal-body li { margin-bottom: 6px; }
+    .modal-body strong { font-weight: 500; }
+    .tab-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin: 0 0 8px;
+    }
+    .tab-btn {
+      height: 36px;
+      padding: 0 15px;
+      border: 0;
+      border-radius: 99px;
+      background: var(--chip);
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .tab-btn.active { background: var(--ink); color: var(--bg); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .btn-primary, .btn-order, .btn-outline {
+      display: inline-flex !important;
+      align-items: center;
+      height: 44px;
+      padding: 0 20px !important;
+      border-radius: 99px;
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .btn-primary, .btn-order { background: var(--ink); color: var(--bg); }
+    .btn-outline { border: 1px solid var(--ink); }
+
+    /* ---------- Появление при входе в экран ---------- */
+
+    .js [data-rv] {
+      opacity: 0;
+      transform: translateY(28px);
+      transition:
+        opacity 0.9s var(--ease) var(--d, 0s),
+        transform 1.1s var(--ease) var(--d, 0s);
+    }
+    .js [data-rv].in {
+      opacity: 1;
+      transform: none;
+    }
+    /* У финальной ссылки к появлению добавляется прорисовка линии */
+    .js .final__big[data-rv] {
+      transition:
+        opacity 0.9s var(--ease),
+        transform 1.1s var(--ease),
+        color 0.3s,
+        background-size 1.6s var(--ease) 0.35s;
+    }
+
+    /* Пиксельная сборка превью: пока холст не отыграл, фото под ним скрыто */
+    .card__pic canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      filter: grayscale(1) contrast(1.05);
+    }
+    .card__pic.px-wait img { opacity: 0; }
+
+    /* Смена содержимого переключателей */
+    @keyframes swap {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+    .swap { animation: swap 0.45s var(--ease); }
+
+    /* Наведение — только там, где есть мышь: на телефоне касание
+       «залипает» как наведение и перекрашивает выбранную метку */
+    @media (hover: hover) {
+      .pill:hover { background: #000; }
+      .menu a:hover { background: var(--bg); }
+      .card:hover .card__pic img { filter: none; transform: scale(1.03); }
+      .live a:hover .arrow,
+      .post:hover .arrow,
+      .pick__try a:hover,
+      .btn-outline:hover { background: var(--ink); color: var(--bg); }
+      .pick__opt:hover b { color: var(--ink); }
+      .final__big:hover { color: var(--accent); }
+      .foot a:hover { color: var(--ink); }
+    }
+
+    /* ---------- Полоса раздела на телефоне ---------- */
+
+    .subbar { display: none; }
+
+
+    /* ---------- Планшет ---------- */
+    @media (max-width: 1024px) {
+      .hero__lead { grid-column: 6 / -1; font-size: 20px; }
+      .hero__art { grid-column: 7 / -1; grid-row: 2; margin-bottom: 30px; }
+      .sec__side { grid-column: 1 / -1; position: static; flex-direction: row; justify-content: space-between; margin-bottom: 36px; }
+      .sec__main { grid-column: 1 / -1; }
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .spec li { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); border-radius: 26px; row-gap: 4px; }
+      .spec__note { grid-column: 1 / -1; }
+
+    }
+
+    /* ---------- Телефон ---------- */
+    @media (max-width: 760px) {
+      :root { --gutter: 16px; }
+
+      .top__row { height: 64px; }
+      .wordmark { font-size: 21px; }
+      .pill { height: 36px; padding: 0 15px; font-size: 13px; }
+      .round { width: 36px; height: 36px; }
+      .menu { top: 58px; }
+
+      .hero {
+        display: block;
+        min-height: 0;
+      }
+      .hero__body {
+        display: flex;
+        flex-direction: column;
+        padding: 24px 0 36px;
+      }
+      .hero__lead { font-size: 19px; order: 1; }
+      .hero__lead p { margin-bottom: 14px; }
+      .hero__art {
+        order: 2;
+        height: 74vw;
+        max-height: 380px;
+        min-height: 0;
+        margin: 10px 0 18px;
+      }
+      .hero__title-wrap { order: 3; }
+      .hero h1 { font-size: clamp(38px, 11.6vw, 64px); }
+      .chips { margin-bottom: 14px; }
+      .hero__note { margin-top: 20px; font-size: 14px; }
+      .rail { display: none; }
+      .sec { display: block; padding: 20px 0 90px; scroll-margin-top: 110px; }
+      .sec__side { margin-bottom: 26px; }
+      .sec__title { margin-bottom: 34px; font-size: clamp(30px, 8.6vw, 40px); }
+
+      .row { grid-template-columns: 34px minmax(0, 1fr); padding: 20px 0 22px; }
+      .row__num { padding-top: 5px; }
+      .row__text { grid-column: 2; margin-top: 10px; }
+      .row__text p { font-size: 15px; }
+
+      .tabs { flex-wrap: nowrap; overflow-x: auto; margin-right: calc(-1 * var(--gutter)); padding-right: var(--gutter); scrollbar-width: none; }
+      .tabs::-webkit-scrollbar { display: none; }
+      .tab { flex-shrink: 0; }
+
+      .cards { grid-template-columns: minmax(0, 1fr); gap: 34px; }
+      .card__pic img, .card__pic canvas { filter: none; }
+
+      .live a { grid-template-columns: minmax(0, 1fr) 44px; row-gap: 4px; padding: 16px 0; }
+      .live__num { display: none; }
+      .live__what { grid-column: 1; grid-row: 2; font-size: 14px; }
+      .live__go { grid-column: 2; grid-row: 1 / 3; }
+      .live__go > span:first-child { display: none; }
+
+      .steps { grid-template-columns: minmax(0, 1fr); }
+
+      .spec li { display: block; padding: 16px 20px; border-radius: 22px; }
+      .spec__label { display: block; font-size: 13px; }
+      .spec__value { display: block; margin: 2px 0 6px; }
+
+      /* На телефоне варианты — лента меток над описанием,
+         иначе выбор меняет то, что ниже экрана */
+      .pick { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+      .pick__options { flex-direction: row; gap: 4px; overflow-x: auto; margin-right: calc(-1 * var(--gutter)); padding-right: var(--gutter); border: 0; scrollbar-width: none; }
+      .pick__options::-webkit-scrollbar { display: none; }
+      .pick__opt { display: flex; align-items: center; flex-shrink: 0; height: 38px; padding: 0 16px; border: 0; border-radius: 99px; background: var(--chip); }
+      .pick__opt::before { display: none; }
+      .pick__opt span { display: none; }
+      .pick__opt b, .pick__opt:not([aria-selected="true"]) b { font-size: 14px; color: inherit; letter-spacing: -0.01em; }
+      .pick__opt[aria-selected="true"], .pick__opt[aria-selected="true"] b { background: var(--ink); color: var(--bg); }
+      .pick__panel { padding: 24px 20px; border-radius: 22px; }
+      .pick__panel h3 { font-size: 24px; }
+
+      .post { grid-template-columns: minmax(0, 1fr) auto; row-gap: 4px; padding: 16px 0; }
+      .post__num { display: none; }
+      .post__text { grid-column: 1; grid-row: 2; font-size: 13px; }
+      .post .arrow { grid-column: 2; grid-row: 1 / 3; width: 38px; height: 38px; }
+      .post__title { font-size: 18px; }
+
+      .final { padding-bottom: 40px; }
+      .final__lead { font-size: 17px; margin-bottom: 26px; }
+      .final__big { font-size: 17vw; line-height: 1.05; }
+      .foot { flex-direction: column; align-items: flex-start; }
+
+      /* Не align-items: flex-end — у длинного окна верх уезжал бы за экран без прокрутки */
+      .modal { padding: 0; }
+      .modal-content { margin-top: 24px; border-radius: 22px 22px 0 0; min-height: calc(100% - 24px); }
+      .modal-header { padding: 16px 16px 14px 20px; border-radius: 22px 22px 0 0; }
+      .modal-header h3 { font-size: 21px; }
+      .modal-body { padding: 0 20px 30px; font-size: 15px; }
+
+      .subbar {
+        position: fixed;
+        top: 64px;
+        left: 0;
+        right: 0;
+        z-index: 40;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 44px;
+        margin: 0;
+        padding: 0 var(--gutter);
+        background: var(--bg);
+        font-size: 13px;
+        transform: translateY(-100%);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 0.35s var(--ease), opacity 0.25s;
+      }
+      .subbar.on { transform: none; opacity: 1; pointer-events: auto; }
+      .subbar::after {
+        content: '';
+        position: absolute;
+        left: var(--gutter);
+        right: var(--gutter);
+        bottom: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .subbar__name { flex: 1; font-weight: 500; }
+      .subbar__dots { display: flex; gap: 5px; }
+      .subbar__dots i { width: 5px; height: 5px; border-radius: 50%; background: var(--line); transition: background 0.2s; }
+      .subbar__dots i.on { background: var(--accent); }
+      .subbar button { width: 30px; height: 30px; padding: 0; border: 0; border-radius: 50%; background: var(--chip); cursor: pointer; display: grid; place-items: center; }
+      .subbar button svg { width: 12px; height: 12px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .rise > span, .fade { transform: none; opacity: 1; transition: none; }
+      .js [data-rv] { opacity: 1; transform: none; transition: none; }
+      .js .final__big:not(.in) { background-size: 100% 0.045em; }
+      .card__pic.px-wait img { opacity: 1; }
+      .swap { animation: none; }
+      .rail__btn .wheel { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">К содержимому</a>
+
+  <header class="top">
+    <div class="top__row">
+      <a class="wordmark" href="studio.html" aria-label="botforge — наверх">botforge</a>
+      <div class="top__actions">
+        <a class="pill magnet" href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BE%D0%B1%D1%81%D1%83%D0%B4%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82" target="_blank" rel="noopener">Обсудить проект</a>
+        <button class="round magnet" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Меню">
+          <span class="burger"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="menu" id="menu" aria-label="Меню">
+    <div class="menu__label">Разделы</div>
+    <a href="#services">Что делаю <small>01</small></a>
+    <a href="#projects">Проекты <small>02</small></a>
+    <a href="#live">Попробовать <small>03</small></a>
+    <a href="#terms">Цены и сроки <small>05</small></a>
+    <a href="#blog">Статьи <small>07</small></a>
+    <a href="#contact">Написать <small>08</small></a>
+    <hr>
+    <div class="menu__label">Вид сайта</div>
+    <a href="index.html">Главная <small>тёмная, 10 тем</small></a>
+    <a href="classic.html">Классическая <small>прежний экран</small></a>
+    <a href="studio.html" aria-current="page">Studio <small>эта страница</small></a>
+  </nav>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero__body">
+        <div class="hero__lead fade d3">
+          <p>Сайт приводит клиента, бот принимает заявку и&nbsp;доводит до&nbsp;оплаты.</p>
+          <p>Делаю и&nbsp;то и&nbsp;другое, поэтому они знают друг о&nbsp;друге: свободное время видно прямо на&nbsp;сайте, а&nbsp;заявка сразу попадает в&nbsp;CRM.</p>
+        </div>
+
+        <div class="hero__art" aria-hidden="true">
+          <canvas id="heroDots"></canvas>
+        </div>
+
+        <div class="hero__title-wrap">
+          <ul class="chips fade" aria-label="Направления">
+            <li>Сайты</li><li>Telegram-боты</li><li>AI-ассистенты</li><li>CRM</li>
+          </ul>
+          <h1>
+            <span class="rise"><span class="d1">Сайты и&nbsp;боты,</span></span>
+            <span class="rise"><span class="d2">которые работают</span></span>
+            <span class="rise"><span class="d3">вместе</span></span>
+          </h1>
+          <p class="hero__note fade d5">Код и&nbsp;доступы передаю вам · Отвечаю в&nbsp;течение дня</p>
+        </div>
+      </div>
+
+      <div class="rail">
+        <span class="rail__word">Дальше</span>
+        <a class="rail__btn magnet" href="#services" aria-label="К следующему разделу">
+          <svg viewBox="0 0 18 26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <g class="wheel"><line x1="9" y1="4" x2="9" y2="21"/><polyline points="3 15 9 21 15 15"/></g>
+          </svg>
+        </a>
+      </div>
+    </section>
+
+    <section class="sec" id="services" data-name="Что делаю">
+      <div class="sec__side">
+        <h2 class="sec__name">Что делаю</h2>
+        <div class="sec__count">01 — 08</div>
+      </div>
+      <div class="sec__main">
+        <p class="sec__title">Сайт, бот и&nbsp;система за&nbsp;ними&nbsp;— <em>у&nbsp;одного разработчика, поэтому всё связано</em></p>
+        <ul class="rows">
+          <li class="row">
+            <span class="row__num">01</span>
+            <h3 class="row__name">Сайты и лендинги</h3>
+            <div class="row__text"><p>Страница услуги, лендинг под рекламу, сайт-визитка. Вёрстка под задачу, без конструкторов.</p><p class="fmt">Лендинг · сайт + запись через бота</p></div>
+          </li>
+          <li class="row">
+            <span class="row__num">02</span>
+            <h3 class="row__name">Чат-боты для продаж</h3>
+            <div class="row__text"><p>Приём заказов, консультация, оплата. Заявки уходят в&nbsp;CRM.</p><p class="fmt">Бот · бот + Mini App · бот + CRM-панель</p></div>
+          </li>
+          <li class="row">
+            <span class="row__num">03</span>
+            <h3 class="row__name">Запись и напоминания</h3>
+            <div class="row__text"><p>Клиент сам выбирает время, бот напоминает о&nbsp;визите. Подключаю Google Calendar.</p><p class="fmt">Бот + Mini App · бот + CRM-панель</p></div>
+          </li>
+          <li class="row">
+            <span class="row__num">04</span>
+            <h3 class="row__name">AI-ассистенты</h3>
+            <div class="row__text"><p>Бот, который отвечает по&nbsp;документам вашей компании и&nbsp;не&nbsp;выдумывает фактов.</p><p class="fmt">Бот · бот + Mini App</p></div>
+          </li>
+          <li class="row">
+            <span class="row__num">05</span>
+            <h3 class="row__name">CRM-панели</h3>
+            <div class="row__text"><p>Заявки, клиенты и&nbsp;статистика в&nbsp;браузере для всей команды. Подключу amoCRM или Bitrix24&nbsp;— или соберу свою CRM под ваш процесс, без ежемесячной платы за&nbsp;лицензию.</p><p class="fmt">Бот + CRM-панель</p></div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="sec" id="projects" data-name="Проекты">
+      <div class="sec__side">
+        <h2 class="sec__name">Проекты</h2>
+        <div class="sec__count">02 — 08</div>
+      </div>
+      <div class="sec__main">
+        <p class="sec__title">15 проектов&nbsp;— <em>сайты, боты, AI и&nbsp;CRM</em></p>
+        <div class="tabs" role="tablist" aria-label="Тип проекта"><button class="tab" type="button" role="tab" aria-selected="true" data-filter="all">Все<sup>15</sup></button><button class="tab" type="button" role="tab" aria-selected="false" data-filter="site">Сайты<sup>4</sup></button><button class="tab" type="button" role="tab" aria-selected="false" data-filter="telegram">Telegram<sup>8</sup></button><button class="tab" type="button" role="tab" aria-selected="false" data-filter="miniapp">Mini App<sup>9</sup></button><button class="tab" type="button" role="tab" aria-selected="false" data-filter="ai">AI<sup>3</sup></button><button class="tab" type="button" role="tab" aria-selected="false" data-filter="crm">CRM<sup>4</sup></button></div>
+        <div class="cards" id="cards">
+          <button class="card" type="button" data-modal="realty" data-cat="site">
+            <span class="card__pic"><img src="media/realty-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+            <span class="card__meta"><span>01</span><span>Сайт · видео-заставка</span></span>
+            <span class="card__title">REALTY — агентство недвижимости</span>
+            <span class="card__text">Камера въезжает в&nbsp;дом, последний кадр становится фоном. Переходы через раздвижные двери.</span>
+          </button>
+          <button class="card" type="button" data-modal="ton" data-cat="site">
+            <span class="card__pic"><img src="media/ton-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+            <span class="card__meta"><span>02</span><span>Сайт · примерка цвета</span></span>
+            <span class="card__title">ТОН — салон окрашивания</span>
+            <span class="card__text">Примерочная цвета волос и&nbsp;живое расписание записи прямо на&nbsp;первом экране.</span>
+          </button>
+          <button class="card" type="button" data-modal="beauty" data-cat="telegram crm miniapp">
+            <span class="card__pic"><img src="media/studio/beauty.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+            <span class="card__meta"><span>03</span><span>Telegram · Mini App · CRM</span></span>
+            <span class="card__title">BeautyBook</span>
+            <span class="card__text">Запись в&nbsp;один экран, CRM с&nbsp;выручкой и&nbsp;неявками, отзывы, программа лояльности.</span>
+          </button>
+          <button class="card" type="button" data-modal="peregon" data-cat="site">
+            <span class="card__pic"><img src="media/peregon-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+            <span class="card__meta"><span>04</span><span>Сайт · калькулятор</span></span>
+            <span class="card__title">ПЕРЕГОН — авто из&nbsp;США</span>
+            <span class="card__text">Сайт компании, которая возит машины с&nbsp;аукционов. Считает смету и&nbsp;уводит в&nbsp;бота за&nbsp;лотами.</span>
+          </button>
+          <button class="card" type="button" data-modal="levelup" data-cat="site miniapp">
+            <span class="card__pic"><img src="media/levelup-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+            <span class="card__meta"><span>05</span><span>Веб-приложение · геймификация</span></span>
+            <span class="card__title">LevelUp</span>
+            <span class="card__text">Уровни, рейтинг и&nbsp;награды для школ, компаний, фитнеса и&nbsp;кофеен. Ниша, стиль и&nbsp;язык переключаются на&nbsp;лету.</span>
+          </button>
+          <button class="card" type="button" data-modal="realtybot" data-cat="telegram miniapp crm">
+            <span class="card__pic"><img src="media/studio/realtybot.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+            <span class="card__meta"><span>06</span><span>Telegram · Mini App · CRM</span></span>
+            <span class="card__title">RealtyBotCRM</span>
+            <span class="card__text">CRM для агентств недвижимости: бот с&nbsp;мини-аппом, воронка, ИИ-оценка объектов и&nbsp;аналитика.</span>
+          </button>
+          <button class="card" type="button" data-modal="parser" data-cat="telegram miniapp">
+            <span class="card__pic"><img src="media/parser-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+            <span class="card__meta"><span>07</span><span>Telegram · Mini App · парсинг</span></span>
+            <span class="card__title">Парсер авто с&nbsp;аукционов</span>
+            <span class="card__text">Следит за&nbsp;Copart, Auto.ru, Дромом и&nbsp;Авито. Новый подходящий лот&nbsp;— сразу в&nbsp;Telegram со&nbsp;сметой.</span>
+          </button>
+          <button class="card" type="button" data-modal="shop" data-cat="telegram crm">
+            <span class="card__pic"><img src="media/studio/shop.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+            <span class="card__meta"><span>08</span><span>Telegram · ЮKassa</span></span>
+            <span class="card__title">ShopBot</span>
+            <span class="card__text">Магазин в&nbsp;Telegram: каталог, корзина, оплата через ЮKassa, админ-панель и&nbsp;отчёты в&nbsp;Google Sheets.</span>
+          </button>
+          <button class="card" type="button" data-modal="ai" data-cat="ai">
+            <span class="card__pic"><img src="media/studio/ai.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+            <span class="card__meta"><span>09</span><span>AI · RAG · Telegram</span></span>
+            <span class="card__title">DocuHelper Forex</span>
+            <span class="card__text">Консультант на&nbsp;базе ваших документов. Отвечает на&nbsp;вопросы по&nbsp;трейдингу быстро и&nbsp;точно.</span>
+          </button>
+          <button class="card" type="button" data-modal="docuhelper-mini" data-cat="ai miniapp">
+            <span class="card__pic"><img src="media/studio/docuhelper-mini.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+            <span class="card__meta"><span>10</span><span>AI · Mini App · pgvector</span></span>
+            <span class="card__title">DocuHelper Mini App</span>
+            <span class="card__text">AI-консультант с&nbsp;чатом: гибридный поиск, быстрые вопросы, источник у&nbsp;каждого ответа.</span>
+          </button>
+          <button class="card" type="button" data-modal="voicebot" data-cat="ai telegram miniapp">
+            <span class="card__pic"><img src="media/studio/voicebot.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+            <span class="card__meta"><span>11</span><span>AI · голос · Mini App</span></span>
+            <span class="card__title">VoiceBot — Алиса</span>
+            <span class="card__text">Голосовой ассистент: говорите&nbsp;— отвечает голосом. Помнит собеседника, разбирает фото и&nbsp;документы.</span>
+          </button>
+          <button class="card" type="button" data-modal="bookingbot" data-cat="telegram miniapp crm">
+            <span class="card__pic card__pic--type" aria-hidden="true">BookingBot</span>
+            <span class="card__meta"><span>12</span><span>Telegram · Mini App · ЮKassa</span></span>
+            <span class="card__title">BookingBot CRM</span>
+            <span class="card__text">Онлайн-запись для салона: Mini App для клиентов, CRM-панель в&nbsp;браузере, оплата и&nbsp;напоминания.</span>
+          </button>
+          <button class="card" type="button" data-modal="encar" data-cat="telegram">
+            <span class="card__pic"><img src="media/studio/encar.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+            <span class="card__meta"><span>13</span><span>Telegram · Encar API</span></span>
+            <span class="card__title">EncarBot</span>
+            <span class="card__text">Калькулятор авто из&nbsp;Кореи под ключ: таможня для РФ и&nbsp;КЗ, живой курс воны, поиск на&nbsp;Encar.com.</span>
+          </button>
+          <button class="card" type="button" data-modal="quiz" data-cat="telegram miniapp">
+            <span class="card__pic"><img src="media/studio/quiz.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+            <span class="card__meta"><span>14</span><span>Telegram · Mini App · Google Sheets</span></span>
+            <span class="card__title">Quiz Trader</span>
+            <span class="card__text">Квиз с&nbsp;анимациями и&nbsp;темами, результаты сами сохраняются в&nbsp;Google Sheets.</span>
+          </button>
+          <button class="card" type="button" data-modal="game" data-cat="miniapp">
+            <span class="card__pic"><img src="media/studio/game.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+            <span class="card__meta"><span>15</span><span>Mini App · Three.js</span></span>
+            <span class="card__title">Шахтёрская глубина</span>
+            <span class="card__text">3D-кликер в&nbsp;Telegram: 13 боссов, крафт, достижения и&nbsp;рейтинги.</span>
+          </button>
+        </div>
+        <button class="more" type="button" id="moreBtn"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M4 9l4 4 4-4"/></svg></span><span>Показать все проекты</span></button>
+      </div>
+    </section>
+
+    <section class="sec" id="live" data-name="Попробовать">
+      <div class="sec__side">
+        <h2 class="sec__name">Попробовать</h2>
+        <div class="sec__count">03 — 08</div>
+      </div>
+      <div class="sec__main">
+        <p class="sec__title">Не&nbsp;верьте описаниям&nbsp;— <em>откройте и&nbsp;попробуйте сами</em></p>
+        <ul class="live">
+          <li><a href="realty/" target="_blank" rel="noopener">
+            <span class="row__num live__num">01</span>
+            <span class="live__name">REALTY<small>сайт</small></span>
+            <span class="live__what">Ролик на&nbsp;входе и&nbsp;переходы через двери</span>
+            <span class="live__go"><span>Открыть сайт</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
+          </a></li>
+          <li><a href="ton/" target="_blank" rel="noopener">
+            <span class="row__num live__num">02</span>
+            <span class="live__name">ТОН<small>сайт</small></span>
+            <span class="live__what">Примерить цвет и&nbsp;посмотреть свободное время</span>
+            <span class="live__go"><span>Открыть сайт</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
+          </a></li>
+          <li><a href="levelup/" target="_blank" rel="noopener">
+            <span class="row__num live__num">03</span>
+            <span class="live__name">LevelUp<small>веб-приложение</small></span>
+            <span class="live__what">Переключить нишу, стиль и&nbsp;язык на&nbsp;лету</span>
+            <span class="live__go"><span>Открыть</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
+          </a></li>
+          <li><a href="https://vladislavbropiton.github.io/car/" target="_blank" rel="noopener">
+            <span class="row__num live__num">04</span>
+            <span class="live__name">ПЕРЕГОН<small>сайт</small></span>
+            <span class="live__what">Посчитать смету на&nbsp;машину из&nbsp;США</span>
+            <span class="live__go"><span>Открыть сайт</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
+          </a></li>
+          <li><a href="https://t.me/Beautybook1_bot" target="_blank" rel="noopener">
+            <span class="row__num live__num">05</span>
+            <span class="live__name">BeautyBook<small>бот</small></span>
+            <span class="live__what">Записаться в&nbsp;салон на&nbsp;одном экране</span>
+            <span class="live__go"><span>Открыть бота</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
+          </a></li>
+          <li><a href="https://t.me/realty1_crm_bot" target="_blank" rel="noopener">
+            <span class="row__num live__num">06</span>
+            <span class="live__name">RealtyBot<small>бот</small></span>
+            <span class="live__what">Ответить на&nbsp;четыре вопроса и&nbsp;получить подбор</span>
+            <span class="live__go"><span>Открыть бота</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
+          </a></li>
+          <li><a href="https://t.me/yasuperparserbot" target="_blank" rel="noopener">
+            <span class="row__num live__num">07</span>
+            <span class="live__name">Парсер авто<small>бот</small></span>
+            <span class="live__what">Получить лоты с&nbsp;аукционов со&nbsp;сметой</span>
+            <span class="live__go"><span>Открыть бота</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
+          </a></li>
+          <li><a href="https://t.me/my_1shopbot" target="_blank" rel="noopener">
+            <span class="row__num live__num">08</span>
+            <span class="live__name">ShopBot<small>бот</small></span>
+            <span class="live__what">Собрать корзину и&nbsp;дойти до&nbsp;оплаты</span>
+            <span class="live__go"><span>Открыть бота</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
+          </a></li>
+          <li><a href="https://t.me/DocuHelperForexBot" target="_blank" rel="noopener">
+            <span class="row__num live__num">09</span>
+            <span class="live__name">DocuHelper<small>AI-бот</small></span>
+            <span class="live__what">Задать вопрос по&nbsp;документам</span>
+            <span class="live__go"><span>Открыть бота</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
+          </a></li>
+          <li><a href="https://t.me/my123voicebot" target="_blank" rel="noopener">
+            <span class="row__num live__num">10</span>
+            <span class="live__name">VoiceBot<small>AI-бот</small></span>
+            <span class="live__what">Поговорить голосом</span>
+            <span class="live__go"><span>Открыть бота</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
+          </a></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="sec" id="process" data-name="Как работаю">
+      <div class="sec__side">
+        <h2 class="sec__name">Как работаю</h2>
+        <div class="sec__count">04 — 08</div>
+      </div>
+      <div class="sec__main">
+        <p class="sec__title">От&nbsp;описания задачи <em>до&nbsp;кода у&nbsp;вас в&nbsp;руках</em></p>
+        <div class="tabs" role="tablist" aria-label="Этап работы"><button class="tab" type="button" role="tab" aria-selected="true" data-step="0">01&nbsp;&nbsp;Анализ</button><button class="tab" type="button" role="tab" aria-selected="false" data-step="1">02&nbsp;&nbsp;Проектирование</button><button class="tab" type="button" role="tab" aria-selected="false" data-step="2">03&nbsp;&nbsp;Разработка</button><button class="tab" type="button" role="tab" aria-selected="false" data-step="3">04&nbsp;&nbsp;Передача</button></div>
+        <div class="steps" role="tabpanel" aria-live="polite">
+          <p class="steps__big" id="stepText">Разбираемся, что должно происходить: откуда приходит клиент, что он делает дальше и&nbsp;где сейчас теряются заявки. Нет технического задания&nbsp;— составлю его по&nbsp;вашему описанию.</p>
+          <div>
+            <p class="steps__label">Что вы получаете</p>
+            <ul class="steps__list" id="stepList"><li>Техническое задание</li><li>Смета</li><li>Сроки</li></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="terms" data-name="Цены и сроки">
+      <div class="sec__side">
+        <h2 class="sec__name">Цены и сроки</h2>
+        <div class="sec__count">05 — 08</div>
+      </div>
+      <div class="sec__main">
+        <p class="sec__title">Сколько стоит <em>и&nbsp;сколько ждать</em></p>
+        <ul class="spec">
+          <li><span class="spec__label">Бот</span><span class="spec__value">от&nbsp;40&nbsp;000&nbsp;₽</span><span class="spec__note">Простой бот: заявки, запись, ответы на&nbsp;вопросы.</span></li>
+          <li><span class="spec__label">Комплексное решение</span><span class="spec__value">от&nbsp;90&nbsp;000&nbsp;₽</span><span class="spec__note">С&nbsp;AI и&nbsp;интеграциями. Точная смета&nbsp;— после уточнения задачи.</span></li>
+          <li><span class="spec__label">Сроки</span><span class="spec__value">3–7 дней</span><span class="spec__note">Простые проекты. Сложные AI-решения и&nbsp;Mini Apps&nbsp;— от&nbsp;2&nbsp;недель.</span></li>
+          <li><span class="spec__label">Код</span><span class="spec__value">ваш</span><span class="spec__note">После полной оплаты передаю исключительные права и&nbsp;исходный код.</span></li>
+          <li><span class="spec__label">Для старта</span><span class="spec__value">описание задачи</span><span class="spec__note">Техническое задание или просто рассказ своими словами. Помогу составить ТЗ.</span></li>
+          <li><span class="spec__label">Ответ</span><span class="spec__value">в&nbsp;течение дня</span><span class="spec__note">Консультация бесплатная и&nbsp;ни&nbsp;к&nbsp;чему не&nbsp;обязывает.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="sec" id="pick" data-name="Какой бот нужен">
+      <div class="sec__side">
+        <h2 class="sec__name">Какой бот нужен</h2>
+        <div class="sec__count">06 — 08</div>
+      </div>
+      <div class="sec__main">
+        <p class="sec__title">Какой бот вам нужен? <em>Выберите&nbsp;— покажу, что он умеет</em></p>
+        <div class="pick">
+          <div class="pick__options" role="tablist" aria-label="Тип бота"><button class="pick__opt" type="button" role="tab" aria-selected="true" data-pick="support"><b>Поддержка клиентов</b><span>Ответы на&nbsp;вопросы, тикеты, операторы</span></button><button class="pick__opt" type="button" role="tab" aria-selected="false" data-pick="sales"><b>Продажи и&nbsp;оплата</b><span>Каталог, корзина, ЮKassa, отчёты</span></button><button class="pick__opt" type="button" role="tab" aria-selected="false" data-pick="booking"><b>Запись и&nbsp;календарь</b><span>Google Calendar, напоминания</span></button><button class="pick__opt" type="button" role="tab" aria-selected="false" data-pick="ai"><b>AI-ассистент</b><span>Ответы по&nbsp;вашим документам</span></button><button class="pick__opt" type="button" role="tab" aria-selected="false" data-pick="quiz"><b>Квиз и&nbsp;сбор заявок</b><span>Mini App, Google Sheets</span></button><button class="pick__opt" type="button" role="tab" aria-selected="false" data-pick="other"><b>Другое</b><span>Расскажите о&nbsp;своей идее</span></button></div>
+          <div class="pick__panel" role="tabpanel" aria-live="polite">
+            <h3 id="pickTitle"></h3>
+            <ul id="pickList"></ul>
+            <div class="pick__try" id="pickTry"></div>
+            <a class="pill magnet" id="pickCta" href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BE%D0%B1%D1%81%D1%83%D0%B4%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82" target="_blank" rel="noopener">Обсудить такого бота</a>
+            <p class="pick__note">Бесплатно и&nbsp;ни&nbsp;к&nbsp;чему не&nbsp;обязывает</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec" id="blog" data-name="Статьи">
+      <div class="sec__side">
+        <h2 class="sec__name">Статьи</h2>
+        <div class="sec__count">07 — 08</div>
+      </div>
+      <div class="sec__main">
+        <p class="sec__title">Пишу о&nbsp;том, <em>что делаю каждый день</em></p>
+        <ul class="posts">
+          <li><button class="post" type="button" data-modal="blog1">
+            <span class="row__num post__num">01</span>
+            <span class="post__title">Как AI меняет чат-ботов в&nbsp;2026</span>
+            <span class="post__text">RAG, мультимодальные модели и&nbsp;автономные агенты&nbsp;— что работает уже сегодня.</span>
+            <span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </button></li>
+          <li><button class="post" type="button" data-modal="blog2">
+            <span class="row__num post__num">02</span>
+            <span class="post__title">Запуск магазина в&nbsp;Telegram: пошаговое руководство</span>
+            <span class="post__text">От идеи до&nbsp;первого заказа с&nbsp;оплатой через ЮKassa.</span>
+            <span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </button></li>
+          <li><button class="post" type="button" data-modal="blog3">
+            <span class="row__num post__num">03</span>
+            <span class="post__title">Интеграция бота с&nbsp;CRM: amoCRM и&nbsp;Bitrix24</span>
+            <span class="post__text">Как передавать заявки из&nbsp;Telegram в&nbsp;CRM и&nbsp;не&nbsp;терять ни&nbsp;одной.</span>
+            <span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </button></li>
+          <li><button class="post" type="button" data-modal="blog4">
+            <span class="row__num post__num">04</span>
+            <span class="post__title">Безопасность Telegram-ботов</span>
+            <span class="post__text">Простые правила, которые защитят данные клиентов от&nbsp;утечек.</span>
+            <span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </button></li>
+          <li><button class="post" type="button" data-modal="blog5">
+            <span class="row__num post__num">05</span>
+            <span class="post__title">Аналитика в&nbsp;ботах</span>
+            <span class="post__text">Какие цифры отслеживать и&nbsp;как с&nbsp;их&nbsp;помощью продавать больше.</span>
+            <span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </button></li>
+          <li><button class="post" type="button" data-modal="blog6">
+            <span class="row__num post__num">06</span>
+            <span class="post__title">Telegram Mini Apps: что это и&nbsp;зачем</span>
+            <span class="post__text">Как заменить мобильное приложение окном внутри Telegram.</span>
+            <span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </button></li>
+          <li><button class="post" type="button" data-modal="blog7">
+            <span class="row__num post__num">07</span>
+            <span class="post__title">Конструктор или разработка на&nbsp;заказ</span>
+            <span class="post__text">Когда хватит Salebot, а&nbsp;когда нужен Python.</span>
+            <span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>
+          </button></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="sec final" id="contact" data-name="Написать">
+      <div class="sec__side">
+        <h2 class="sec__name">Написать</h2>
+        <div class="sec__count">08 — 08</div>
+      </div>
+      <div class="sec__main">
+        <p class="final__lead">Опишите задачу своими словами. Отвечу в&nbsp;течение дня и&nbsp;скажу, сколько это будет стоить и&nbsp;сколько займёт.</p>
+        <a class="final__big" href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BE%D0%B1%D1%81%D1%83%D0%B4%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82" target="_blank" rel="noopener">Обсудить проект</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="foot__copy"><i>©</i>2026 botforge</div>
+    <nav aria-label="Ссылки">
+      <a href="https://t.me/Bro_piton" target="_blank" rel="noopener">Telegram @Bro_piton</a>
+      <a href="index.html">Главная</a>
+      <a href="classic.html">Классическая</a>
+    </nav>
+  </footer>
+
+  <div class="subbar" id="subbar" aria-hidden="true">
+    <span class="subbar__name" id="subName"></span>
+    <span class="subbar__dots" id="subDots"></span>
+    <button type="button" id="subPrev" tabindex="-1" aria-label="Предыдущий раздел"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 10V2M2.5 5.5L6 2l3.5 3.5"/></svg></button>
+    <button type="button" id="subNext" tabindex="-1" aria-label="Следующий раздел"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2v8M2.5 6.5L6 10l3.5-3.5"/></svg></button>
+  </div>
+
+  <!-- @modals:start -->
+<div class="modal" id="modal-realty">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>REALTY — сайт агентства недвижимости</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img loading="lazy" src="media/realty-thumb.webp" alt="Первый экран сайта REALTY" />
+
+      <h4>Что это</h4>
+      <p>Лендинг агентства недвижимости. Задача — снять недоверие, из-за которого
+      люди боятся риэлторов: что обманут, что возьмут деньги вперёд, что потеряется
+      задаток.</p>
+
+      <h4>Первый экран</h4>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li><strong>Камера въезжает в дом.</strong> Ролик играет один раз и
+        останавливается у открытой двери. Его последний кадр становится фоном
+        страницы — стыка не видно, разница между кадром и фоном 1,7 из 255.</li>
+        <li><strong>Переходы через двери.</strong> Нажали пункт меню — створки
+        сошлись, под ними сменился раздел, разъехались. Весь путь 350 мс:
+        ощущение дверей есть, ожидания нет.</li>
+        <li>Заголовок повторяет анкету бота: четыре вопроса, с которых
+        начинается подбор.</li>
+      </ul>
+
+      <h4>Как сделано</h4>
+      <p><strong>Вёрстка:</strong> чистый HTML, CSS и JavaScript, ни одной внешней
+      библиотеки.<br>
+      <strong>Ролик:</strong> сгенерирован по одному кадру, сжат с 3,5 МБ до 809 КБ
+      без потери разрешения.<br>
+      <strong>Фотографии:</strong> комнаты того же дома — они же фоны разделов.<br>
+      <strong>Страховки:</strong> кнопка «Пропустить», сторож на случай зависшего
+      ролика, отключение при экономии трафика и при запрете автозапуска.</p>
+
+      <h4>За сайтом</h4>
+      <p>Подбор ведёт Telegram-бот с CRM: анкета из четырёх шагов, автоответы
+      про ипотеку и задаток, UTM с Авито и Циана, лид-скоринг, норматив
+      15 минут на первый ответ, воронка и аналитика для руководителя.</p>
+
+      <h4>Результат</h4>
+      <p>Пять блоков, тексты, мобильная версия, связка с системой подбора.
+      Так же собирается под любое агентство — меняются фотографии,
+      города и условия.</p>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+        <a href="realty/" target="_blank" class="btn-outline" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">Открыть сайт</a>
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B9%20%D0%B6%D0%B5%20%D1%81%D0%B0%D0%B9%D1%82" target="_blank" class="btn-primary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">Хочу такой же</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-ton">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>ТОН — сайт салона окрашивания</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img loading="lazy" src="media/ton-thumb.webp" alt="Первый экран сайта ТОН" />
+
+      <h4>Что это</h4>
+      <p>Лендинг салона сложного окрашивания. Задача была не «сделать красиво»,
+      а снять два страха, из-за которых женщины откладывают окрашивание:
+      «а как я буду выглядеть» и «сколько это в итоге будет стоить».</p>
+
+      <h4>Два решения, которых нет у шаблонных сайтов салонов</h4>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li><strong>Примерочная цвета на первом экране.</strong> Пять оттенков,
+        переключаются мгновенно. Это одна фотография, перекрашенная кодом:
+        пряди, свет и кадр везде одни и те же, поэтому читается как
+        «волосы перекрасились», а не как смена картинок.</li>
+        <li><strong>Живое расписание записи.</strong> Не картинка, а расчёт:
+        учитывается длительность услуги и занятость трёх колористов.
+        У блондирования на шесть часов свободных окошек в разы меньше,
+        чем у двухчасового тонирования — и это видно.</li>
+        <li>Выбранное время собирается в заявку с именем колориста и временем
+        окончания, дальше человек уходит в бота записываться.</li>
+      </ul>
+
+      <h4>Как сделано</h4>
+      <p><strong>Вёрстка:</strong> чистый HTML, CSS и JavaScript. Ни одной внешней
+      библиотеки — только шрифт.<br>
+      <strong>Картинки:</strong> одна сгенерированная фотография, из неё кодом
+      получены пять оттенков через карту тона.<br>
+      <strong>Запись:</strong> ведёт в Telegram-бот на BeautyBook, сайт умеет
+      забирать из него расписание вживую.<br>
+      <strong>Вес:</strong> 51 КБ разметки, картинки грузятся по мере надобности.</p>
+
+      <h4>Мобильная версия</h4>
+      <p>Первый экран пересобран, а не сжат: волосы получили своё место сверху,
+      кнопка помещается без прокрутки. Отзывы свёрнуты в ленту со свайпом —
+      это укоротило страницу почти на целый экран.</p>
+
+      <h4>Результат</h4>
+      <p>Готовый сайт под ключ: шесть блоков, тексты, мобильная версия,
+      подключение к системе записи. Так же собирается под любой салон —
+      меняются фотографии, услуги и цены.</p>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+        <a href="ton/" target="_blank" class="btn-outline" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">Открыть сайт</a>
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B9%20%D0%B6%D0%B5%20%D1%81%D0%B0%D0%B9%D1%82" target="_blank" class="btn-primary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">Хочу такой же</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-beauty">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>BeautyBook Bot</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img loading="lazy" src="media/studio/modal-beauty.webp" alt="BeautyBook">
+      <div class="tab-buttons">
+        <button class="tab-btn active">Простым языком</button>
+        <button class="tab-btn">Технические детали</button>
+        <button class="tab-btn">Применение и аналоги</button>
+      </div>
+      <div class="tab-content active" id="tab-simple">
+        <h4>Что это?</h4>
+        <p>Онлайн-запись в салон красоты прямо в Telegram. Клиент выбирает услугу, мастера и время
+        на одном экране, а владелец управляет салоном из CRM в браузере — услуги, мастера, часы
+        работы и скидки меняются мышкой, без программиста.</p>
+        <h4>Что умеет</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li>Вся запись на одном экране: услуга, мастер, дни лентой, свободное время кнопками.</li>
+          <li>Кнопка «как в прошлый раз» — повтор визита в одно касание.</li>
+          <li>Свободное время считается с учётом длительности услуги, выходных и чужих записей.</li>
+          <li>Напоминание за день с кнопками «Буду» и «Перенести» — отказ сразу освобождает время.</li>
+          <li>После визита мастер отмечает, пришёл ли клиент, — иначе выручку никто не проставит.</li>
+          <li>Через сутки клиент ставит оценку; тройка и ниже сразу уходит владельцу в личку.</li>
+          <li>Заметки о клиенте у мастера: формула цвета, аллергии, предпочтения.</li>
+          <li>Программа лояльности: каждый N-й визит со скидкой, размер задаётся в настройках.</li>
+          <li>Владелец видит выручку, неявки, загрузку мастеров и отзывы.</li>
+        </ul>
+        <h4>Что это даёт?</h4>
+        <p>Клиенты записываются сами, круглосуточно и без звонков. Слот, от которого отказались
+        заранее, успевают занять снова. А главное — салон впервые видит себя в цифрах: сколько
+        заработано, кто не пришёл, к какому мастеру возвращаются.</p>
+      <p style="font-size: 13px; color: var(--text-muted); margin-top: 16px; margin-bottom: 4px;">Демо-доступ в CRM — Логин: <strong style="color: var(--text);">demo</strong> &nbsp;·&nbsp; Пароль: <strong style="color: var(--text);">demo1234</strong></p>
+      </div>
+      <div class="tab-content" id="tab-tech">
+        <h4>Стек технологий</h4>
+        <p><strong>Бэкенд:</strong> Python 3.13, aiogram 3, aiohttp — бот, вебхук и API одним процессом.<br>
+        <strong>База данных:</strong> PostgreSQL (Neon), asyncpg, 7 таблиц.<br>
+        <strong>Мини-приложение:</strong> HTML/CSS/JS без единой внешней библиотеки — только
+        telegram-web-app.js. Ничего не тянется со сторонних CDN.<br>
+        <strong>CRM:</strong> один HTML-файл, графики на Chart.js.<br>
+        <strong>Интеграции:</strong> Google Calendar API (подключается по желанию).<br>
+        <strong>Деплой:</strong> Render, вебхук, переменные окружения.</p>
+        <h4>Инженерные решения</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li>Свободное время считает <strong>только сервер</strong> — браузеру эта логика не доверена.
+          Расчёт вынесен в отдельный модуль и покрыт тестами, которые идут без базы и без сети.</li>
+          <li>Двойная запись невозможна: блокировка на паре «мастер + дата», а поверх неё —
+          уникальный индекс в базе, который не считает отменённые записи, поэтому отмена
+          мгновенно освобождает время.</li>
+          <li>Схема базы мигрируется сама при старте — SQL руками накатывать не нужно.</li>
+          <li>Записи никогда не удаляются физически: статусы «Активна», «Пришёл», «Не пришёл»,
+          «Отменена». Иначе вместе с записью пропадала бы выручка и история клиента.</li>
+          <li>CRM: дашборд с выручкой и неявками, записи с поиском и фильтрами, расписание по
+          мастерам, карточки клиентов, отзывы с оценками, аналитика.</li>
+          <li>Паролей по умолчанию нет вообще. Не задан пароль мастера — кабинет выключен,
+          не заданы данные CRM — вход выключен. Для показа заказчику есть отдельная
+          демо-роль только на просмотр.</li>
+          <li>Часовой пояс салона задан явно: сервер на Render живёт по UTC, и без этого
+          напоминания и отчёты «за сегодня» разъезжались бы.</li>
+        </ul>
+        <h4>Результат</h4>
+        <p>Продакшн-система, которой пользуются. Заказчик получает исходный код, настроенный
+        деплой и возможность менять услуги, мастеров, часы и скидки самому.</p>
+      <p style="font-size: 13px; color: var(--text-muted); margin-top: 16px; margin-bottom: 4px;">Демо-доступ в CRM — Логин: <strong style="color: var(--text);">demo</strong> &nbsp;·&nbsp; Пароль: <strong style="color: var(--text);">demo1234</strong></p>
+      </div>
+      <div class="tab-content" id="tab-use">
+        <h4>Где пригодится такая система записи</h4>
+        <p>Решение легко адаптируется под любую сферу, где клиентам нужно выбирать услугу, мастера и время. Примеры:</p>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Медицинские клиники</strong> — запись к врачам, выбор специалиста, напоминания о приёме.</li>
+          <li><strong>Салоны красоты и барбершопы</strong> — оригинальное применение уже реализовано, но можно тиражировать.</li>
+          <li><strong>Ветеринария</strong> — запись питомцев на осмотр, прививки, груминг.</li>
+          <li><strong>Автосервисы и СТО</strong> — выбор услуг (ТО, ремонт), мастеров‑консультантов и времени.</li>
+          <li><strong>Фитнес‑клубы</strong> — бронирование тренировок, залов, персональных занятий.</li>
+        </ul>
+        <p>Везде одинаковый принцип: одноэкранная запись в Telegram, серверный расчёт свободного времени и CRM для владельца. Меняются только названия услуг и мастеров, а календарь подключается по желанию.</p>
+      <p style="font-size: 13px; color: var(--text-muted); margin-top: 16px; margin-bottom: 4px;">Демо-доступ в CRM — Логин: <strong style="color: var(--text);">demo</strong> &nbsp;·&nbsp; Пароль: <strong style="color: var(--text);">demo1234</strong></p>
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B1%D0%BE%D1%82%D0%B0%20%D0%BA%D0%B0%D0%BA%20%C2%ABBeautyBook%C2%BB" target="_blank" class="btn-order">Хочу такого же бота</a>
+        <a href="https://t.me/Beautybook1_bot" target="_blank" class="btn-outline" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">Попробовать бота</a>
+        <a href="https://beautybook-bot.onrender.com/admin" target="_blank" class="btn-outline" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">Открыть CRM</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-peregon">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>ПЕРЕГОН — сайт под ключ</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img loading="lazy" src="media/peregon-thumb.webp" alt="Первый экран сайта ПЕРЕГОН" />
+
+      <h4>Что это</h4>
+      <p>Сайт компании, которая выкупает автомобили на аукционах США, везёт
+      и растаможивает. Задача — снять недоверие: у людей за словом «перегон»
+      стоит страх отдать деньги и не увидеть ни машины, ни человека.</p>
+
+      <h4>Живой первый экран</h4>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li>Машина заезжает в кадр, стоит и уезжает — после этого проявляется
+        заголовок. Ролик играет один раз, дальше не мешает.</li>
+        <li>Камера в ролике неподвижна, а последний кадр совпадает с фоном
+        страницы, поэтому стыка видео и сайта не видно.</li>
+        <li>Кнопка «Пропустить», страховка на случай, если ролик не запустился,
+        и отдельное поведение на медленном интернете.</li>
+      </ul>
+
+      <h4>Калькулятор сметы</h4>
+      <p>Считает итог по той же формуле, что и бот: цена лота, аукционный сбор,
+      брокер, доставка по США, морской фрахт, пошлина. Тарифы взяты из кода
+      бота, а не выдуманы — если поменяются там, меняются и на сайте.</p>
+
+      <h4>Как сделано</h4>
+      <p><strong>Сборка:</strong> Vite, страница собирается в один файл.<br>
+      <strong>Картинки:</strong> отдельные фоны под десктоп и под вертикальный
+      экран телефона — на мобильном первый экран пересобран, а не сжат.<br>
+      <strong>Хостинг:</strong> GitHub Pages.</p>
+
+      <h4>Связка с ботом</h4>
+      <p>Сайт продаёт услугу перегона, а бот — инструмент, которым можно
+      посмотреть лоты самому до разговора с менеджером. Кнопки ведут в него
+      с первого экрана и из каждого блока.</p>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+        <a href="https://vladislavbropiton.github.io/car/" target="_blank" rel="noopener" class="btn-outline" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">Открыть сайт</a>
+        <a href="https://t.me/yasuperparserbot" target="_blank" rel="noopener" class="btn-outline" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">Бот к этому сайту</a>
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D1%82%D0%B0%D0%BA%D0%BE%D0%B9%20%D0%B6%D0%B5%20%D1%81%D0%B0%D0%B9%D1%82" target="_blank" class="btn-primary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">Хочу такой же</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-levelup">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>LevelUp — игровое приложение для бизнеса</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img loading="lazy" src="media/levelup-thumb.webp" alt="LevelUp в четырёх стилях: онлайн-школа, адаптация сотрудников, фитнес-клуб, кофейня" />
+
+      <h4>Что это</h4>
+      <p>Демо игрового приложения, которое держит людей до конца: учеников курса,
+      новых сотрудников, участников фитнес-челленджа, гостей кофейни. Вместо
+      скучного списка — уровни, статусы, серия дней, рейтинг и награды за очки.</p>
+
+      <h4>Можно всё потрогать самому</h4>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li><strong>4 ниши.</strong> Онлайн-школа, обучение сотрудников, фитнес
+        и программа лояльности. Отличаются не только словами: у кофейни визиты,
+        подарки и «сэкономлено ₽», у фитнеса — серия дней, у компании — аттестация.</li>
+        <li><strong>4 стиля.</strong> Тёмный игровой, светлый деловой, яркий
+        дружелюбный и премиум. Переключаются мгновенно, на любом экране.</li>
+        <li><strong>Весь путь за три клика.</strong> «Первый день», «Через месяц»
+        и «Финал» — видно, как выглядит приложение у новичка и у того, кто
+        дошёл до конца. Ничего не нужно проходить.</li>
+        <li><strong>Шесть экранов:</strong> главная, задания, карта пути,
+        рейтинг, витрина наград и профиль с достижениями. Задания можно
+        отмечать — очки, уровень и статус меняются сразу.</li>
+      </ul>
+
+      <h4>Как сделано</h4>
+      <p><strong>Вёрстка:</strong> один файл, чистый HTML, CSS и JavaScript,
+      ни одной внешней библиотеки.<br>
+      <strong>Стили:</strong> собраны на переменных — новый стиль под фирменные
+      цвета клиента добавляется набором цветов, а не переписыванием страницы.<br>
+      <strong>Ниши:</strong> это данные. Своё направление — это свои задания,
+      статусы и награды, код приложения не меняется.<br>
+      <strong>Языки:</strong> русский и английский, суммы в рублях или долларах.</p>
+
+      <h4>Проверено</h4>
+      <p>Все сочетания ниш, стилей, этапов и языков прогнаны на телефонах от
+      320 px, планшете и компьютере. Текст читается в каждом стиле: контраст
+      проверен по стандарту доступности WCAG.</p>
+
+      <h4>Результат</h4>
+      <p>Готовая основа под школу, компанию, клуб или сеть кафе: подставляем
+      ваши задания, награды и цвета. Дальше можно подключить Telegram-бота
+      для напоминаний или сделать из приложения Mini App.</p>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+        <a href="levelup/" target="_blank" class="btn-outline" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">Открыть демо</a>
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B8%D0%B3%D1%80%D0%BE%D0%B2%D0%BE%D0%B5%20%D0%BF%D1%80%D0%B8%D0%BB%D0%BE%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5%20%D0%BA%D0%B0%D0%BA%20LevelUp" target="_blank" class="btn-primary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">Хочу такое же</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-realtybot">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>RealtyBotCRM — CRM для недвижимости</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img loading="lazy" src="media/studio/modal-realtybot.webp" alt="RealtyBotCRM Dashboard">
+
+      <div class="tab-buttons">
+        <button class="tab-btn active">Простым языком</button>
+        <button class="tab-btn">Технические детали</button>
+        <button class="tab-btn">Применение и аналоги</button>
+      </div>
+
+      <div class="tab-content active" id="tab-realty-simple">
+        <h4>Что это?</h4>
+        <p>RealtyBotCRM — готовая экосистема для агентств недвижимости. Клиенты находят объекты через красивый мини-апп прямо в Telegram, свайпают карточки как в Tinder, записываются на показ — а риэлторы видят всё в CRM с воронкой продаж и аналитикой.</p>
+        <h4>Что умеет система?</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Мини-апп для клиентов</strong> — каталог объектов с фото, фильтрами, свайпом карточек и ипотечным калькулятором.</li>
+          <li><strong>Fullscreen галерея</strong> — просмотр фото объекта на весь экран с навигацией пальцем.</li>
+          <li><strong>Умный бот</strong> — отвечает на вопросы по ипотеке, документам, налогам и новостройкам без участия риэлтора.</li>
+          <li><strong>Kanban-воронка</strong> — Лид → Консультация → Показ → Задаток → Сделка.</li>
+          <li><strong>CRM чаты</strong> — вся переписка клиентов в одном окне, менеджер отвечает прямо из браузера.</li>
+          <li><strong>Аналитика</strong> — графики конверсии, UTM-источники, lead score для каждого клиента.</li>
+          <li><strong>Автоматизация</strong> — авто-назначение лидов, SLA-контроль, email-уведомления, лендинги объектов.</li>
+        </ul>
+        <h4>Что это даёт агентству?</h4>
+        <p>Клиенты сами находят и бронируют просмотры 24/7. Менеджеры видят все заявки в одном месте. Конверсия растёт за счёт скоринга лидов и автоматических напоминаний.</p>
+      <p style="font-size: 13px; color: var(--text-muted); margin-top: 16px; margin-bottom: 4px;">Демо-доступ в CRM — Логин: <strong style="color: var(--text);">demo</strong> &nbsp;·&nbsp; Пароль: <strong style="color: var(--text);">HhGdApZdulLv5nJ5</strong></p>
+      </div>
+
+      <div class="tab-content" id="tab-realty-tech">
+        <h4>Стек технологий</h4>
+        <p><strong>Бэкенд:</strong> Python 3.11 + FastAPI + aiogram 3.x (единый сервис).<br>
+        <strong>База данных:</strong> PostgreSQL (Neon) — listings, applications, chats, messages, managers, faq_responses, funnel_events.<br>
+        <strong>Мини-апп:</strong> HTML5/CSS3/JS, Telegram Web App API, touch-свайп карточек, fullscreen галерея.<br>
+        <strong>CRM дашборд:</strong> inline JS, Chart.js для графиков, тёмная/светлая тема.<br>
+        <strong>Деплой:</strong> Render (Web Service) + cron-job.org для keep-alive.<br>
+        <strong>ИИ-модуль:</strong> формульная оценка стоимости по 20 городам России без внешних API.</p>
+        <h4>Ключевые функции</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Мини-апп</strong> — скелетон-загрузка, свайп (вправо , влево ), fullscreen фото, sticky кнопки.</li>
+          <li><strong>База знаний</strong> — 18 тем по недвижимости (ипотека, налоги, задаток, новостройки и др.).</li>
+          <li><strong>FAQ из БД</strong> — риэлтор добавляет автоответы через CRM, бот подхватывает мгновенно.</li>
+          <li><strong>Воронка + Push</strong> — при переводе лида клиент получает уведомление в Telegram.</li>
+          <li><strong>Demo-режим</strong> — безопасный показ CRM заказчикам: только просмотр, изменения заблокированы.</li>
+          <li><strong>Роли</strong> — admin (полный доступ), manager (работа с клиентами), demo (только просмотр).</li>
+          <li><strong>Лендинги объектов</strong> — автогенерация публичной страницы объекта для отправки клиенту.</li>
+        </ul>
+        <h4>Результат</h4>
+        <p>Готовый продукт для агентства недвижимости. Более 5000 строк Python и 3500 строк JS/HTML. Настроен деплой, demo-аккаунт для показа заказчикам, документация. Легко адаптируется под конкретное агентство.</p>
+      <p style="font-size: 13px; color: var(--text-muted); margin-top: 16px; margin-bottom: 4px;">Демо-доступ в CRM — Логин: <strong style="color: var(--text);">demo</strong> &nbsp;·&nbsp; Пароль: <strong style="color: var(--text);">HhGdApZdulLv5nJ5</strong></p>
+      </div>
+
+      <div class="tab-content" id="tab-realty-use">
+        <h4>Где ещё работает такая CRM-связка</h4>
+        <p>Архитектура «Telegram-бот + мини-апп + CRM» универсальна для любого бизнеса с каталогом, воронкой продаж и работой с клиентами:</p>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Агентства недвижимости</strong> — оригинальное применение: объекты, воронка, ИИ-оценка.</li>
+          <li><strong>Автодилеры</strong> — каталог автомобилей с фото, запись на тест-драйв, CRM для менеджеров.</li>
+          <li><strong>Медицинские клиники</strong> — услуги, запись к врачу, CRM для администраторов.</li>
+          <li><strong>Образовательные центры</strong> — каталог курсов, запись на пробное занятие, воронка «Лид → Студент».</li>
+          <li><strong>Фитнес-клубы</strong> — расписание тренировок, запись, CRM для тренеров.</li>
+          <li><strong>Отели и апартаменты</strong> — каталог номеров с фото, бронирование, управление заявками.</li>
+        </ul>
+        <p>Основа везде одна: каталог (Mini App) → бот (aiogram) → FastAPI → PostgreSQL → CRM дашборд. Меняются только категории объектов и логика воронки.</p>
+      <p style="font-size: 13px; color: var(--text-muted); margin-top: 16px; margin-bottom: 4px;">Демо-доступ в CRM — Логин: <strong style="color: var(--text);">demo</strong> &nbsp;·&nbsp; Пароль: <strong style="color: var(--text);">HhGdApZdulLv5nJ5</strong></p>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B1%D0%BE%D1%82%D0%B0%20%D0%BA%D0%B0%D0%BA%20%C2%ABRealtyBotCRM%C2%BB" target="_blank" class="btn-order">Хочу такого же бота</a>
+        <a href="https://t.me/realty1_crm_bot" target="_blank" class="btn-outline" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">Попробовать бота</a>
+        <a href="https://realtybotcrm.onrender.com/dashboard" target="_blank" class="btn-outline" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">Открыть CRM</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-parser">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Парсер авто с аукционов и досок</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img loading="lazy" src="media/parser-modal.webp" alt="Лот на площадке аукциона Copart" />
+
+      <h4>Что это</h4>
+      <p>Бот следит за объявлениями вместо человека. Раньше перекупщик открывал
+      четыре сайта по десять раз в день и всё равно упускал лоты: хорошие уходят
+      за часы. Бот проверяет каждые полчаса и присылает только новое.</p>
+
+      <h4>Откуда берёт</h4>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li><strong>Copart</strong> — аукцион битых авто из США и Канады.
+        Работает через открытый JSON самого аукциона: ни прокси, ни
+        авторизации не нужно.</li>
+        <li><strong>Auto.ru</strong> — через внутренний интерфейс сайта.</li>
+        <li><strong>Дром</strong> — разбор страниц.</li>
+        <li><strong>Авито</strong> — через сторонний обходчик защиты.</li>
+      </ul>
+
+      <h4>Фильтры</h4>
+      <p>Марка, модель, год, пробег, цена, документы, «только на ходу»,
+      «купить сразу», исключить виды повреждений, конкретные площадки по штатам.
+      Для аукциона отдельный мастер из двенадцати шагов — там свои единицы:
+      цена в долларах, пробег в милях, марки латиницей.</p>
+
+      <h4>Смета «под ключ»</h4>
+      <p>По каждому лоту бот сразу считает, во сколько машина обойдётся
+      в России: аукционный сбор, брокер, доставка до порта, морской фрахт,
+      пошлина. Отдельно оговорено, что это <strong>оценка, а не расчёт
+      по договору</strong> — Copart не отдаёт цену продажи, и ставка на торгах
+      может уйти в обе стороны.</p>
+
+      <h4>Mini App</h4>
+      <p>Внутри Telegram открывается панель: лента найденного с сортировкой
+      по цене, году и пробегу, статистика за час и за сутки, активные фильтры.</p>
+
+      <h4>Как сделано</h4>
+      <p><strong>Бэкенд:</strong> Python, aiogram 3, FastAPI.<br>
+      <strong>База:</strong> PostgreSQL на Neon — фильтры и уже показанные лоты,
+      чтобы одно объявление не пришло дважды.<br>
+      <strong>Расписание:</strong> внешний планировщик дёргает бота каждые
+      30 минут.<br>
+      <strong>Хостинг:</strong> Render, деплой через git push.</p>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+        <a href="https://t.me/yasuperparserbot" target="_blank" rel="noopener" class="btn-outline" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">Попробовать бота</a>
+        <a href="https://vladislavbropiton.github.io/car/" target="_blank" rel="noopener" class="btn-outline" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">Сайт к этому боту</a>
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%9D%D1%83%D0%B6%D0%B5%D0%BD%20%D0%BF%D0%BE%D1%85%D0%BE%D0%B6%D0%B8%D0%B9%20%D0%BF%D0%B0%D1%80%D1%81%D0%B5%D1%80" target="_blank" class="btn-primary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">Нужен похожий</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-shop">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>ShopBot – Telegram-магазин</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img loading="lazy" src="media/studio/modal-shop.webp" alt="ShopBot интерфейс">
+
+      <div class="tab-buttons">
+        <button class="tab-btn active">Простым языком</button>
+        <button class="tab-btn">Технические детали</button>
+        <button class="tab-btn">Применение и аналоги</button>
+      </div>
+
+      <!-- Вкладка 1 -->
+      <div class="tab-content active" id="tab-shop-simple">
+        <h4>Что это?</h4>
+        <p>ShopBot — это готовый интернет-магазин прямо в Telegram. Ваши клиенты могут просматривать товары, добавлять их в корзину и оплачивать заказ, не выходя из мессенджера. Всё работает как в обычном интернет-магазине, только внутри чата.</p>
+        <h4>Основные возможности</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Каталог товаров</strong> – фото, описание, цена. Товары добавляются через админ-панель.</li>
+          <li><strong>Корзина</strong> – несколько товаров, изменение количества, подсчёт итоговой суммы.</li>
+          <li><strong>Оплата через ЮKassa</strong> – банковские карты, тестовый режим для проверки.</li>
+          <li><strong>Автоматическое подтверждение</strong> – после оплаты заказ сразу помечается как оплаченный.</li>
+          <li><strong>Отчёты в Google Sheets</strong> – выгрузка всех оплаченных заказов одной командой.</li>
+          <li><strong>Telegram-панель</strong> – добавляйте и редактируйте товары прямо в Telegram.</li>
+          <li><strong>Браузерная CRM</strong> – дашборд с выручкой, заказами, аналитикой и управлением товарами.</li>
+        </ul>
+        <h4>Кому подходит?</h4>
+        <p>Предпринимателям, которые хотят начать продавать через Telegram без создания отдельного сайта или приложения. Идеально для небольших интернет-магазинов, мерча, цифровых товаров.</p>
+        <p>Клиенты оценят простоту: не нужно регистрироваться, запоминать пароли — всё уже в их любимом мессенджере.</p>
+      <p style="font-size: 13px; color: var(--text-muted); margin-top: 16px; margin-bottom: 4px;">Демо-доступ в CRM — Логин: <strong style="color: var(--text);">demo</strong> &nbsp;·&nbsp; Пароль: <strong style="color: var(--text);">HhGdApZdulLv5nJ5</strong></p>
+      </div>
+
+      <!-- Вкладка 2 -->
+      <div class="tab-content" id="tab-shop-tech">
+        <h4>Стек технологий</h4>
+        <p><strong>Бэкенд:</strong> Python 3.11 + aiogram 3.x (асинхронный), aiohttp для веб-сервера и вебхуков.<br>
+        <strong>База данных:</strong> PostgreSQL на Neon (таблицы пользователей, товаров, корзины, заказов).<br>
+        <strong>Платежи:</strong> ЮKassa (тестовый/боевой режим). Webhook для автоматического подтверждения.<br>
+        <strong>Отчёты:</strong> Google Sheets API (сервисный аккаунт, gspread).<br>
+        <strong>Деплой:</strong> Render (Web Service) + cron-job.org для пинга (не даём заснуть).<br>
+        <strong>Front (Mini App):</strong> Telegram Web App API, адаптивный дизайн, Inline‑клавиатуры.</p>
+        <h4>Ключевые особенности реализации</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Корзина в отдельной таблице</strong> – хранятся позиции, количество. При оформлении заказа данные переносятся в `orders` и `order_items`, корзина очищается.</li>
+          <li><strong>Платежи через ЮKassa</strong> – создаётся платёж с уникальным ID, пользователь получает ссылку. ЮKassa присылает вебхук на `/yookassa`, статус заказа обновляется автоматически.</li>
+          <li><strong>Отчёт /report</strong> – собирает все оплаченные заказы и выгружает их в Google Sheets (сервисный аккаунт).</li>
+          <li><strong>Админ-панель</strong> – машина состояний (FSM) для пошагового добавления/редактирования товаров, удаления, просмотра списка.</li>
+          <li><strong>Безопасность</strong> – админ-команды защищены `ADMIN_ID`, вебхук Telegram проверяет `X‑Telegram‑Bot‑Api‑Secret‑Token` (опционально).</li>
+          <li><strong>Keep‑alive сервер</strong> – отвечает на `/ping` и `/health`, чтобы Render не выгружал приложение.</li>
+          <li><strong>CRM-панель</strong> – браузерный дашборд с выручкой, заказами, товарами, клиентами, аналитикой и демо-аккаунтом (только просмотр).</li>
+        </ul>
+        <h4>Результат</h4>
+        <p>Полностью рабочее решение интернет-магазина в Telegram. Исходный код доступен, настроен деплой на Render, есть инструкция по подключению боевых ключей ЮKassa. Браузерная CRM-панель позволяет управлять магазином без Telegram.</p>
+      <p style="font-size: 13px; color: var(--text-muted); margin-top: 16px; margin-bottom: 4px;">Демо-доступ в CRM — Логин: <strong style="color: var(--text);">demo</strong> &nbsp;·&nbsp; Пароль: <strong style="color: var(--text);">HhGdApZdulLv5nJ5</strong></p>
+      </div>
+
+      <!-- Вкладка 3 -->
+      <div class="tab-content" id="tab-shop-use">
+        <h4>Где ещё пригодится такой бот-магазин</h4>
+        <p>Схема «каталог → корзина → оплата через ЮKassa» универсальна. Её можно адаптировать для любых сфер, где продаются физические или цифровые товары.</p>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Мерч / одежда</strong> – футболки, худи, аксессуары с логотипом бренда.</li>
+          <li><strong>Цифровые товары</strong> – электронные книги, курсы, гайды (ссылка для скачивания после оплаты).</li>
+          <li><strong>Доставка еды</strong> – корзина из блюд, оплата картой, уведомление ресторану.</li>
+          <li><strong>Услуги печати / производства</strong> – расчёт стоимости в корзине, заявка с оплатой.</li>
+          <li><strong>Билеты на мероприятия</strong> – выбор количества мест, оплата, получение QR‑кода.</li>
+        </ul>
+        <p>Везде основа одинаковая: каталог, корзина, оплата. Меняется только контент товаров и логика пост-обработки (отправка файлов, уведомления, резервирование времени).</p>
+      <p style="font-size: 13px; color: var(--text-muted); margin-top: 16px; margin-bottom: 4px;">Демо-доступ в CRM — Логин: <strong style="color: var(--text);">demo</strong> &nbsp;·&nbsp; Пароль: <strong style="color: var(--text);">HhGdApZdulLv5nJ5</strong></p>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B1%D0%BE%D1%82%D0%B0%20%D0%BA%D0%B0%D0%BA%20%C2%ABShopBot%C2%BB" target="_blank" class="btn-order">Хочу такого же бота</a>
+        <a href="https://t.me/my_1shopbot" target="_blank" class="btn-outline" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">Попробовать бота</a>
+        <a href="https://shopbot-osyd.onrender.com/admin" target="_blank" class="btn-outline" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">Открыть CRM</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-ai">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>DocuHelper Forex</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img loading="lazy" src="media/studio/modal-ai.webp" alt="DocuHelper Forex">
+      <div class="tab-buttons">
+        <button class="tab-btn active">Простым языком</button>
+        <button class="tab-btn">Технические детали</button>
+        <button class="tab-btn">Применение и аналоги</button>
+      </div>
+      <div class="tab-content active" id="tab-docuhelper-simple">
+        <h4>Что это?</h4>
+        <p>DocuHelper Forex — это интеллектуальный помощник для трейдеров, который отвечает на вопросы, используя вашу собственную базу знаний (статьи, книги, заметки). Вы загружаете материалы — бот учится и помогает 24/7.</p>
+        <h4>Основные возможности</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li>Работа с любыми текстовыми файлами (TXT, позже PDF, DOCX).</li>
+          <li>Семантический поиск — ищет не по ключевым словам, а по смыслу.</li>
+          <li>Точное выделение ответа – выводится только нужное предложение.</li>
+          <li>Telegram-бот с удобной клавиатурой и кнопками обратной связи.</li>
+          <li>Статистика запросов и оценок (команда /stats для администратора).</li>
+          <li>Кэширование эмбеддингов для быстрых повторных вопросов.</li>
+        </ul>
+        <h4>Кому подходит?</h4>
+        <p>Трейдерам, аналитикам, брокерам, трейдинг-школам — всем, кто хочет автоматизировать ответы на типовые вопросы по рынку, стратегиям и рискам.</p>
+      </div>
+      <div class="tab-content" id="tab-docuhelper-tech">
+        <h4>Стек технологий</h4>
+        <p><strong>Бэкенд:</strong> Python 3.11 + aiogram 3.x (асинхронный), aiohttp для веб-сервера и вебхуков.<br>
+        <strong>База данных:</strong> PostgreSQL (Neon) с расширением pgvector – векторное хранилище.<br>
+        <strong>Эмбеддинги (поиск по смыслу):</strong> Cohere API (модель embed‑multilingual‑v3.0).<br>
+        <strong>Индексация документов:</strong> собственный скрипт на Python, разбивает тексты на чанки, преобразует в векторы и сохраняет в базу.<br>
+        <strong>Деплой:</strong> Render (Web Service), переменные окружения, вебхуки. Крон-пинг для предотвращения сна.<br>
+        <strong>Дополнительно:</strong> кэш эмбеддингов (dict), inline-клавиатура для оценки ответов, таблицы логов и обратной связи, команда /stats.</p>
+        <h4>Ключевые особенности реализации</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Модульность:</strong> база знаний хранится в текстовых файлах в папке `knowledge`. Можно добавлять новые файлы и переиндексировать.</li>
+          <li><strong>Выделение ответа:</strong> найденный фрагмент разбивается на предложения, выбирается самое релевантное по пересечению слов.</li>
+          <li><strong>Кэш:</strong> одинаковые вопросы (текст в точности) не отправляются повторно в Cohere, экономятся лимиты.</li>
+          <li><strong>Аналитика:</strong> отдельные таблицы `queries_log` (все вопросы/ответы) и `feedback` (оценки полезности).</li>
+          <li><strong>Безопасность:</strong> команда `/stats` доступна только администратору (ADMIN_ID в config).</li>
+        </ul>
+        <h4>Результат</h4>
+        <p>Полностью рабочий AI-консультант по трейдингу с возможностью неограниченного расширения базы знаний. Готов к использованию в реальных проектах.</p>
+      </div>
+      <div class="tab-content" id="tab-docuhelper-use">
+        <h4>AI‑консультант для других сфер</h4>
+        <p>Технология, использованная в DocuHelper Forex, универсальна. Такой же бот можно создать для любой области, где есть база знаний (статьи, инструкции, регламенты).</p>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Медицина</strong> — ответы на частые вопросы пациентов по симптомам, лекарствам, подготовке к процедурам на основе внутренних протоколов клиники.</li>
+          <li><strong>Юриспруденция</strong> — консультации по типовым договорам, законодательству, внутренним регламентам компании.</li>
+          <li><strong>Образование</strong> — помощник для студентов и преподавателей: вопросы по учебным материалам, методичкам, правилам вуза.</li>
+          <li><strong>Техническая поддержка</strong> — FAQ‑бот по продукту, инструкциям, базе знаний, который сам находит ответы.</li>
+          <li><strong>HR и онбординг</strong> — ответы на вопросы новых сотрудников о правилах, отпусках, внутренних процессах компании.</li>
+          <li><strong>Логистика и склад</strong> — консультант по процедурам приёмки, отгрузки, документообороту.</li>
+          <li><strong>Финансы и банки</strong> — объяснение продуктов, тарифов, условий кредитования на основе внутренних описаний.</li>
+        </ul>
+        <p>Во всех случаях основа одна: загружаете свои документы (TXT, PDF), бот индексирует их и отвечает на вопросы строго по фактам из этих документов. Никакой выдумки, только ваша база знаний.</p>
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 20px;">
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B1%D0%BE%D1%82%D0%B0%20%D0%BA%D0%B0%D0%BA%20%C2%ABDocuHelper%20Forex%C2%BB" target="_blank" class="btn-order">Хочу такого же бота</a>
+        <a href="https://t.me/DocuHelperForexBot" target="_blank" class="btn-outline" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+          Попробовать бота
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-docuhelper-mini">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>DocuHelper Mini App</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img loading="lazy" src="media/studio/modal-docuhelper-mini.webp" alt="DocuHelper Mini App">
+      <div class="tab-buttons">
+        <button class="tab-btn active">Простым языком</button>
+        <button class="tab-btn">Технические детали</button>
+        <button class="tab-btn">Применение и аналоги</button>
+      </div>
+      <div class="tab-content active" id="tab-docuhelper-mini-simple">
+        <h4>Что это?</h4>
+        <p>DocuHelper Mini App — это чат-интерфейс прямо в Telegram, где AI-консультант отвечает на вопросы по трейдингу, используя вашу базу знаний (статьи, книги, заметки). Никаких внешних нейросетей — все ответы строго по документам.</p>
+        <h4>Основные возможности</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li>Чат-интерфейс с историей диалога и быстрыми вопросами.</li>
+          <li>Гибридный поиск: векторный + текстовый — высокая точность.</li>
+          <li>Каждый ответ содержит источник и процент похожести.</li>
+          <li>Адаптивная тёмная/светлая тема.</li>
+          <li>Кэширование ответов, rate limiting, обратная связь.</li>
+          <li>Админ-статистика: всего запросов, % успешных, топ-5.</li>
+        </ul>
+        <h4>Кому подходит?</h4>
+        <p>Трейдерам, аналитикам, брокерам и трейдинг-школам — всем, кто хочет иметь быстрый и точный AI-справочник по рынку в Telegram.</p>
+      </div>
+      <div class="tab-content" id="tab-docuhelper-mini-tech">
+        <h4>Стек технологий</h4>
+        <p><strong>Бэкенд:</strong> Python 3.11 + aiogram 3.x, aiohttp (API + вебхуки).<br>
+        <strong>База данных:</strong> Neon (PostgreSQL 16) + pgvector + tsvector для гибридного поиска.<br>
+        <strong>Эмбеддинги:</strong> Cohere embed‑multilingual‑v3.0.<br>
+        <strong>Mini App:</strong> HTML5/CSS3/JS, Telegram Web App API, адаптивная тема.<br>
+        <strong>Деплой:</strong> Render (Web Service), статика раздаётся с того же сервера (no CORS).<br>
+        <strong>Дополнительно:</strong> кэш с TTL, rate limiting (10 req/min), cron‑job.org, CI/CD.</p>
+        <h4>Ключевые особенности</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Гибридный поиск</strong> – pgvector + tsvector с настраиваемым весом (α=0.7).</li>
+          <li><strong>Выделение лучшего предложения</strong> – чанк разбивается на предложения, выбирается самое релевантное.</li>
+          <li><strong>Кэширование</strong> – эмбеддинги (TTL 1 час) + ответы (TTL 10 мин).</li>
+          <li><strong>Rate limiting</strong> – 10 запросов в минуту на пользователя.</li>
+          <li><strong>Очистка текста</strong> при индексации – удаление markdown, заголовков, нумерации.</li>
+        </ul>
+        <h4>Результат</h4>
+        <p>Готовый AI-консультант с чат-интерфейсом. База знаний расширяется добавлением .txt файлов, индексация — одним кликом через CI/CD. Без внешних платных LLM, без CORS, полностью бесплатный стек.</p>
+      </div>
+      <div class="tab-content" id="tab-docuhelper-mini-use">
+        <h4>Чат‑консультант в любой нише</h4>
+        <p>Формат чата прямо в Telegram идеален для быстрого доступа к знаниям. Вот где ещё можно внедрить такого же бота:</p>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Медицинские справочники</strong> — врач или пациент прямо в чате задаёт вопрос по лекарствам или симптомам и получает выдержку из проверенных источников.</li>
+          <li><strong>Юридические помощники</strong> — клиент спрашивает про договор аренды, а бот моментально выдаёт нужный пункт из документа.</li>
+          <li><strong>Корпоративные базы знаний</strong> — новый сотрудник спрашивает «как оформить командировку» и получает точный ответ из внутреннего регламента.</li>
+          <li><strong>Учебные ассистенты</strong> — студент задаёт вопрос по лекции, бот находит ответ в загруженных учебниках.</li>
+          <li><strong>Поддержка покупателей</strong> — консультант по характеристикам товаров на основе PDF‑каталогов.</li>
+        </ul>
+        <p>Гибридный поиск и чат‑интерфейс делают такое решение действительно удобным и точным. Всё работает на ваших документах.</p>
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 20px;">
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B1%D0%BE%D1%82%D0%B0%20%D0%BA%D0%B0%D0%BA%20%C2%ABDocuHelper%20Mini%20App%C2%BB" target="_blank" class="btn-order">Хочу такого же бота</a>
+        <a href="https://t.me/DocuHelperMiniAppBot" target="_blank" class="btn-outline" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+          Попробовать бота
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-voicebot">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>VoiceBot — Алиса</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img loading="lazy" src="media/studio/modal-voicebot.webp" alt="VoiceBot — голосовой AI-ассистент" style="border-radius:16px; margin-bottom:20px;">
+      <div class="tab-buttons">
+        <button class="tab-btn active">Простым языком</button>
+        <button class="tab-btn">Технические детали</button>
+        <button class="tab-btn">Применение</button>
+      </div>
+      <div class="tab-content active" id="tab-voice-simple">
+        <h4>Что это?</h4>
+        <p>VoiceBot Алиса — голосовой AI-ассистент нового поколения в Telegram. Просто отправь голосовое сообщение — и бот ответит тебе тоже голосом. Понимает любой язык, помнит тебя между сессиями и умеет гораздо больше, чем обычный бот.</p>
+        <h4>Что умеет?</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Голос → голос</strong> — отправляешь голосовое, получаешь голосовой ответ</li>
+          <li><strong>Любой язык</strong> — автоматически определяет язык и отвечает на нём</li>
+          <li><strong>Память</strong> — запоминает твоё имя, город, предпочтения между сессиями</li>
+          <li><strong>Анализ фото</strong> — пришли фото, получи голосовое описание</li>
+          <li><strong>PDF и документы</strong> — загружаешь файл и задаёшь вопросы по нему</li>
+          <li><strong>Погода</strong> — «погода в Москве» → реальные данные голосом</li>
+          <li><strong>Напоминания</strong> — «напомни через 30 минут о встрече»</li>
+          <li><strong>Mini App</strong> — полноценный веб-интерфейс внутри Telegram</li>
+          <li><strong>Персонажи</strong> — Эйнштейн, Шерлок, Маск, Йода</li>
+        </ul>
+        <h4>Почему это круто?</h4>
+        <p>Голос ElevenLabs звучит как живой человек. Бот понимает 92 языка и отвечает нативным голосом. Архитектура уровня Senior: circuit breaker, retry, мониторинг Sentry, CI/CD.</p>
+      </div>
+      <div class="tab-content" id="tab-voice-tech">
+        <h4>Стек технологий</h4>
+        <p><strong>Бэкенд:</strong> Python 3.11 + aiogram 3.15, aiohttp, asyncpg. Деплой на Render с вебхуками.<br>
+        <strong>AI/STT:</strong> Groq Whisper large-v3-turbo — распознавание речи на любом языке.<br>
+        <strong>LLM:</strong> qwen3.6-27b через Groq API — агент с инструментами и памятью.<br>
+        <strong>TTS:</strong> ElevenLabs eleven_multilingual_v2 (92 языка) + Orpheus fallback.<br>
+        <strong>Vision:</strong> qwen3.6-27b мультимодальная — анализ изображений.<br>
+        <strong>База данных:</strong> PostgreSQL на Neon. Таблицы: users, messages, stats, user_memory, doc_context, reminders.<br>
+        <strong>Мониторинг:</strong> Sentry + /health endpoint + circuit breaker.<br>
+        <strong>CI/CD:</strong> GitHub Actions → Render автодеплой с branch protection.</p>
+        <h4>Архитектурные решения</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Circuit breaker</strong> — при падении Groq бот отвечает заглушкой, не зависает</li>
+          <li><strong>Retry с backoff</strong> — 3 попытки с задержкой 1s/2s/4s</li>
+          <li><strong>Агент с инструментами</strong> — LLM сам решает когда запросить погоду или запомнить факт</li>
+          <li><strong>SSE стриминг</strong> — текст появляется в Mini App по мере генерации</li>
+          <li><strong>Repository паттерн</strong> — весь SQL изолирован в одном месте</li>
+          <li><strong>Webhook уведомления</strong> — внешние системы могут отправлять сообщения пользователям</li>
+        </ul>
+        <h4>Результат</h4>
+        <p>Полноценный AI-ассистент Senior-уровня. Чистая архитектура в 15 файлах, 35+ тестов pytest, покрытие ~60%, mypy типизация, CI/CD с автодеплоем.</p>
+      </div>
+      <div class="tab-content" id="tab-voice-use">
+        <h4>Где можно применить голосового бота</h4>
+        <p>Голосовой AI-ассистент — это не просто «умный бот». Это инструмент который меняет способ взаимодействия с клиентами:</p>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Медицина и психология</strong> — голосовой ассистент для пациентов, напоминания о приёме лекарств</li>
+          <li><strong>Образование</strong> — языковой тренер, учитель который объясняет голосом и отвечает на вопросы</li>
+          <li><strong>Клиентский сервис</strong> — голосовая поддержка 24/7 на языке клиента</li>
+          <li><strong>Корпоративный ассистент</strong> — ответы на вопросы по документам и регламентам компании</li>
+          <li><strong>Личная продуктивность</strong> — напоминания, заметки голосом, управление расписанием</li>
+        </ul>
+        <p>Технологический стек одинаковый, меняется только системный промпт и набор инструментов агента.</p>
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 20px;">
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B3%D0%BE%D0%BB%D0%BE%D1%81%D0%BE%D0%B2%D0%BE%D0%B3%D0%BE%20%D0%B1%D0%BE%D1%82%D0%B0%20%D0%BA%D0%B0%D0%BA%20VoiceBot" target="_blank" class="btn-order">Хочу такого же бота</a>
+        <a href="https://t.me/my123voicebot" target="_blank" class="btn-outline" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">Попробовать бота</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-bookingbot">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>BookingBot CRM — система онлайн-записи</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Картинка BookingBot: замените URL когда будет готова своя -->
+      <!-- -->
+
+      <div class="tab-buttons">
+        <button class="tab-btn active">Простым языком</button>
+        <button class="tab-btn">Технические детали</button>
+        <button class="tab-btn">Применение</button>
+      </div>
+
+      <div class="tab-content active" id="tab-booking-simple">
+        <h4>Что это?</h4>
+        <p>BookingBot — полноценная система онлайн-записи для салона красоты. Клиент открывает мини-апп прямо в Telegram, выбирает услугу, мастера, дату и время, оплачивает онлайн. Мастер получает уведомление и видит всё расписание в удобной CRM-панели в браузере.</p>
+        <h4>Что умеет система?</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Мини-апп для клиентов</strong> — 5 шагов: услуга → мастер → дата → время → оплата. Промокоды со скидкой.</li>
+          <li><strong>Онлайн-оплата через ЮКасса</strong> — автоматическое подтверждение записи после оплаты.</li>
+          <li><strong>CRM-панель в браузере</strong> — дашборд, расписание, все записи, база клиентов, услуги, аналитика.</li>
+          <li><strong>Напоминания</strong> — автоматически за 24 часа и за 1 час до визита.</li>
+          <li><strong>Перенос записи</strong> — клиент сам переносит через бота без звонков.</li>
+          <li><strong>Повторная запись</strong> — 1 кнопка для постоянных клиентов.</li>
+          <li><strong>Статистика</strong> — выручка, топ услуг, количество записей за период.</li>
+          <li><strong>Экспорт клиентов</strong> — выгрузка базы в CSV одной кнопкой.</li>
+        </ul>
+        <h4>Что это даёт бизнесу?</h4>
+        <p>Запись работает 24/7 без администратора. Нет пропущенных звонков — клиент записывается сам и сразу оплачивает, снижая процент неявок. Мастер видит своё расписание в телефоне.</p>
+      </div>
+
+      <div class="tab-content" id="tab-booking-tech">
+        <h4>Стек технологий</h4>
+        <p><strong>Бэкенд:</strong> Python 3.11 + aiogram 3.x + aiohttp (асинхронный REST API).<br>
+        <strong>База данных:</strong> PostgreSQL на Neon — клиенты, мастера, услуги, записи, промокоды.<br>
+        <strong>Платежи:</strong> ЮКасса — создание платежа, webhook автоподтверждения.<br>
+        <strong>Mini App:</strong> HTML/CSS/JS, 5 шагов записи, фильтрация слотов по часовому поясу МСК.<br>
+        <strong>CRM:</strong> браузерная SPA (Single Page App) с авторизацией Bearer-токен, Chart.js аналитика.<br>
+        <strong>Деплой:</strong> Render (Web Service), keep-alive пинг каждые 14 минут.</p>
+        <h4>Ключевые решения</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Race condition</strong> — UNIQUE INDEX на (master_id, slot_date, slot_time) защищает от двойной записи на один слот.</li>
+          <li><strong>SQL-инъекции</strong> — whitelist допустимых полей при UPDATE через словарь ALLOWED_FIELDS.</li>
+          <li><strong>Timezone</strong> — слоты фильтруются по Europe/Moscow, прошедшие не показываются.</li>
+          <li><strong>Демо-аккаунт</strong> — роль demo блокирует все write-операции и на фронте и на бэке (403).</li>
+          <li><strong>Модульная архитектура</strong> — API разбит на модули: auth, appointments, services, slots, stats.</li>
+          <li><strong>ЮКасса webhook</strong> — автоматически меняет статус на paid и уведомляет обоих.</li>
+        </ul>
+        <h4>Результат</h4>
+        <p>Полноценная замена сервисам типа Yclients или СБИС для малого бизнеса. Один раз оплачиваете разработку — система ваша навсегда, без ежемесячных подписок.</p>
+      </div>
+
+      <div class="tab-content" id="tab-booking-use">
+        <h4>Кому подходит такая система?</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Салоны красоты и барбершопы</strong> — запись к мастеру, оплата депозита, напоминания.</li>
+          <li><strong>Фитнес и йога</strong> — запись на групповые занятия, отмена и перенос.</li>
+          <li><strong>Частные клиники</strong> — запись к врачу, предоплата онлайн, история визитов.</li>
+          <li><strong>Ветеринарные клиники</strong> — запись питомца, напоминания о вакцинации.</li>
+          <li><strong>Фотографы и видеографы</strong> — бронирование времени съёмки с предоплатой.</li>
+          <li><strong>Репетиторы и тренеры</strong> — расписание занятий, оплата по абонементу.</li>
+        </ul>
+        <h4>Чем отличается от готовых сервисов?</h4>
+        <p>Yclients, СБИС, Booksy — хорошие сервисы, но вы платите 3000–10000 ₽/месяц бесконечно. Кастомный бот: один раз оплачиваете разработку, далее только хостинг ~500 ₽/месяц. Плюс полная гибкость: любой дизайн, любые интеграции, ваш брендинг.</p>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D1%81%D0%B8%D1%81%D1%82%D0%B5%D0%BC%D1%83%20%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B8%20%D0%BA%D0%B0%D0%BA%20BookingBot" target="_blank" class="btn-order">Хочу такую же систему</a>
+        <a href="https://t.me/Booking1_1Bot" target="_blank" class="btn-outline" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">Попробовать бота</a>
+        <a href="https://bookingbot-qnc7.onrender.com/admin" target="_blank" class="btn-outline" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">Открыть CRM</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-encar">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>EncarBot — калькулятор авто из Кореи</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+
+      <img loading="lazy" src="media/studio/modal-encar.webp" alt="EncarBot — расчёт импорта авто из Кореи" style="border-radius:16px; margin-bottom:20px;">
+
+      <div class="tab-buttons">
+        <button class="tab-btn active">Простым языком</button>
+        <button class="tab-btn">Технические детали</button>
+        <button class="tab-btn">Применение</button>
+      </div>
+
+      <div class="tab-content active" id="tab-encar-simple">
+        <h4>Что это?</h4>
+        <p>EncarBot — Telegram-бот, который за 10 секунд считает итоговую стоимость любого авто с корейского рынка Encar.com. Достаточно скинуть ссылку на объявление — и бот покажет финальную цену под ключ для России или Казахстана с учётом всех сборов и актуального курса воны.</p>
+        <h4>Что умеет бот?</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Расчёт по ссылке</strong> — вставляешь ссылку с fem.encar.com, бот сам парсит марку, модель, год, пробег, объём двигателя и цену в ₩.</li>
+          <li><strong>Поиск авто</strong> — фильтр по марке, году выпуска, бюджету и типу топлива прямо в боте без захода на сайт.</li>
+          <li><strong>Таможня РФ</strong> — пошлина ЕАЭС по объёму и возрасту, акциз, НДС 20%, утильсбор по официальным ставкам.</li>
+          <li><strong>Таможня КЗ</strong> — пошлина 15%, НДС 12%, утильсбор Казахстана — отдельный расчёт.</li>
+          <li><strong>Курсы в реальном времени</strong> — KRW → RUB, KRW → KZT, KRW → USD обновляются при каждом запросе.</li>
+          <li><strong>Ручной ввод</strong> — можно ввести параметры вручную, не имея ссылки на объявление.</li>
+        </ul>
+        <h4>Что это даёт клиенту?</h4>
+        <p>Покупатель видит реальную цену «под ключ» ещё до звонка перекупу. Дилер или брокер отправляет расчёт клиенту в одно нажатие. Экономия 1–2 часов на самостоятельный подсчёт таможни по разрозненным сайтам.</p>
+      </div>
+
+      <div class="tab-content" id="tab-encar-tech">
+        <h4>Стек технологий</h4>
+        <p><strong>Бэкенд:</strong> Python 3.11 + aiogram 3.x + aiohttp (асинхронный).<br>
+        <strong>Парсинг:</strong> HTML-парсинг страниц fem.encar.com, данные из мета-тегов description + regex для цены, года, пробега.<br>
+        <strong>Поиск:</strong> Encar Search API (<code>api.encar.com/search/car/list/general</code>) с клиентской фильтрацией.<br>
+        <strong>База данных:</strong> без БД — FSM-состояния в памяти (MemoryStorage).<br>
+        <strong>Деплой:</strong> Render (Web Service) + cron-job.org каждые 10 минут для keep-alive.<br>
+        <strong>Курсы валют:</strong> внешний API в реальном времени при каждом запросе.</p>
+        <h4>Ключевые решения</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Fallback при 400</strong> — если Encar API возвращает ошибку по фильтру, бот делает запрос без него и фильтрует на стороне клиента.</li>
+          <li><strong>Корейские символы</strong> — кириллические названия марок переводятся через словарь BRAND_KO_TO_EN, в API уходит латиница.</li>
+          <li><strong>Расчёт двигателя</strong> — объём парсится из названия модели (2.5T → 2500cc) или из JSON-поля displacement; мощность оценивается по таблице.</li>
+          <li><strong>Год выпуска</strong> — формат фильтра YYYY (не YYYYMM), клиентская фильтрация по точному диапазону.</li>
+          <li><strong>Таможня</strong> — ставки ЕАЭС реализованы через вложенные таблицы по возрасту авто и объёму двигателя, обе страны в одном модуле.</li>
+        </ul>
+        <h4>Результат</h4>
+        <p>Рабочий бот с нулевой базой данных и минимальными расходами на деплой. Обрабатывает запросы асинхронно, держится онлайн 24/7 через self-ping. Легко масштабируется под новые страны и рынки.</p>
+      </div>
+
+      <div class="tab-content" id="tab-encar-use">
+        <h4>Кому нужен такой бот?</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Брокеры и перекупы</strong> — быстро считают маржу и отправляют расчёт клиенту прямо в чат.</li>
+          <li><strong>Частные покупатели</strong> — самостоятельно проверяют реальную стоимость авто до переговоров.</li>
+          <li><strong>Автодилеры</strong> — интегрируют в корпоративный Telegram-канал как инструмент для клиентов.</li>
+          <li><strong>Аналитики рынка</strong> — мониторинг цен на корейские авто в динамике.</li>
+        </ul>
+        <h4>Где ещё работает такая архитектура</h4>
+        <p>Паттерн «парсинг внешнего маркетплейса + таможенный калькулятор» применим для:</p>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Авто из Германии</strong> — Mobile.de, AutoScout24 + расчёт по ставкам ЕАЭС.</li>
+          <li><strong>Авто из Японии</strong> — Yahoo Auctions Japan + аукционные сборы + таможня.</li>
+          <li><strong>Товары из Китая</strong> — 1688/Taobao + расчёт доставки и пошлин.</li>
+          <li><strong>Электроника</strong> — зарубежные магазины + НДС + таможенный лимит.</li>
+        </ul>
+        <p>Основа везде одна: парсинг → конвертация валюты → таможенный расчёт → вывод в Telegram. Меняются только источник данных и ставки сборов.</p>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B1%D0%BE%D1%82%D0%B0%20%D0%BA%D0%B0%D0%BA%20%C2%ABEncarBot%C2%BB" target="_blank" class="btn-order">Хочу такого же бота</a>
+        </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-quiz">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Quiz Trader – Квиз + CRM поддержки + Дашборд</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img loading="lazy" src="media/studio/modal-quiz.webp" alt="Quiz Trader Mini App">
+      <div class="tab-buttons">
+        <button class="tab-btn active">Простым языком</button>
+        <button class="tab-btn">Технические детали</button>
+        <button class="tab-btn">Применение и аналоги</button>
+        <button class="tab-btn">Дашборд и CRM</button>
+      </div>
+
+      <!-- Вкладка 1: Простым языком -->
+      <div class="tab-content active" id="tab-quiz-simple">
+        <h4>Что это?</h4>
+        <p>Quiz Trader — это не просто квиз. Это <strong>полноценная экосистема</strong> для сбора лидов, персонализированных рекомендаций и пост-продажной поддержки. Пользователь проходит 5 вопросов, получает свой тип трейдера и 3 персональных совета, а затем может написать в поддержку — прямо в боте.</p>
+        <h4>Основные возможности</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Красивый Mini App</strong> – анимация карточек, прогресс-бар, адаптивная тёмная/светлая тема, автосохранение ответов.</li>
+          <li><strong>WOW-карточка результата</strong> – уникальная иконка и тематический фон под каждый из 5 типов трейдеров (pro, advanced, conservative, student, balanced).</li>
+          <li><strong>Автозапись в Google Sheets</strong> – все результаты мгновенно попадают в таблицу, администратор получает уведомление в Telegram.</li>
+          <li><strong>Служба поддержки с тикетами</strong> – клиент пишет в бот → создаётся форум-топик в супергруппе → операторы отвечают через Telegram, а клиент получает ответ в личку.</li>
+          <li><strong>Веб-дашборд для руководителя</strong> – KPI, графики, фильтрация по датам и операторам, экспорт PDF/CSV, автообновление через WebSocket.</li>
+          <li><strong>CSAT-оценка</strong> – после закрытия тикета бот просит клиента оценить качество поддержки (1–5 звёзд).</li>
+        </ul>
+        <h4>Кому подходит?</h4>
+        <p>Трейдинг-школам, брокерам, финансовым консультантам и маркетологам, которые хотят автоматизировать сбор заявок и обеспечить качественную поддержку клиентов без найма большой команды.</p>
+      </div>
+
+      <!-- Вкладка 2: Технические детали -->
+      <div class="tab-content" id="tab-quiz-tech">
+        <h4>Стек технологий</h4>
+        <p><strong>Бэкенд:</strong> Python 3.12 + aiogram 3.x + FastAPI (объединены в один сервис).<br>
+        <strong>База данных:</strong> PostgreSQL (Neon) – таблицы users, quiz_results, tickets, operators, response_templates.<br>
+        <strong>Мини-приложение:</strong> HTML/CSS/JS, Telegram Web App API, анимации CSS.<br>
+        <strong>Интеграции:</strong> Google Sheets API (gspread), Google Calendar API (для напоминаний).<br>
+        <strong>Веб-дашборд:</strong> FastAPI + Socket.IO + Chart.js, адаптивная вёрстка, тёмная/светлая тема, экспорт PDF (ReportLab) и CSV (pandas).<br>
+        <strong>Деплой:</strong> Render (один Web Service), cron-job.org для пинга, переменные окружения.</p>
+        <h4>Ключевые функции</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Mini App</strong> с 5 шагами, анимированными карточками, тултипами и индикатором прогресса.</li>
+          <li><strong>Тёмная/светлая тема</strong>, переключается одной кнопкой, сохраняется в localStorage.</li>
+          <li><strong>5 типов трейдеров</strong> с разными иконками и персональными советами.</li>
+          <li><strong>Интеграция с Google Sheets</strong>: все ответы записываются в таблицу, значения переводятся на русский язык.</li>
+          <li><strong>CRM поддержки</strong> – тикеты как форум-топики, роли (admin/senior/operator), эскалация через 15 минут, шаблоны ответов, CSAT-оценка.</li>
+          <li><strong>Дашборд</strong> – KPI (FRT, Reopen Rate, SLA), графики (воронка, категории, динамика FRT/CSAT), фильтрация по датам, brush-выбор на таймлайне, экспорт PDF/CSV, автообновление через WebSocket.</li>
+          <li><strong>Админ-панель в боте</strong> – просмотр последних результатов и статистики квизов.</li>
+        </ul>
+        <h4>Результат</h4>
+        <p>Готовое маркетинговое решение для сбора лидов с полноценной CRM поддержки. Бот обрабатывает тысячи пользователей, дашборд помогает руководителю видеть картину в реальном времени. Исходный код доступен, деплой на Render, интеграция с Google Sheets и Telegram из коробки.</p>
+      </div>
+
+      <!-- Вкладка 3: Применение и аналоги -->
+      <div class="tab-content" id="tab-quiz-use">
+        <h4>Где ещё работает такая связка (квиз + CRM + дашборд)</h4>
+        <p>Эта архитектура универсальна. Квиз собирает лиды, CRM обрабатывает обращения, дашборд показывает аналитику. Вот где можно применить аналогичное решение:</p>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Недвижимость</strong> – квиз «Какую квартиру выбрать?», поддержка клиентов, дашборд для отдела продаж.</li>
+          <li><strong>Образование</strong> – тестирование уровня знаний, поддержка учеников, дашборд с прогрессом.</li>
+          <li><strong>Косметология и здоровье</strong> – определение типа кожи, онлайн-запись, дашборд для администратора.</li>
+          <li><strong>E‑commerce</strong> – подбор товаров по предпочтениям, поддержка покупателей, дашборд с отзывами и возвратами.</li>
+          <li><strong>Финансовые услуги</strong> – подбор кредита/страховки, консультации, дашборд для менеджеров.</li>
+        </ul>
+        <p>Схема одна: квиз (Mini App) → бот (aiogram) → PostgreSQL → дашборд (FastAPI + Chart.js). Меняются только вопросы и логика расчёта результата.</p>
+      </div>
+
+      <!-- Новая вкладка 4: Дашборд и CRM -->
+      <div class="tab-content" id="tab-quiz-dashboard">
+        <h4>Веб-дашборд для руководителя</h4>
+        <p>Дашборд доступен по адресу: <a href="https://quiz-funnel-final.onrender.com/dashboard" target="_blank" style="color: var(--accent);">https://quiz-funnel-final.onrender.com/dashboard</a></p>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Ключевые метрики (KPI)</strong> – FRT (среднее время первого ответа), Reopen Rate (доля переоткрытых тикетов), SLA compliance (доля закрытых в срок).</li>
+          <li><strong>Интерактивные графики</strong> – воронка статусов, распределение по категориям, динамика FRT и CSAT по дням, соблюдение SLA.</li>
+          <li><strong>Фильтрация</strong> – по диапазону дат и по оператору. Все показатели пересчитываются мгновенно.</li>
+          <li><strong>Brush-выбор периода</strong> – на таймлайне можно выделить мышкой область, и даты фильтра подставятся автоматически.</li>
+          <li><strong>Экспорт</strong> – отчёты в PDF и CSV.</li>
+          <li><strong>Автообновление</strong> – через WebSocket (каждые 30 секунд).</li>
+          <li><strong>Светлая/тёмная тема</strong> и переключение языка (RU/EN).</li>
+        </ul>
+        <h4>CRM поддержки (в Telegram)</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Форум-топики</strong> – каждое обращение клиента становится отдельной темой в супергруппе.</li>
+          <li><strong>Роли</strong> – admin, senior, operator. Команды: `/add_operator`, `/list_operators`, `/block`, `/unblock`.</li>
+          <li><strong>Эскалация</strong> – если на тикет не ответили 15 минут, отправляется уведомление в группу.</li>
+          <li><strong>Шаблоны ответов</strong> – `/add_template`, `/templates` – часто используемые ответы сохраняются.</li>
+          <li><strong>CSAT</strong> – после закрытия тикета бот просит клиента оценить поддержку (1–5).</li>
+          <li><strong>История обращений</strong> – `/history @username` – показывает все тикеты пользователя.</li>
+        </ul>
+        <p>Всё это работает прямо в Telegram, не нужно заходить в отдельный кабинет. А дашборд даёт общую картину для руководителя.</p>
+        <div style="margin-top: 16px;">
+          <img loading="lazy" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20340%22%3E%20%3Cdefs%3E%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%230A0A18%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2310243a%22%2F%3E%3C%2FlinearGradient%3E%20%3C%2Fdefs%3E%20%3Crect%20width%3D%22600%22%20height%3D%22340%22%20fill%3D%22url%28%23bg%29%22%20rx%3D%2212%22%2F%3E%20%3C%21--%20Grid%20lines%20--%3E%20%3Cg%20stroke%3D%22rgba%280%2C240%2C255%2C0.07%29%22%20stroke-width%3D%221%22%3E%20%3Cline%20x1%3D%220%22%20y1%3D%2285%22%20x2%3D%22600%22%20y2%3D%2285%22%2F%3E%3Cline%20x1%3D%220%22%20y1%3D%22170%22%20x2%3D%22600%22%20y2%3D%22170%22%2F%3E%3Cline%20x1%3D%220%22%20y1%3D%22255%22%20x2%3D%22600%22%20y2%3D%22255%22%2F%3E%20%3Cline%20x1%3D%22120%22%20y1%3D%220%22%20x2%3D%22120%22%20y2%3D%22340%22%2F%3E%3Cline%20x1%3D%22240%22%20y1%3D%220%22%20x2%3D%22240%22%20y2%3D%22340%22%2F%3E%3Cline%20x1%3D%22360%22%20y1%3D%220%22%20x2%3D%22360%22%20y2%3D%22340%22%2F%3E%3Cline%20x1%3D%22480%22%20y1%3D%220%22%20x2%3D%22480%22%20y2%3D%22340%22%2F%3E%20%3C%2Fg%3E%20%3C%21--%20KPI%20cards%20--%3E%20%3Crect%20x%3D%2220%22%20y%3D%2216%22%20width%3D%22120%22%20height%3D%2252%22%20rx%3D%228%22%20fill%3D%22%2314141E%22%20stroke%3D%22rgba%280%2C240%2C255%2C0.2%29%22%20stroke-width%3D%221%22%2F%3E%20%3Ctext%20x%3D%2280%22%20y%3D%2234%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%229%22%20fill%3D%22%23707080%22%20text-anchor%3D%22middle%22%3EFRT%20%28%D1%81%D1%80%D0%B5%D0%B4%D0%BD%D0%B5%D0%B5%29%3C%2Ftext%3E%20%3Ctext%20x%3D%2280%22%20y%3D%2256%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%2218%22%20font-weight%3D%22700%22%20fill%3D%22%2300F0FF%22%20text-anchor%3D%22middle%22%3E2.4%20%D0%BC%D0%B8%D0%BD%3C%2Ftext%3E%20%3Crect%20x%3D%22152%22%20y%3D%2216%22%20width%3D%22120%22%20height%3D%2252%22%20rx%3D%228%22%20fill%3D%22%2314141E%22%20stroke%3D%22rgba%28176%2C0%2C255%2C0.2%29%22%20stroke-width%3D%221%22%2F%3E%20%3Ctext%20x%3D%22212%22%20y%3D%2234%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%229%22%20fill%3D%22%23707080%22%20text-anchor%3D%22middle%22%3EReopen%20Rate%3C%2Ftext%3E%20%3Ctext%20x%3D%22212%22%20y%3D%2256%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%2218%22%20font-weight%3D%22700%22%20fill%3D%22%23B000FF%22%20text-anchor%3D%22middle%22%3E3.2%25%3C%2Ftext%3E%20%3Crect%20x%3D%22284%22%20y%3D%2216%22%20width%3D%22120%22%20height%3D%2252%22%20rx%3D%228%22%20fill%3D%22%2314141E%22%20stroke%3D%22rgba%2816%2C185%2C129%2C0.2%29%22%20stroke-width%3D%221%22%2F%3E%20%3Ctext%20x%3D%22344%22%20y%3D%2234%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%229%22%20fill%3D%22%23707080%22%20text-anchor%3D%22middle%22%3ESLA%20%28%D0%B2%20%D1%81%D1%80%D0%BE%D0%BA%29%3C%2Ftext%3E%20%3Ctext%20x%3D%22344%22%20y%3D%2256%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%2218%22%20font-weight%3D%22700%22%20fill%3D%22%2310B981%22%20text-anchor%3D%22middle%22%3E94.7%25%3C%2Ftext%3E%20%3Crect%20x%3D%22416%22%20y%3D%2216%22%20width%3D%22164%22%20height%3D%2252%22%20rx%3D%228%22%20fill%3D%22%2314141E%22%20stroke%3D%22rgba%280%2C240%2C255%2C0.2%29%22%20stroke-width%3D%221%22%2F%3E%20%3Ctext%20x%3D%22498%22%20y%3D%2234%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%229%22%20fill%3D%22%23707080%22%20text-anchor%3D%22middle%22%3ECSAT%20%28%D1%81%D1%80%D0%B5%D0%B4%D0%BD%D0%B5%D0%B5%29%3C%2Ftext%3E%20%3Ctext%20x%3D%22498%22%20y%3D%2256%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%2218%22%20font-weight%3D%22700%22%20fill%3D%22%23FBBF24%22%20text-anchor%3D%22middle%22%3E4.8%20%E2%98%85%3C%2Ftext%3E%20%3C%21--%20Bar%20chart%20--%3E%20%3Crect%20x%3D%2220%22%20y%3D%2284%22%20width%3D%22270%22%20height%3D%22150%22%20rx%3D%228%22%20fill%3D%22%2314141E%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.05%29%22%20stroke-width%3D%221%22%2F%3E%20%3Ctext%20x%3D%2232%22%20y%3D%22100%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%229%22%20fill%3D%22%23707080%22%3E%D0%A2%D0%B8%D0%BA%D0%B5%D1%82%D1%8B%20%D0%BF%D0%BE%20%D1%81%D1%82%D0%B0%D1%82%D1%83%D1%81%D0%B0%D0%BC%3C%2Ftext%3E%20%3Crect%20x%3D%2250%22%20y%3D%22180%22%20width%3D%2230%22%20height%3D%2240%22%20rx%3D%223%22%20fill%3D%22%2300F0FF%22%20opacity%3D%220.8%22%2F%3E%20%3Crect%20x%3D%22100%22%20y%3D%22150%22%20width%3D%2230%22%20height%3D%2270%22%20rx%3D%223%22%20fill%3D%22%23B000FF%22%20opacity%3D%220.8%22%2F%3E%20%3Crect%20x%3D%22150%22%20y%3D%22165%22%20width%3D%2230%22%20height%3D%2255%22%20rx%3D%223%22%20fill%3D%22%2310B981%22%20opacity%3D%220.8%22%2F%3E%20%3Crect%20x%3D%22200%22%20y%3D%22190%22%20width%3D%2230%22%20height%3D%2230%22%20rx%3D%223%22%20fill%3D%22%23FBBF24%22%20opacity%3D%220.8%22%2F%3E%20%3Ctext%20x%3D%2265%22%20y%3D%22228%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%227%22%20fill%3D%22%23707080%22%20text-anchor%3D%22middle%22%3E%D0%9D%D0%BE%D0%B2%D1%8B%D0%B5%3C%2Ftext%3E%20%3Ctext%20x%3D%22115%22%20y%3D%22228%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%227%22%20fill%3D%22%23707080%22%20text-anchor%3D%22middle%22%3E%D0%92%20%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B5%3C%2Ftext%3E%20%3Ctext%20x%3D%22165%22%20y%3D%22228%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%227%22%20fill%3D%22%23707080%22%20text-anchor%3D%22middle%22%3E%D0%97%D0%B0%D0%BA%D1%80%D1%8B%D1%82%D1%8B%3C%2Ftext%3E%20%3Ctext%20x%3D%22215%22%20y%3D%22228%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%227%22%20fill%3D%22%23707080%22%20text-anchor%3D%22middle%22%3E%D0%9F%D0%B5%D1%80%D0%B5%D0%BE%D1%82%D0%BA%D1%80.%3C%2Ftext%3E%20%3C%21--%20Line%20chart%20--%3E%20%3Crect%20x%3D%22302%22%20y%3D%2284%22%20width%3D%22278%22%20height%3D%22150%22%20rx%3D%228%22%20fill%3D%22%2314141E%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.05%29%22%20stroke-width%3D%221%22%2F%3E%20%3Ctext%20x%3D%22314%22%20y%3D%22100%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%229%22%20fill%3D%22%23707080%22%3E%D0%94%D0%B8%D0%BD%D0%B0%D0%BC%D0%B8%D0%BA%D0%B0%20CSAT%20%D0%BF%D0%BE%20%D0%B4%D0%BD%D1%8F%D0%BC%3C%2Ftext%3E%20%3Cpolyline%20points%3D%22320%2C190%20360%2C175%20400%2C182%20440%2C165%20480%2C158%20520%2C148%20560%2C140%22%20fill%3D%22none%22%20stroke%3D%22%2300F0FF%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%20%3Cpolyline%20points%3D%22320%2C195%20360%2C200%20400%2C188%20440%2C192%20480%2C178%20520%2C170%20560%2C165%22%20fill%3D%22none%22%20stroke%3D%22%23B000FF%22%20stroke-width%3D%221.5%22%20stroke-dasharray%3D%224%2C3%22%20stroke-linecap%3D%22round%22%2F%3E%20%3Ccircle%20cx%3D%22320%22%20cy%3D%22190%22%20r%3D%223%22%20fill%3D%22%2300F0FF%22%2F%3E%3Ccircle%20cx%3D%22360%22%20cy%3D%22175%22%20r%3D%223%22%20fill%3D%22%2300F0FF%22%2F%3E%20%3Ccircle%20cx%3D%22400%22%20cy%3D%22182%22%20r%3D%223%22%20fill%3D%22%2300F0FF%22%2F%3E%3Ccircle%20cx%3D%22440%22%20cy%3D%22165%22%20r%3D%223%22%20fill%3D%22%2300F0FF%22%2F%3E%20%3Ccircle%20cx%3D%22480%22%20cy%3D%22158%22%20r%3D%223%22%20fill%3D%22%2300F0FF%22%2F%3E%3Ccircle%20cx%3D%22520%22%20cy%3D%22148%22%20r%3D%223%22%20fill%3D%22%2300F0FF%22%2F%3E%20%3Ccircle%20cx%3D%22560%22%20cy%3D%22140%22%20r%3D%223%22%20fill%3D%22%2300F0FF%22%2F%3E%20%3C%21--%20Table%20--%3E%20%3Crect%20x%3D%2220%22%20y%3D%22248%22%20width%3D%22560%22%20height%3D%2276%22%20rx%3D%228%22%20fill%3D%22%2314141E%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.05%29%22%20stroke-width%3D%221%22%2F%3E%20%3Ctext%20x%3D%2232%22%20y%3D%22264%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%229%22%20fill%3D%22%23707080%22%3E%D0%A0%D0%B5%D0%B9%D1%82%D0%B8%D0%BD%D0%B3%20%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%D0%BE%D0%B2%3C%2Ftext%3E%20%3Cline%20x1%3D%2220%22%20y1%3D%22270%22%20x2%3D%22580%22%20y2%3D%22270%22%20stroke%3D%22rgba%28255%2C255%2C255%2C0.06%29%22%20stroke-width%3D%221%22%2F%3E%20%3Ctext%20x%3D%2232%22%20y%3D%22284%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%228%22%20fill%3D%22%23B0B0C0%22%3E%D0%9E%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%20%D0%90%3C%2Ftext%3E%20%3Crect%20x%3D%22180%22%20y%3D%22276%22%20width%3D%2260%22%20height%3D%226%22%20rx%3D%223%22%20fill%3D%22%2300F0FF%22%20opacity%3D%220.7%22%2F%3E%20%3Ctext%20x%3D%22248%22%20y%3D%22284%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%228%22%20fill%3D%22%23707080%22%3EFRT%3A%201.8%D0%BC%3C%2Ftext%3E%20%3Ctext%20x%3D%2232%22%20y%3D%22302%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%228%22%20fill%3D%22%23B0B0C0%22%3E%D0%9E%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%20%D0%91%3C%2Ftext%3E%20%3Crect%20x%3D%22180%22%20y%3D%22294%22%20width%3D%2242%22%20height%3D%226%22%20rx%3D%223%22%20fill%3D%22%23B000FF%22%20opacity%3D%220.7%22%2F%3E%20%3Ctext%20x%3D%22230%22%20y%3D%22302%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%228%22%20fill%3D%22%23707080%22%3EFRT%3A%203.1%D0%BC%3C%2Ftext%3E%20%3Ctext%20x%3D%22350%22%20y%3D%22284%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%228%22%20fill%3D%22%23B0B0C0%22%3ECSAT%3A%204.9%20%E2%98%85%3C%2Ftext%3E%20%3Ctext%20x%3D%22350%22%20y%3D%22302%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%228%22%20fill%3D%22%23B0B0C0%22%3ECSAT%3A%204.6%20%E2%98%85%3C%2Ftext%3E%20%3Ctext%20x%3D%22460%22%20y%3D%22284%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%228%22%20fill%3D%22%2310B981%22%3ESLA%2097%25%3C%2Ftext%3E%20%3Ctext%20x%3D%22460%22%20y%3D%22302%22%20font-family%3D%22Inter%2CArial%22%20font-size%3D%228%22%20fill%3D%22%23FBBF24%22%3ESLA%2091%25%3C%2Ftext%3E%20%3C%2Fsvg%3E" alt="Дашборд Quiz Trader" style="max-width:100%; border-radius: 20px; border: 1px solid var(--border);">
+          <p style="font-size: 13px; color: var(--text-muted); text-align: center; margin-top: 8px;">Пример дашборда (графики, KPI, таблица тикетов)</p>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B1%D0%BE%D1%82%D0%B0%20%D0%BA%D0%B0%D0%BA%20%C2%ABQuiz%20Trader%C2%BB" target="_blank" class="btn-order">Хочу такого же бота</a>
+        <a href="https://t.me/quizforexbot" target="_blank" class="btn-outline" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+          Попробовать бота
+        </a>
+        <a href="https://quiz-funnel-final.onrender.com/dashboard" target="_blank" class="btn-outline" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+          Открыть дашборд
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-game">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Шахтёрская глубина</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img loading="lazy" src="media/studio/modal-game.webp" alt="Шахтёрская глубина 3D">
+      <div class="tab-buttons">
+        <button class="tab-btn active">Простым языком</button>
+        <button class="tab-btn">Технические детали</button>
+        <button class="tab-btn">Применение и аналоги</button>
+      </div>
+      <div class="tab-content active" id="tab-game-simple">
+        <h4>Что это?</h4>
+        <p>Это настоящая 3D-игра, которая работает прямо в Telegram. Вы кликаете по ресурсам, сражаетесь с огромными боссами, улучшаете кирки и соревнуетесь с другими игроками. Всё бесплатно и прямо в мессенджере.</p>
+        <h4>Что можно делать?</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li>Добывать уголь, железо, золото, алмазы и мифрил в 5 разных шахтах.</li>
+          <li>Сражаться с 13 уникальными боссами (от гоблинов до драконов), у каждого своя 3D-арена.</li>
+          <li>Собирать ресурсы и создавать зелья, ключи и мощные модификаторы.</li>
+          <li>Выполнять ежедневные и еженедельные задания и получать награды.</li>
+          <li>Открывать достижения и подниматься в таблицах лидеров.</li>
+          <li>Продавать ресурсы на рынке и покупать улучшения в магазине.</li>
+        </ul>
+        <h4>Почему это круто?</h4>
+        <p>Игра полностью автоматизирована: защита от читеров, облачная база данных и регулярные обновления. Геймплей затягивает, а графика радует глаз даже в мессенджере.</p>
+      </div>
+      <div class="tab-content" id="tab-game-tech">
+        <h4>Стек технологий</h4>
+        <p><strong>Бэкенд:</strong> Python 3.11 + aiogram 3.x (асинхронный), aiohttp, asyncpg (PostgreSQL). Деплой на Render с вебхуками.<br>
+        <strong>База данных:</strong> PostgreSQL на Neon. Таблицы: players, inventory, tools, bosses, achievements, tasks и др.<br>
+        <strong>3D-клиент (Mini App):</strong> Three.js (CDN), Telegram Web App API, OrbitControls, EffectComposer (пост-обработка).<br>
+        <strong>3D-модели:</strong> процедурная генерация + загружаемые glTF (Draco-сжатие).<br>
+        <strong>Фоновые задачи:</strong> автосброс боссов через CronJob (cron-job.org).</p>
+        <h4>Ключевые функции</h4>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>5 игровых локаций</strong> с процедурной добычей ресурсов и лимитами уровней.</li>
+          <li><strong>13 боссов</strong> с уникальными 3D-аренами, анимациями и наградами.</li>
+          <li><strong>Крафт</strong> зелий, ключей, модификаторов и легендарных предметов (более 15 рецептов).</li>
+          <li><strong>Система заданий</strong> (ежедневные и еженедельные) с автоматическим обновлением прогресса.</li>
+          <li><strong>20+ достижений</strong> с проверкой условий и наградами.</li>
+          <li><strong>6 инструментов</strong> (кирок) с прокачкой за ресурсы.</li>
+          <li><strong>Магазин</strong> улучшений и <strong>рынок</strong> для продажи ресурсов.</li>
+          <li><strong>Админ-статистика</strong> и <strong>таблицы лидеров</strong> по 10+ параметрам.</li>
+          <li><strong>Rate limiting</strong> и проверка Telegram initData для защиты от накруток.</li>
+        </ul>
+        <h4>Результат</h4>
+        <p>Полноценная многопользовательская 3D-игра с нуля. Более 6000 строк JavaScript и 3000 строк Python. Готова к расширению новыми боссами, PvP-режимами и монетизацией.</p>
+      </div>
+      <div class="tab-content" id="tab-game-use">
+        <h4>Где можно применить 3D‑кликер</h4>
+        <p>Игровая механика с добычей ресурсов и боями может использоваться не только в развлекательных проектах. Вот несколько идей:</p>
+        <ul style="padding-left:20px; color: var(--text-dim);">
+          <li><strong>Системы лояльности</strong> — вместо скучных бонусных карт пользователи зарабатывают ресурсы, крафтят награды и соревнуются в рейтингах внутри Telegram.</li>
+          <li><strong>Обучающие игры</strong> — запоминание терминов, исторических дат или профессиональных навыков через геймплей, битвы с боссами и прокачку.</li>
+          <li><strong>Интерактивные витрины</strong> — клиенты исследуют 3D‑локации, собирают предметы и открывают доступ к эксклюзивным предложениям.</li>
+          <li><strong>Бизнес‑симуляции</strong> — управление ресурсами, развитие шахт, стратегические решения для обучения менеджеров.</li>
+        </ul>
+        <p>Основа везде одна: Three.js + Telegram Mini App + PostgreSQL. Меняется только наполнение и цели игры.</p>
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 20px;">
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%B1%D0%BE%D1%82%D0%B0%20%D0%BA%D0%B0%D0%BA%20%C2%AB%D0%A8%D0%B0%D1%85%D1%82%D1%91%D1%80%D1%81%D0%BA%D0%B0%D1%8F%20%D0%B3%D0%BB%D1%83%D0%B1%D0%B8%D0%BD%D0%B0%C2%BB" target="_blank" class="btn-order">Хочу такого же бота</a>
+        <a href="https://t.me/ObsidianClickerBot" target="_blank" class="btn-outline" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">Попробовать бота</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-blog1">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Как AI меняет чат-ботов в 2026</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p><strong>Революция уже здесь.</strong> Раньше чат-боты просто отвечали на вопросы по заранее прописанному сценарию. Сегодня, благодаря AI, они превращаются в автономных цифровых сотрудников, которые понимают язык, обучаются на документах и даже выполняют действия.</p>
+      <p><strong>Что изменилось:</strong></p>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li><strong>RAG (Retrieval-Augmented Generation)</strong> — бот ищет ответы в вашей базе знаний (документы, статьи, таблицы) и формирует точный ответ, не выдумывая фактов. Технически это связка векторного поиска (pgvector, FAISS) и большой языковой модели.</li>
+        <li><strong>Мультимодальность</strong> — боты могут анализировать не только текст, но и изображения, PDF‑файлы, голосовые сообщения. Например, пользователь загружает фото повреждённой детали, а бот сверяет его с базой и предлагает решение.</li>
+        <li><strong>Автономные агенты</strong> — самое мощное. Бот не просто отвечает, а берёт на себя цепочки действий: проверяет наличие товара на складе, бронирует время в календаре, выставляет счёт через платёжную систему, отправляет документы в CRM. Всё это происходит без участия человека.</li>
+      </ul>
+      <p><strong>Вывод:</strong> AI превращает чат-ботов из инструмента ответов в активных участников бизнес‑процессов. Если раньше бот говорил «я не знаю», то теперь он сам ищет ответ в документах компании и даёт точную информацию. Это повышает доверие клиентов и разгружает команду поддержки.</p>
+      <p><strong>Технический взгляд:</strong> Для реализации RAG используют embedding‑модели (Cohere, OpenAI text‑embedding‑3‑small) и векторные базы данных. Агенты часто строят на LangChain или напрямую через вызовы API с чётким промптом и структурой JSON‑инструментов.</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-blog2">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Запуск магазина в Telegram: пошаговое руководство</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>Telegram давно перерос стадию просто мессенджера — это полноценная платформа для бизнеса. Запустить свой магазин можно без сайта, за неделю, и охватить аудиторию, которая уже «живёт» в мессенджере.</p>
+      <p><strong>Пошаговый план:</strong></p>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li><strong>Шаг 1: структура каталога.</strong> Продумайте категории товаров. В боте каталог делается через кнопки (ReplyKeyboardMarkup или InlineKeyboardMarkup). Каждая категория ведёт к подкатегориям, а затем к карточке товара с фото, описанием и ценой.</li>
+        <li><strong>Шаг 2: приём платежей.</strong> Два основных варианта — ЮKassa (интеграция через API) и Telegram Stars (внутренняя валюта). ЮKassa подходит для России, Stars — для глобальных платежей. Технически реализуется через отправку счёта (sendInvoice) или через Mini App с WebView.</li>
+        <li><strong>Шаг 3: уведомления и CRM.</strong> Администратор получает уведомление о новом заказе в Telegram. Заказы автоматически передаются в Google Таблицу, amoCRM или Bitrix24 через вебхуки. Для этого в aiogram используется aiohttp‑сессия и API выбранной CRM.</li>
+        <li><strong>Шаг 4: продвижение.</strong> Используйте Telegram Ads (официальная реклама), посевы в тематических каналах и реферальную программу (бот выдаёт промокоды или уникальные ссылки).</li>
+      </ul>
+      <p><strong>Результат:</strong> Автоматический канал продаж 24/7. Пользователь выбирает товар, оплачивает и получает чек — всё внутри Telegram, без переходов на сайт. Конверсия выше, чем у обычных интернет‑магазинов, потому что путь клиента минимален.</p>
+      <p><strong>Технический совет:</strong> Для каталога с большим количеством товаров (более 100) используйте базу данных PostgreSQL с таблицами `products`, `categories`, `orders`. Тогда бот моментально подгружает нужные позиции без лагов.</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-blog3">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Интеграция бота с CRM: amoCRM и Bitrix24</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>Самая частая боль бизнеса — лиды теряются на пути из Telegram в отдел продаж. Интеграция с CRM решает эту проблему: каждая заявка мгновенно превращается в сделку и попадает в воронку.</p>
+      <p><strong>Как это работает:</strong></p>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li>Бот собирает данные: имя, телефон, email, текст обращения, UTM‑метки.</li>
+        <li>Через вебхук или API создаётся сущность в CRM (сделка, лид, контакт).</li>
+        <li>Ответственный менеджер видит новую заявку в CRM и может сразу связаться с клиентом.</li>
+      </ul>
+      <p><strong>amoCRM:</strong> Используйте встроенные Webhooks или открытое API. Бот отправляет POST‑запрос с данными о лиде, и amoCRM создаёт сделку в нужной воронке. Можно привязать UTM‑метки для точной аналитики.</p>
+      <p><strong>Bitrix24:</strong> Работает через REST API. Бот авторизуется по OAuth 2.0 и вызывает метод `crm.lead.add` или `crm.deal.add`. В ответ приходит ID сущности, который можно сохранить в базе для отслеживания.</p>
+      <p><strong>Альтернативные инструменты:</strong> Make (бывший Integromat) и Albato позволяют соединить бота и CRM без кода. Но кастомная интеграция на Python даёт полный контроль над полями, бизнес‑логикой и обработкой ошибок.</p>
+      <p><strong>Результат:</strong> Ни одной потерянной заявки. Сквозная аналитика от рекламного объявления до продажи. Команда видит полный путь клиента — это помогает улучшать воронку.</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-blog4">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Безопасность Telegram-ботов: как защитить данные клиентов</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>Боты обрабатывают личные данные пользователей: имена, номера телефонов, email, иногда даже паспортные данные. Утечка этой информации грозит репутационными и юридическими последствиями.</p>
+      <p><strong>Основные правила безопасности:</strong></p>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li><strong>Не храните лишнее.</strong> Если данные нужны только для передачи в CRM, не записывайте их в базу бота. Используйте переменные на время сессии.</li>
+        <li><strong>Валидация и санитизация.</strong> Всегда проверяйте входящие данные: длина строки, формат, допустимые символы. В Python используйте библиотеки `re`, `pydantic`, `validators`. Экранируйте SQL‑запросы через параметризованные запросы (asyncpg автоматически это делает).</li>
+        <li><strong>Политика конфиденциальности.</strong> Добавьте кнопку «Политика конфиденциальности» на старте бота. Если собираете персональные данные — обязательно получите согласие пользователя (хотя бы через нажатие кнопки «Я согласен»).</li>
+        <li><strong>Защита от спама и DDoS.</strong> Реализуйте rate limiting (как в вашем Mini App — 10 запросов в минуту на пользователя). Проверяйте initData в Mini Apps, чтобы убедиться, что запрос пришёл именно от Telegram. Добавьте секретный токен для вебхуков.</li>
+      </ul>
+      <p><strong>Дополнительно:</strong> Никогда не храните токены бота и ключи API прямо в коде — только в переменных окружения или Secrets. Используйте HTTPS для всех внешних запросов. Регулярно обновляйте зависимости проекта (pip‑уязвимости).</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-blog5">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Аналитика в ботах: что отслеживать и как увеличить конверсию</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>Без аналитики вы не знаете, работает бот или просто «висит». Отслеживание ключевых метрик помогает находить узкие места и повышать эффективность.</p>
+      <p><strong>Ключевые метрики:</strong></p>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li><strong>Активации</strong> — сколько пользователей запустили бота и начали взаимодействовать (нажали /start или открыли Mini App). Показывает охват и привлекательность.</li>
+        <li><strong>Удержание (Retention)</strong> — сколько пользователей возвращается через день, неделю, месяц. Падение удержания сигнализирует о скучном контенте или технических проблемах.</li>
+        <li><strong>Конверсия в целевое действие</strong> — оплата, запись, заявка. Обычно измеряется в процентах от числа активаций.</li>
+        <li><strong>Средний чек</strong> — сумма покупок на одного платящего пользователя. Помогает оценить монетизацию.</li>
+        <li><strong>Частые вопросы без ответа</strong> — запросы, на которые бот не смог найти информацию. Это прямое указание на пробелы в базе знаний.</li>
+      </ul>
+      <p><strong>Инструменты:</strong> Яндекс.Метрика (через WebApp), Google Analytics 4, BotAnalytics, TGStat. Для собственных ботов можно писать статистику в PostgreSQL и строить дашборды в Grafana.</p>
+      <p><strong>Повышение конверсии:</strong> Анализируйте воронку, проводите A/B‑тестирование сценариев, упрощайте интерфейс. Иногда увеличение скорости ответа на 0.5 секунды поднимает конверсию на 15%.</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-blog6">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Telegram Mini Apps: что это и зачем они вашему бизнесу</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>Telegram Mini Apps — это полноценные веб‑приложения, которые открываются прямо внутри Telegram. Пользователю не нужно устанавливать отдельное приложение — всё работает моментально, как кнопка в боте.</p>
+      <p><strong>Преимущества:</strong></p>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li><strong>Мгновенный доступ.</strong> Никаких установок и регистраций — один тап, и приложение открыто. Конверсия из бота в Mini App может достигать 70%.</li>
+        <li><strong>Встроенные платежи.</strong> Telegram Web App API позволяет принимать оплату через ЮKassa, Telegram Stars или любые другие платёжные системы.</li>
+        <li><strong>Данные пользователя.</strong> При первом открытии Telegram передаёт Mini App имя, язык, фото профиля, username и уникальный ID. Можно использовать для персонализации без дополнительного ввода.</li>
+        <li><strong>Адаптивный интерфейс.</strong> Поддерживает тёмную/светлую темы, адаптацию под размер экрана. Выглядит нативно.</li>
+      </ul>
+      <p><strong>Примеры использования:</strong> интернет‑магазины, бронирование услуг, игры (как ваша «Шахтёрская глубина»), калькуляторы стоимости, квизы, системы лояльности.</p>
+      <p><strong>Технически:</strong> Mini App — это обычная веб‑страница (HTML + CSS + JS), загруженная по https. Telegram оборачивает её в WebView и предоставляет API через объект `window.Telegram.WebApp`. Бэкенд может быть любым (Python, Node.js), деплой — Render, Vercel, Netlify. Связь с ботом осуществляется через initData и отправку fetch‑запросов.</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-blog7">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Как выбрать стек для бота: конструктор vs кастомная разработка</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>Перед каждым предпринимателем встаёт вопрос: делать бота на конструкторе (Salebot, BotHelp) или заказать кастомную разработку на Python/Node.js. Решение зависит от сложности задач и бюджета.</p>
+      <p><strong>Конструкторы (Salebot, BotHelp):</strong></p>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li><strong>Плюсы:</strong> быстро (от 1 дня), дёшево (от 990 ₽/мес), не нужен программист. Подходит для простых сценариев: визитка, рассылка, простой квиз.</li>
+        <li><strong>Минусы:</strong> ограниченная логика (нельзя написать сложные алгоритмы), слабая интеграция с базами данных, зависимость от платформы (ваш бот живёт ровно столько, сколько существует конструктор).</li>
+      </ul>
+      <p><strong>Кастомная разработка (Python + aiogram):</strong></p>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li><strong>Плюсы:</strong> безграничные возможности — любая логика, любые интеграции (CRM, Google Sheets, платежи, AI). Полный контроль над данными и безопасностью. Код — ваша собственность.</li>
+        <li><strong>Минусы:</strong> дороже (от 40 000 ₽ за простого бота) и дольше (от 3 дней). Требует программиста или подрядчика.</li>
+      </ul>
+      <p><strong>Гибридный подход:</strong> Начните с конструктора, чтобы быстро проверить гипотезу. Когда появятся нестандартные задачи (интеграция с вашей внутренней системой, сложная аналитика, RAG), переходите на кастомного бота. При этом аудиторию из конструктора можно перенести в нового бота, сохранив всю клиентскую базу.</p>
+    </div>
+  </div>
+</div>
+  <!-- @modals:end -->
+
+  <script>
+    (function () {
+      var тихо = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+      /* ---------- Меню ---------- */
+      var кнопка = document.getElementById('menuBtn')
+      var меню = document.getElementById('menu')
+
+      function закрыть() {
+        меню.classList.remove('open')
+        кнопка.setAttribute('aria-expanded', 'false')
+      }
+      кнопка.addEventListener('click', function (e) {
+        e.stopPropagation()
+        var открыто = меню.classList.toggle('open')
+        кнопка.setAttribute('aria-expanded', открыто ? 'true' : 'false')
+      })
+      меню.addEventListener('click', function (e) {
+        if (e.target.closest('a')) закрыть()
+      })
+      document.addEventListener('click', function (e) {
+        if (!меню.contains(e.target)) закрыть()
+      })
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') { закрыть(); кнопка.focus() }
+      })
+
+      /* ---------- Появление первого экрана ---------- */
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          document.querySelector('.hero').classList.add('is-in')
+        })
+      })
+
+      /* ---------- Точечная картинка: окно сайта и сообщение бота ----------
+         Фигура рисуется в маленьком невидимом холсте, затем каждый
+         закрашенный пиксель становится точкой. Точки один раз слетаются
+         на свои места и дальше стоят — к прокрутке ничего не привязано. */
+      var холст = document.getElementById('heroDots')
+      var ctx = холст.getContext('2d')
+      var точки = []
+      var старт = 0
+      var шаг = 0
+
+      function фигура(w, h) {
+        var c = document.createElement('canvas')
+        c.width = w
+        c.height = h
+        var g = c.getContext('2d')
+        g.fillStyle = '#000'
+        g.strokeStyle = '#000'
+
+        // Масштаб: всё рисуется в условной сетке 100 × 70
+        var k = Math.min(w / 100, h / 70)
+        var ox = (w - 100 * k) / 2
+        var oy = (h - 70 * k) / 2
+        function X(v) { return ox + v * k }
+        function Y(v) { return oy + v * k }
+        function R(v) { return v * k }
+
+        function скруглённый(x, y, ww, hh, r) {
+          g.beginPath()
+          g.moveTo(X(x + r), Y(y))
+          g.arcTo(X(x + ww), Y(y), X(x + ww), Y(y + hh), R(r))
+          g.arcTo(X(x + ww), Y(y + hh), X(x), Y(y + hh), R(r))
+          g.arcTo(X(x), Y(y + hh), X(x), Y(y), R(r))
+          g.arcTo(X(x), Y(y), X(x + ww), Y(y), R(r))
+          g.closePath()
+        }
+
+        // Окно браузера
+        g.lineWidth = R(1.6)
+        скруглённый(2, 4, 66, 48, 4)
+        g.stroke()
+        g.fillRect(X(2), Y(12), R(66), R(1.4))
+        ;[7, 12, 17].forEach(function (x) {
+          g.beginPath(); g.arc(X(x), Y(8), R(1.3), 0, 7); g.fill()
+        })
+        // Заголовок и строки текста на «сайте»
+        g.fillRect(X(9), Y(19), R(34), R(5))
+        g.fillRect(X(9), Y(28), R(44), R(1.6))
+        g.fillRect(X(9), Y(32), R(38), R(1.6))
+        // Кнопка на сайте — она станет акцентной
+        скруглённый(9, 39, 20, 6, 3)
+        g.fill()
+
+        // Сообщение бота поверх окна
+        g.fillStyle = '#fff'
+        скруглённый(50, 30, 46, 30, 6)
+        g.fill()
+        g.fillStyle = '#000'
+        g.lineWidth = R(1.6)
+        скруглённый(50, 30, 46, 30, 6)
+        g.stroke()
+        g.beginPath()
+        g.moveTo(X(58), Y(60)); g.lineTo(X(55), Y(67)); g.lineTo(X(65), Y(60))
+        g.fill()
+        g.fillRect(X(57), Y(37), R(26), R(1.8))
+        g.fillRect(X(57), Y(42), R(32), R(1.8))
+        // Кнопки-слоты в сообщении
+        ;[57, 70].forEach(function (x) {
+          скруглённый(x, 48, 11, 6, 3)
+          g.stroke()
+        })
+        скруглённый(83, 48, 8, 6, 3)
+        g.fill()
+
+        return { c: c, g: g, X: X, Y: Y, R: R }
+      }
+
+      function собрать() {
+        var dpr = Math.min(window.devicePixelRatio || 1, 2)
+        var rect = холст.getBoundingClientRect()
+        if (!rect.width || !rect.height) return
+        холст.width = Math.round(rect.width * dpr)
+        холст.height = Math.round(rect.height * dpr)
+
+        шаг = rect.width < 500 ? 6 : 8
+        var cols = Math.floor(rect.width / шаг)
+        var rows = Math.floor(rect.height / шаг)
+        var ф = фигура(cols, rows)
+        var данные = ф.g.getImageData(0, 0, cols, rows).data
+
+        // Акцент: кнопка на сайте и последний слот в сообщении
+        function акцент(x, y) {
+          var кнопкаСайта = x >= ф.X(9) && x <= ф.X(29) && y >= ф.Y(39) && y <= ф.Y(45)
+          var слот = x >= ф.X(83) && x <= ф.X(91) && y >= ф.Y(48) && y <= ф.Y(54)
+          return кнопкаСайта || слот
+        }
+
+        точки = []
+        for (var y = 0; y < rows; y++) {
+          for (var x = 0; x < cols; x++) {
+            var i = (y * cols + x) * 4
+            if (данные[i + 3] > 90 && данные[i] < 128) {
+              var tx = (x + 0.5) * шаг
+              var ty = (y + 0.5) * шаг
+              var угол = Math.random() * Math.PI * 2
+              var даль = 40 + Math.random() * rect.width * 0.5
+              точки.push({
+                x: tx, y: ty,
+                sx: tx + Math.cos(угол) * даль,
+                sy: ty + Math.sin(угол) * даль,
+                d: Math.random() * 0.35,
+                a: акцент(x, y)
+              })
+            }
+          }
+        }
+      }
+
+      function кадр(t) {
+        if (!старт) старт = t
+        var dpr = холст.width / холст.getBoundingClientRect().width
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+        ctx.clearRect(0, 0, холст.width, холст.height)
+
+        var прошло = тихо ? 99 : (t - старт) / 1000
+        var всё = true
+        var радиус = шаг * 0.32
+
+        for (var n = 0; n < точки.length; n++) {
+          var p = точки[n]
+          var q = Math.min(Math.max((прошло - p.d) / 1.3, 0), 1)
+          if (q < 1) всё = false
+          var e = 1 - Math.pow(1 - q, 4)
+          ctx.fillStyle = p.a ? '#7C3AED' : '#1A1B1C'
+          ctx.globalAlpha = 0.15 + 0.85 * e
+          ctx.beginPath()
+          ctx.arc(p.sx + (p.x - p.sx) * e, p.sy + (p.y - p.sy) * e, радиус * (p.a ? 1.25 : 1), 0, 7)
+          ctx.fill()
+        }
+        ctx.globalAlpha = 1
+        if (!всё) requestAnimationFrame(кадр)
+      }
+
+      function запустить() {
+        собрать()
+        старт = 0
+        requestAnimationFrame(кадр)
+      }
+
+      запустить()
+
+      // При смене размера окна просто перерисовываем готовую картинку
+      var таймер
+      window.addEventListener('resize', function () {
+        clearTimeout(таймер)
+        таймер = setTimeout(function () {
+          собрать()
+          старт = -1e6
+          requestAnimationFrame(кадр)
+        }, 150)
+      })
+
+      /* ---------- Появление при входе в экран ----------
+         Элемент один раз получает класс .in, когда показался на экране,
+         и дальше анимация идёт сама. Соседи по списку — с небольшой задержкой. */
+      var ЦЕЛИ = [
+        '.sec__side', '.sec__title', '.rows > li', '.cards > .card', '.more',
+        '.live > li', '.sec .tabs', '.steps', '.spec > li', '.pick',
+        '.posts > li', '.final__lead', '.final__big'
+      ]
+      var появление = null
+      if (!тихо && 'IntersectionObserver' in window) {
+        появление = new IntersectionObserver(function (записи) {
+          записи.forEach(function (з) {
+            if (!з.isIntersecting) return
+            з.target.classList.add('in')
+            появление.unobserve(з.target)
+          })
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.01 })
+      }
+      // У самого конца страницы нижние элементы могут так и не войти
+      // в зону срабатывания (особенно на высоких экранах) — показываем всё оставшееся
+      if (появление) {
+        window.addEventListener('scroll', function () {
+          if (window.innerHeight + window.scrollY < document.documentElement.scrollHeight - 4) return
+          document.querySelectorAll('[data-rv]:not(.in)').forEach(function (el) {
+            if (el.offsetParent === null) return
+            el.classList.add('in')
+            появление.unobserve(el)
+          })
+        }, { passive: true })
+      }
+
+      document.querySelectorAll(ЦЕЛИ.join(',')).forEach(function (el) {
+        if (!появление) return
+        el.setAttribute('data-rv', '')
+        var братья = Array.prototype.filter.call(el.parentNode.children, function (x) { return x.matches(ЦЕЛИ.join(',')) })
+        var номер = Math.min(братья.indexOf(el), 5)
+        if (номер > 0) el.style.setProperty('--d', (номер * 0.07).toFixed(2) + 's')
+        появление.observe(el)
+      })
+
+      /* ---------- Пиксельная сборка превью (WebGL) ----------
+         Один общий WebGL-контекст на все карточки: браузеры разрешают
+         их не больше 16, а карточек 15. Кадр рисуется в общем холсте
+         и копируется в холст карточки. Нет WebGL или просят меньше
+         движения — фото просто показываются как есть. */
+      var пиксели = (function () {
+        if (тихо) return null
+        var gl
+        var общий = document.createElement('canvas')
+        try { gl = общий.getContext('webgl', { premultipliedAlpha: false, antialias: false }) } catch (e) {}
+        if (!gl) return null
+
+        var ВЕРШИНЫ = 'attribute vec2 p; varying vec2 uv;' +
+          'void main(){ uv = p * 0.5 + 0.5; uv.y = 1.0 - uv.y; gl_Position = vec4(p, 0.0, 1.0); }'
+        var ФРАГМЕНТ = 'precision mediump float; varying vec2 uv;' +
+          'uniform sampler2D img; uniform float t; uniform vec2 size;' +
+          'float h(vec2 c){ return fract(sin(dot(c, vec2(12.9898, 78.233))) * 43758.5453); }' +
+          'void main(){' +
+          // Клетка крупная в начале и мельчает к концу
+          '  float e = 1.0 - pow(1.0 - t, 3.0);' +
+          '  float cell = mix(28.0, 3.0, e);' +
+          '  vec2 grid = floor(uv * size / cell);' +
+          '  float r = h(grid);' +
+          // Каждая клетка вспыхивает в своё время
+          '  float a = smoothstep(r * 0.7, r * 0.7 + 0.18, t * 1.15);' +
+          '  vec2 centre = (grid + 0.5) * cell / size;' +
+          '  vec4 blocky = texture2D(img, centre);' +
+          '  vec4 sharp = texture2D(img, uv);' +
+          '  vec3 col = mix(blocky.rgb, sharp.rgb, smoothstep(0.72, 1.0, t));' +
+          // Свежая клетка чуть светлее — читается как «пиксель встал на место»
+          '  col += (1.0 - a) * 0.2;' +
+          '  gl_FragColor = vec4(col, a);' +
+          '}'
+
+        function шейдер(тип, код) {
+          var ш = gl.createShader(тип)
+          gl.shaderSource(ш, код)
+          gl.compileShader(ш)
+          return gl.getShaderParameter(ш, gl.COMPILE_STATUS) ? ш : null
+        }
+        var в = шейдер(gl.VERTEX_SHADER, ВЕРШИНЫ)
+        var ф = шейдер(gl.FRAGMENT_SHADER, ФРАГМЕНТ)
+        if (!в || !ф) return null
+        var прог = gl.createProgram()
+        gl.attachShader(прог, в)
+        gl.attachShader(прог, ф)
+        gl.linkProgram(прог)
+        if (!gl.getProgramParameter(прог, gl.LINK_STATUS)) return null
+        gl.useProgram(прог)
+
+        var буфер = gl.createBuffer()
+        gl.bindBuffer(gl.ARRAY_BUFFER, буфер)
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW)
+        var attr = gl.getAttribLocation(прог, 'p')
+        gl.enableVertexAttribArray(attr)
+        gl.vertexAttribPointer(attr, 2, gl.FLOAT, false, 0, 0)
+        var uT = gl.getUniformLocation(прог, 't')
+        var uSize = gl.getUniformLocation(прог, 'size')
+
+        var ДЛИТЕЛЬНОСТЬ = 1500
+        var идут = []
+        var крутится = false
+
+        function готово(к) {
+          к.pic.classList.remove('px-wait')
+          if (к.холст.parentNode) к.холст.parentNode.removeChild(к.холст)
+          if (к.текстура) gl.deleteTexture(к.текстура)
+        }
+
+        function кадр(сейчас) {
+          идут = идут.filter(function (к) {
+            if (!к.старт) к.старт = сейчас
+            var t = Math.min((сейчас - к.старт) / ДЛИТЕЛЬНОСТЬ, 1)
+            var w = к.холст.width, h = к.холст.height
+            if (общий.width !== w || общий.height !== h) { общий.width = w; общий.height = h }
+            gl.viewport(0, 0, w, h)
+            gl.clearColor(0, 0, 0, 0)
+            gl.clear(gl.COLOR_BUFFER_BIT)
+            gl.bindTexture(gl.TEXTURE_2D, к.текстура)
+            gl.uniform1f(uT, t)
+            gl.uniform2f(uSize, w / к.dpr, h / к.dpr)
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+            к.ctx.clearRect(0, 0, w, h)
+            к.ctx.drawImage(общий, 0, 0)
+            if (t >= 1) { готово(к); return false }
+            return true
+          })
+          if (идут.length) requestAnimationFrame(кадр)
+          else крутится = false
+        }
+
+        function запустить(pic, img) {
+          var r = pic.getBoundingClientRect()
+          if (!r.width) { готово({ pic: pic, холст: {} }); return }
+          var dpr = Math.min(window.devicePixelRatio || 1, 2)
+          var холст = document.createElement('canvas')
+          холст.width = Math.round(r.width * dpr)
+          холст.height = Math.round(r.height * dpr)
+          холст.setAttribute('aria-hidden', 'true')
+          pic.appendChild(холст)
+          var к = { pic: pic, холст: холст, ctx: холст.getContext('2d'), dpr: dpr, старт: 0 }
+          try {
+            к.текстура = gl.createTexture()
+            gl.bindTexture(gl.TEXTURE_2D, к.текстура)
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img)
+          } catch (e) {
+            готово(к)
+            return
+          }
+          идут.push(к)
+          if (!крутится) { крутится = true; requestAnimationFrame(кадр) }
+        }
+
+        var наблюдатель = new IntersectionObserver(function (записи) {
+          записи.forEach(function (з) {
+            if (!з.isIntersecting) return
+            наблюдатель.unobserve(з.target)
+            var pic = з.target
+            var img = pic.querySelector('img')
+            var старт = function () { запустить(pic, img) }
+            // Фото ещё не пришло — ждём, но не дольше 4 секунд
+            if (img.complete && img.naturalWidth) старт()
+            else {
+              var сторож = setTimeout(function () { готово({ pic: pic, холст: {} }) }, 4000)
+              img.addEventListener('load', function () { clearTimeout(сторож); старт() }, { once: true })
+              img.addEventListener('error', function () { clearTimeout(сторож); готово({ pic: pic, холст: {} }) }, { once: true })
+            }
+          })
+        }, { rootMargin: '0px 0px -12% 0px', threshold: 0.2 })
+
+        document.querySelectorAll('.card__pic').forEach(function (pic) {
+          if (!pic.querySelector('img')) return
+          pic.classList.add('px-wait')
+          наблюдатель.observe(pic)
+        })
+        return true
+      })()
+
+      /* ---------- Окна проектов и статей ---------- */
+      var открытоеОкно = null
+      var откуда = null
+
+      function открытьОкно(id, кнопка) {
+        var окно = document.getElementById('modal-' + id)
+        if (!окно) return
+        откуда = кнопка || null
+        окно.classList.add('active')
+        document.body.classList.add('modal-open')
+        окно.scrollTop = 0
+        открытоеОкно = окно
+        var закр = окно.querySelector('.modal-close')
+        if (закр) закр.focus({ preventScroll: true })
+      }
+      function закрытьОкно() {
+        if (!открытоеОкно) return
+        открытоеОкно.classList.remove('active')
+        document.body.classList.remove('modal-open')
+        открытоеОкно = null
+        if (откуда) откуда.focus({ preventScroll: true })
+      }
+      document.querySelectorAll('[data-modal]').forEach(function (btn) {
+        btn.addEventListener('click', function () { открытьОкно(btn.dataset.modal, btn) })
+      })
+      document.querySelectorAll('.modal').forEach(function (окно) {
+        окно.setAttribute('role', 'dialog')
+        окно.setAttribute('aria-modal', 'true')
+        окно.addEventListener('click', function (e) {
+          if (e.target === окно || e.target.closest('.modal-close')) закрытьОкно()
+        })
+        // Вкладки внутри окна: n-я кнопка открывает n-й блок
+        var кнопки = окно.querySelectorAll('.tab-btn')
+        var блоки = окно.querySelectorAll('.tab-content')
+        кнопки.forEach(function (b, i) {
+          b.addEventListener('click', function () {
+            кнопки.forEach(function (x) { x.classList.toggle('active', x === b) })
+            блоки.forEach(function (x, j) { x.classList.toggle('active', j === i) })
+          })
+        })
+      })
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') закрытьОкно()
+        // Tab не уходит из открытого окна на страницу под ним
+        if (e.key === 'Tab' && открытоеОкно) {
+          var фокус = открытоеОкно.querySelectorAll('a[href], button')
+          var первый = фокус[0], последний = фокус[фокус.length - 1]
+          if (e.shiftKey && document.activeElement === первый) { e.preventDefault(); последний.focus() }
+          else if (!e.shiftKey && document.activeElement === последний) { e.preventDefault(); первый.focus() }
+        }
+      })
+
+      /* ---------- Проекты: фильтр и «показать все» ---------- */
+      var карточки = Array.prototype.slice.call(document.querySelectorAll('.card'))
+      var фильтры = document.querySelectorAll('[data-filter]')
+      var ещё = document.getElementById('moreBtn')
+      var раскрыто = false
+      var ПЕРВЫЕ = 6
+
+      function мигнуть(el) {
+        if (тихо || !el) return
+        el.classList.remove('swap')
+        void el.offsetWidth
+        el.classList.add('swap')
+      }
+
+      function показатьПроекты(ключ) {
+        var n = 0
+        карточки.forEach(function (c) {
+          var подходит = ключ === 'all' || c.dataset.cat.split(' ').indexOf(ключ) >= 0
+          var видно = подходит && (ключ !== 'all' || раскрыто || n < ПЕРВЫЕ)
+          if (подходит) n++
+          var былоСкрыто = c.hidden
+          c.hidden = !видно
+          if (видно && былоСкрыто) мигнуть(c)
+        })
+        ещё.hidden = ключ !== 'all' || раскрыто
+      }
+      фильтры.forEach(function (f) {
+        f.addEventListener('click', function () {
+          фильтры.forEach(function (x) { x.setAttribute('aria-selected', x === f ? 'true' : 'false') })
+          показатьПроекты(f.dataset.filter)
+        })
+      })
+      ещё.addEventListener('click', function () {
+        раскрыто = true
+        показатьПроекты('all')
+        карточки[ПЕРВЫЕ].focus({ preventScroll: true })
+      })
+      показатьПроекты('all')
+
+      /* ---------- Этапы работы ---------- */
+      var ЭТАПЫ = [["Анализ", "Разбираемся, что должно происходить: откуда приходит клиент, что он делает дальше и&nbsp;где сейчас теряются заявки. Нет технического задания&nbsp;— составлю его по&nbsp;вашему описанию.", ["Техническое задание", "Смета", "Сроки"]], ["Проектирование", "Продумываю сценарии бота, структуру страниц и&nbsp;то, какие данные где хранятся. Всё согласуем до&nbsp;начала кода&nbsp;— на&nbsp;этом этапе правки ничего не&nbsp;стоят.", ["Сценарии диалогов", "Структура сайта", "Схема данных"]], ["Разработка", "Пишу код и&nbsp;проверяю на&nbsp;живых ситуациях: запись на&nbsp;занятое время, отмена, оплата, пустые поля, медленный интернет.", ["Рабочая версия", "Проверка сценариев", "Мобильная версия"]], ["Передача", "Запускаю проект на&nbsp;сервере и&nbsp;передаю всё, что нужно, чтобы он&nbsp;работал без меня. После полной оплаты код и&nbsp;права принадлежат вам.", ["Исходный код", "Доступы", "Документация"]]]
+      var кнопкиЭтапов = document.querySelectorAll('[data-step]')
+      кнопкиЭтапов.forEach(function (b) {
+        b.addEventListener('click', function () {
+          var э = ЭТАПЫ[+b.dataset.step]
+          кнопкиЭтапов.forEach(function (x) { x.setAttribute('aria-selected', x === b ? 'true' : 'false') })
+          мигнуть(document.querySelector('.steps'))
+          document.getElementById('stepText').innerHTML = э[1]
+          document.getElementById('stepList').innerHTML = э[2].map(function (x) { return '<li>' + x + '</li>' }).join('')
+        })
+      })
+
+      /* ---------- Какой бот нужен ---------- */
+      var БОТЫ = {"support": {"title": "Поддержка клиентов", "items": ["Каждое обращение становится тикетом в&nbsp;отдельной теме группы", "Сообщения ходят между клиентом и&nbsp;оператором через бота", "Роли: администратор, старший, оператор", "Неотвеченный тикет через 15 минут поднимается выше", "Шаблоны ответов для частых вопросов", "Оценка 1–5 после закрытия и&nbsp;панель с&nbsp;показателями для руководителя"], "try": [], "name": "Поддержка клиентов"}, "sales": {"title": "Продажи и&nbsp;оплата", "items": ["Каталог с&nbsp;фото, описанием и&nbsp;ценой", "Корзина с&nbsp;изменением количества", "Оплата картой через ЮKassa", "Оплата подтверждается автоматически", "Отчёты в&nbsp;Google Sheets одной командой", "Управление товарами прямо в&nbsp;Telegram"], "try": [["ShopBot — магазин в Telegram", "https://t.me/my_1shopbot"]], "name": "Продажи и оплата"}, "booking": {"title": "Запись и&nbsp;календарь", "items": ["Запись в&nbsp;Mini App на&nbsp;одном экране", "События сами появляются в&nbsp;Google Calendar", "Напоминания клиентам за&nbsp;день и&nbsp;за&nbsp;час", "Двойная запись на&nbsp;одно время невозможна", "Панель мастера: записи и&nbsp;отмены", "Статистика по&nbsp;записям, услугам и&nbsp;мастерам"], "try": [["BeautyBook — запись в салон", "https://t.me/Beautybook1_bot"]], "name": "Запись и календарь"}, "ai": {"title": "AI-ассистент", "items": ["Работает с&nbsp;вашей базой знаний: TXT, PDF, DOCX", "Ищет по&nbsp;смыслу, а&nbsp;не&nbsp;по&nbsp;словам", "Гибридный поиск: векторный и&nbsp;текстовый", "У&nbsp;каждого ответа есть источник", "Чат с&nbsp;историей диалога", "Статистика запросов и&nbsp;оценок"], "try": [["DocuHelper Forex", "https://t.me/DocuHelperForexBot"], ["DocuHelper Mini App", "https://t.me/DocuHelperMiniAppBot"]], "name": "AI-ассистент"}, "quiz": {"title": "Квиз и&nbsp;сбор заявок", "items": ["Mini App с&nbsp;анимацией, прогрессом и&nbsp;темами", "Сам определяет тип клиента по&nbsp;ответам", "Все ответы попадают в&nbsp;Google Sheets", "Уведомление администратору о&nbsp;каждом квизе", "Ответы не&nbsp;теряются, если закрыть окно", "Статистика и&nbsp;последние результаты в&nbsp;боте"], "try": [["Quiz Trader", "https://t.me/quizforexbot"]], "name": "Квиз и сбор заявок"}, "other": {"title": "Другое", "items": ["Подбор квартир для агентства недвижимости", "Обучение: уроки, тесты, сертификаты", "Запись к&nbsp;врачам с&nbsp;напоминаниями", "Автосервис: запись и&nbsp;расчёт стоимости", "Фитнес: тренировки, питание, прогресс", "Магазин с&nbsp;любой логикой"], "try": [], "name": "Другое"}}
+      var ПРИВЕТ = 'Здравствуйте! Нужен бот: '
+      var варианты = document.querySelectorAll('[data-pick]')
+
+      function выбрать(ключ) {
+        var б = БОТЫ[ключ]
+        варианты.forEach(function (x) {
+          var да = x.dataset.pick === ключ
+          x.setAttribute('aria-selected', да ? 'true' : 'false')
+          var лента = x.parentNode
+          if (да && лента.scrollWidth > лента.clientWidth) {
+            лента.scrollTo({ left: x.offsetLeft - лента.offsetLeft - 16, behavior: тихо ? 'auto' : 'smooth' })
+          }
+        })
+        мигнуть(document.querySelector('.pick__panel'))
+        document.getElementById('pickTitle').innerHTML = б.title
+        document.getElementById('pickList').innerHTML = б.items.map(function (x) { return '<li>' + x + '</li>' }).join('')
+        var попробовать = document.getElementById('pickTry')
+        попробовать.innerHTML = б.try.map(function (t) {
+          return '<a href="' + t[1] + '" target="_blank" rel="noopener">' + t[0] + ' ↗</a>'
+        }).join('')
+        попробовать.style.display = б.try.length ? '' : 'none'
+        document.getElementById('pickCta').href = 'https://t.me/Bro_piton?text=' + encodeURIComponent(ПРИВЕТ + б.name)
+      }
+      варианты.forEach(function (x) {
+        x.addEventListener('click', function () { выбрать(x.dataset.pick) })
+      })
+      выбрать('support')
+
+      /* ---------- Полоса раздела на телефоне ---------- */
+      var разделы = Array.prototype.slice.call(document.querySelectorAll('.sec'))
+      var полоса = document.getElementById('subbar')
+      var имя = document.getElementById('subName')
+      var точкиПолосы = document.getElementById('subDots')
+      var текущий = 0
+      точкиПолосы.innerHTML = разделы.map(function () { return '<i></i>' }).join('')
+
+      function отметить() {
+        var линия = 130
+        var номер = -1
+        разделы.forEach(function (r, i) {
+          if (r.getBoundingClientRect().top <= линия) номер = i
+        })
+        полоса.classList.toggle('on', номер >= 0)
+        if (номер < 0) return
+        текущий = номер
+        имя.textContent = разделы[номер].dataset.name
+        Array.prototype.forEach.call(точкиПолосы.children, function (t, i) { t.classList.toggle('on', i === номер) })
+      }
+      var ждёт = false
+      window.addEventListener('scroll', function () {
+        if (ждёт) return
+        ждёт = true
+        requestAnimationFrame(function () { ждёт = false; отметить() })
+      }, { passive: true })
+      отметить()
+
+      function перейти(i) {
+        if (i < 0) { window.scrollTo({ top: 0, behavior: тихо ? 'auto' : 'smooth' }); return }
+        if (i >= разделы.length) return
+        разделы[i].scrollIntoView({ behavior: тихо ? 'auto' : 'smooth' })
+      }
+      document.getElementById('subPrev').addEventListener('click', function () { перейти(текущий - 1) })
+      document.getElementById('subNext').addEventListener('click', function () { перейти(текущий + 1) })
+
+      /* ---------- Кнопки слегка тянутся за курсором ---------- */
+      if (!тихо && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        document.querySelectorAll('.magnet').forEach(function (el) {
+          el.style.transition = 'transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s'
+          el.addEventListener('mousemove', function (e) {
+            var r = el.getBoundingClientRect()
+            var dx = (e.clientX - r.left - r.width / 2) * 0.25
+            var dy = (e.clientY - r.top - r.height / 2) * 0.35
+            el.style.transform = 'translate(' + dx + 'px,' + dy + 'px)'
+          })
+          el.addEventListener('mouseleave', function () {
+            el.style.transform = ''
+          })
+        })
+      }
+    })()
+  </script>
+</body>
+</html>
