@@ -10,8 +10,12 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="botforge — сайты и Telegram-боты">
   <meta property="og:description" content="Сайты, Telegram-боты, AI-ассистенты и CRM, которые работают вместе.">
-  <meta property="og:image" content="og-image.jpg">
+  <meta property="og:image" content="https://botforgelab.github.io/media/studio/og-studio.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://botforgelab.github.io/studio.html">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://botforgelab.github.io/media/studio/og-studio.jpg">
 
   <!-- Разработка: botforge (t.me/Bro_piton) -->
 
@@ -1165,12 +1169,17 @@
       .subbar button svg { width: 12px; height: 12px; }
     }
 
+    /* «Уменьшить движение» включают не только по здоровью, но и режим
+       энергосбережения на многих Android. Поэтому анимации не выключаем
+       совсем, а оставляем мягкое проявление — без сдвигов и пикселей. */
+    @keyframes soft { from { opacity: 0; } }
     @media (prefers-reduced-motion: reduce) {
-      .rise > span, .fade { transform: none; opacity: 1; transition: none; }
-      .js [data-rv] { opacity: 1; transform: none; transition: none; }
-      .js .final__big:not(.in) { background-size: 100% 0.045em; }
+      .rise > span, .fade { transform: none; opacity: 0; transition: opacity 0.9s ease; }
+      .js [data-rv] { transform: none; transition: opacity 0.8s ease var(--d, 0s); }
+      .js .final__big[data-rv] { transition: opacity 0.8s ease, color 0.3s, background-size 1.2s ease 0.3s; }
       .card__pic.px-wait img { opacity: 1; }
-      .swap { animation: none; }
+      .swap { animation: soft 0.35s ease; }
+      .hero__art canvas { animation: soft 1.2s ease 0.3s both; }
       .rail__btn .wheel { animation: none; }
     }
   </style>
@@ -3022,7 +3031,7 @@
         '.posts > li', '.final__lead', '.final__big'
       ]
       var появление = null
-      if (!тихо && 'IntersectionObserver' in window) {
+      if ('IntersectionObserver' in window) {
         появление = new IntersectionObserver(function (записи) {
           записи.forEach(function (з) {
             if (!з.isIntersecting) return
@@ -3255,7 +3264,7 @@
       var ПЕРВЫЕ = 6
 
       function мигнуть(el) {
-        if (тихо || !el) return
+        if (!el) return
         el.classList.remove('swap')
         void el.offsetWidth
         el.classList.add('swap')
