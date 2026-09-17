@@ -393,7 +393,7 @@
       grid-template-columns: repeat(12, 1fr);
       column-gap: 20px;
       margin: 0 var(--gutter);
-      padding: 28px 0 150px;
+      padding: 28px 0 90px;
       border-top: 1px solid var(--line);
       scroll-margin-top: 80px;
     }
@@ -426,7 +426,7 @@
 
     .sec__title {
       max-width: 17em;
-      margin: 0 0 56px;
+      margin: 0 0 44px;
       font-size: clamp(32px, 3.4vw, 56px);
       font-weight: 500;
       line-height: 1;
@@ -591,7 +591,7 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      margin: 50px 0 0;
+      margin: 36px 0 0;
       padding: 0;
       border: 0;
       background: none;
@@ -599,7 +599,7 @@
       font-size: 15px;
     }
     .more .arrow { width: 64px; height: 64px; background: var(--ink); color: var(--bg); }
-    .more[hidden] { display: none; }
+    .more[hidden], .live > li[hidden] { display: none; }
 
     /* ---------- 03. Попробовать вживую ---------- */
 
@@ -1074,7 +1074,7 @@
       .chips { margin-bottom: 14px; }
       .hero__note { margin-top: 20px; font-size: 14px; }
       .rail { display: none; }
-      .sec { display: block; padding: 20px 0 90px; scroll-margin-top: 110px; }
+      .sec { display: block; padding: 20px 0 56px; scroll-margin-top: 110px; }
       .sec__side { margin-bottom: 26px; }
       .sec__title { margin-bottom: 34px; font-size: clamp(30px, 8.6vw, 40px); }
 
@@ -1428,37 +1428,38 @@
             <span class="live__what">Записаться в&nbsp;салон на&nbsp;одном экране</span>
             <span class="live__go"><span>Открыть бота</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
           </a></li>
-          <li><a href="https://t.me/realty1_crm_bot" target="_blank" rel="noopener">
+          <li hidden><a href="https://t.me/realty1_crm_bot" target="_blank" rel="noopener">
             <span class="row__num live__num">06</span>
             <span class="live__name">RealtyBot<small>бот</small></span>
             <span class="live__what">Ответить на&nbsp;четыре вопроса и&nbsp;получить подбор</span>
             <span class="live__go"><span>Открыть бота</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
           </a></li>
-          <li><a href="https://t.me/yasuperparserbot" target="_blank" rel="noopener">
+          <li hidden><a href="https://t.me/yasuperparserbot" target="_blank" rel="noopener">
             <span class="row__num live__num">07</span>
             <span class="live__name">Парсер авто<small>бот</small></span>
             <span class="live__what">Получить лоты с&nbsp;аукционов со&nbsp;сметой</span>
             <span class="live__go"><span>Открыть бота</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
           </a></li>
-          <li><a href="https://t.me/my_1shopbot" target="_blank" rel="noopener">
+          <li hidden><a href="https://t.me/my_1shopbot" target="_blank" rel="noopener">
             <span class="row__num live__num">08</span>
             <span class="live__name">ShopBot<small>бот</small></span>
             <span class="live__what">Собрать корзину и&nbsp;дойти до&nbsp;оплаты</span>
             <span class="live__go"><span>Открыть бота</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
           </a></li>
-          <li><a href="https://t.me/DocuHelperForexBot" target="_blank" rel="noopener">
+          <li hidden><a href="https://t.me/DocuHelperForexBot" target="_blank" rel="noopener">
             <span class="row__num live__num">09</span>
             <span class="live__name">DocuHelper<small>AI-бот</small></span>
             <span class="live__what">Задать вопрос по&nbsp;документам</span>
             <span class="live__go"><span>Открыть бота</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
           </a></li>
-          <li><a href="https://t.me/my123voicebot" target="_blank" rel="noopener">
+          <li hidden><a href="https://t.me/my123voicebot" target="_blank" rel="noopener">
             <span class="row__num live__num">10</span>
             <span class="live__name">VoiceBot<small>AI-бот</small></span>
             <span class="live__what">Поговорить голосом</span>
             <span class="live__go"><span>Открыть бота</span><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></span>
           </a></li>
         </ul>
+        <button class="more" type="button" id="liveMore"><span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v10M4 9l4 4 4-4"/></svg></span><span>Показать ещё 5</span></button>
       </div>
     </section>
 
@@ -1488,8 +1489,8 @@
       <div class="sec__main">
         <p class="sec__title">Сколько стоит <em>и&nbsp;сколько ждать</em></p>
         <ul class="spec">
-          <li><span class="spec__label">Бот</span><span class="spec__value">от&nbsp;40&nbsp;000&nbsp;₽</span><span class="spec__note">Простой бот: заявки, запись, ответы на&nbsp;вопросы.</span></li>
-          <li><span class="spec__label">Комплексное решение</span><span class="spec__value">от&nbsp;90&nbsp;000&nbsp;₽</span><span class="spec__note">С&nbsp;AI и&nbsp;интеграциями. Точная смета&nbsp;— после уточнения задачи.</span></li>
+          <li><span class="spec__label">Бот</span><span class="spec__value">от&nbsp;30&nbsp;000&nbsp;₽</span><span class="spec__note">Простой бот: заявки, запись, ответы на&nbsp;вопросы.</span></li>
+          <li><span class="spec__label">Комплексное решение</span><span class="spec__value">от&nbsp;70&nbsp;000&nbsp;₽</span><span class="spec__note">С&nbsp;AI и&nbsp;интеграциями. Точная смета&nbsp;— после уточнения задачи.</span></li>
           <li><span class="spec__label">Сроки</span><span class="spec__value">3–7 дней</span><span class="spec__note">Простые проекты. Сложные AI-решения и&nbsp;Mini Apps&nbsp;— от&nbsp;2&nbsp;недель.</span></li>
           <li><span class="spec__label">Код</span><span class="spec__value">ваш</span><span class="spec__note">После полной оплаты передаю исключительные права и&nbsp;исходный код.</span></li>
           <li><span class="spec__label">Для старта</span><span class="spec__value">описание задачи</span><span class="spec__note">Техническое задание или просто рассказ своими словами. Помогу составить ТЗ.</span></li>
@@ -2819,7 +2820,7 @@
       <p><strong>Кастомная разработка (Python + aiogram):</strong></p>
       <ul style="padding-left:20px; color: var(--text-dim);">
         <li><strong>Плюсы:</strong> безграничные возможности — любая логика, любые интеграции (CRM, Google Sheets, платежи, AI). Полный контроль над данными и безопасностью. Код — ваша собственность.</li>
-        <li><strong>Минусы:</strong> дороже (от 40 000 ₽ за простого бота) и дольше (от 3 дней). Требует программиста или подрядчика.</li>
+        <li><strong>Минусы:</strong> дороже (от 30 000 ₽ за простого бота) и дольше (от 3 дней). Требует программиста или подрядчика.</li>
       </ul>
       <p><strong>Гибридный подход:</strong> Начните с конструктора, чтобы быстро проверить гипотезу. Когда появятся нестандартные задачи (интеграция с вашей внутренней системой, сложная аналитика, RAG), переходите на кастомного бота. При этом аудиторию из конструктора можно перенести в нового бота, сохранив всю клиентскую базу.</p>
     </div>
@@ -3294,6 +3295,15 @@
         карточки[ПЕРВЫЕ].focus({ preventScroll: true })
       })
       показатьПроекты('all')
+
+      /* ---------- Попробовать: остальные строки по кнопке ---------- */
+      var ещёЖивые = document.getElementById('liveMore')
+      ещёЖивые.addEventListener('click', function () {
+        var скрытые = document.querySelectorAll('.live > li[hidden]')
+        скрытые.forEach(function (li) { li.hidden = false; мигнуть(li) })
+        ещёЖивые.hidden = true
+        if (скрытые[0]) скрытые[0].querySelector('a').focus({ preventScroll: true })
+      })
 
       /* ---------- Этапы работы ---------- */
       var ЭТАПЫ = [["Анализ", "Разбираемся, что должно происходить: откуда приходит клиент, что он делает дальше и&nbsp;где сейчас теряются заявки. Нет технического задания&nbsp;— составлю его по&nbsp;вашему описанию.", ["Техническое задание", "Смета", "Сроки"]], ["Проектирование", "Продумываю сценарии бота, структуру страниц и&nbsp;то, какие данные где хранятся. Всё согласуем до&nbsp;начала кода&nbsp;— на&nbsp;этом этапе правки ничего не&nbsp;стоят.", ["Сценарии диалогов", "Структура сайта", "Схема данных"]], ["Разработка", "Пишу код и&nbsp;проверяю на&nbsp;живых ситуациях: запись на&nbsp;занятое время, отмена, оплата, пустые поля, медленный интернет.", ["Рабочая версия", "Проверка сценариев", "Мобильная версия"]], ["Передача", "Запускаю проект на&nbsp;сервере и&nbsp;передаю всё, что нужно, чтобы он&nbsp;работал без меня. После полной оплаты код и&nbsp;права принадлежат вам.", ["Исходный код", "Доступы", "Документация"]]]
