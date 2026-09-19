@@ -149,6 +149,7 @@
       margin-top: -70px;
       background: var(--line);
     }
+    .chapters { display: none; }
     .progress i {
       position: absolute;
       inset: 0 0 auto;
@@ -202,10 +203,8 @@
 
       /* Фильм снят горизонтально, поэтому на телефоне он идёт широкой
          полосой под шапкой, а текст лежит под полосой, а не поверх неё */
-      /* Полоса занимает всё, что остаётся над карточкой (около 250 px),
-         но не меньше полной ширины кадра 16:9. Края кадра по бокам
-         обрезаются — предметы в фильме стоят по центру */
-      .stage { --band: max(56.25vw, calc(100svh - 64px - 250px)); }
+      /* Кадр целиком во всю ширину, без обрезки по бокам */
+      .stage { --band: 56.25vw; }
       .stage canvas {
         top: 64px;
         bottom: auto;
@@ -215,11 +214,11 @@
         top: 64px;
         bottom: auto;
         height: var(--band);
-        background: linear-gradient(to top, var(--bg) 2%, transparent 30%);
+        background: linear-gradient(to top, var(--bg) 2%, transparent 40%);
       }
       /* Карточка чуть заходит на низ полосы — так они читаются как одно целое */
       .scene {
-        top: calc(64px + var(--band) - 34px);
+        top: calc(64px + var(--band) + 14px);
         bottom: auto;
         right: var(--gutter);
         max-width: none;
@@ -228,8 +227,58 @@
       .scene p { font-size: 15px; }
       .card { padding: 20px 20px 22px; }
       .card__head { margin-bottom: 18px; }
-      .progress { right: 8px; top: auto; bottom: 4vh; margin-top: 0; height: 90px; }
-      .hint { bottom: 1.5vh; }
+      /* Вместо полоски прогресса — оглавление: заполняет низ экрана,
+         показывает, где ты в фильме, и по нажатию переносит к этапу */
+      .progress, .hint { display: none; }
+      .chapters {
+        position: absolute;
+        z-index: 3;
+        left: var(--gutter);
+        right: var(--gutter);
+        bottom: max(14px, env(safe-area-inset-bottom));
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 14px;
+        margin: 0;
+        padding: 12px 0 0;
+        border-top: 1px solid var(--line);
+        list-style: none;
+      }
+      .chapters button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 6px 0;
+        border: 0;
+        background: none;
+        color: var(--muted);
+        font: inherit;
+        font-size: 13px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .chapters button::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--line);
+        flex-shrink: 0;
+        transition: background 0.3s, transform 0.3s;
+      }
+      .chapters .on button { color: var(--ink); }
+      .chapters .on button::before { background: var(--hot); transform: scale(1.4); }
+      .chapters .past button::before { background: rgba(255, 122, 26, 0.45); }
+    }
+    /* На высоких телефонах места хватает на оглавление в одну колонку */
+    @media (max-width: 760px) and (min-width: 380px) and (min-height: 820px) {
+      .chapters { grid-template-columns: 1fr; }
+      .chapters button { padding: 4px 0; font-size: 14px; }
+    }
+    @media (max-width: 760px) and (max-height: 700px) {
+      .chapters button { padding: 3px 0; font-size: 12px; }
+      .scene h1 { font-size: 30px; }
     }
   </style>
 </head>
@@ -252,68 +301,68 @@
         <canvas id="canvas" aria-hidden="true"></canvas>
 
         <!-- Карточки: from/to — доля фильма, на которой карточка видна -->
-        <div class="scene" data-from="0" data-to="0.1">
+        <div class="scene" data-ch="Замысел" data-from="0" data-to="0.1">
           <h1>Сайты и&nbsp;боты, которые работают вместе</h1>
           <p>Кую их&nbsp;сам: от&nbsp;первой заготовки до&nbsp;кода, который вы&nbsp;получаете на&nbsp;руки</p>
         </div>
 
-        <div class="scene" data-from="0.115" data-to="0.17">
+        <div class="scene" data-ch="Анализ" data-from="0.115" data-to="0.17">
           <div class="card">
             <div class="card__head"><span class="card__num">01</span>Анализ</div>
             <h2>Разбираемся в&nbsp;задаче</h2>
             <p>Откуда приходит клиент, что он делает дальше и&nbsp;где сейчас теряются заявки</p>
           </div>
         </div>
-        <div class="scene" data-from="0.185" data-to="0.355">
+        <div class="scene" data-ch="Проектирование" data-from="0.185" data-to="0.355">
           <div class="card card--violet">
             <div class="card__head"><span class="card__num">02</span>Проектирование</div>
             <h2>Рисую схему до&nbsp;первой строки кода</h2>
             <p>Сценарии бота, структура сайта, какие данные где хранятся. Всё согласуем заранее</p>
           </div>
         </div>
-        <div class="scene" data-from="0.375" data-to="0.57">
+        <div class="scene" data-ch="Разработка" data-from="0.375" data-to="0.57">
           <div class="card card--violet">
             <div class="card__head"><span class="card__num">03</span>Разработка</div>
             <h2>Собираю по&nbsp;деталям</h2>
             <p>Пишу код и&nbsp;проверяю на&nbsp;живых ситуациях: занятое время, отмена, оплата, медленный интернет</p>
           </div>
         </div>
-        <div class="scene" data-from="0.585" data-to="0.68">
+        <div class="scene" data-ch="Бот готов" data-from="0.585" data-to="0.68">
           <div class="card card--violet">
             <div class="card__head">Готово</div>
             <h2>Бот просыпается</h2>
             <p>Отвечает клиентам круглые сутки, записывает, напоминает и&nbsp;принимает оплату</p>
           </div>
         </div>
-        <div class="scene scene--narrow" data-from="0.7" data-to="0.78">
+        <div class="scene scene--narrow" data-ch="Сайт" data-from="0.7" data-to="0.78">
           <div class="card card--violet">
             <div class="card__head">Путь заявки · сайт</div>
             <h2>Клиент выбирает время на&nbsp;сайте</h2>
             <p>Свободные окошки видны сразу, звонить и&nbsp;ждать ответа не&nbsp;нужно</p>
           </div>
         </div>
-        <div class="scene scene--narrow" data-from="0.785" data-to="0.848">
+        <div class="scene scene--narrow" data-ch="Бот" data-from="0.785" data-to="0.848">
           <div class="card card--violet">
             <div class="card__head">Путь заявки · бот</div>
             <h2>Бот уточняет и&nbsp;берёт предоплату</h2>
             <p>Сам предлагает мастера, называет сумму и&nbsp;присылает кнопку оплаты</p>
           </div>
         </div>
-        <div class="scene scene--narrow" data-from="0.872" data-to="0.915">
+        <div class="scene scene--narrow" data-ch="CRM" data-from="0.872" data-to="0.915">
           <div class="card card--violet">
             <div class="card__head">Путь заявки · CRM</div>
             <h2>Заявка сразу в&nbsp;системе</h2>
             <p>Вы видите клиента, услугу, время и&nbsp;мастера. Ничего не&nbsp;нужно переписывать</p>
           </div>
         </div>
-        <div class="scene scene--narrow" data-from="0.924" data-to="0.96">
+        <div class="scene scene--narrow" data-ch="Оплата" data-from="0.924" data-to="0.96">
           <div class="card card--violet">
             <div class="card__head">Путь заявки · оплата</div>
             <h2>Деньги пришли&nbsp;— запись подтверждена</h2>
             <p>Статус меняется сам, клиенту уходит напоминание за&nbsp;день до&nbsp;визита</p>
           </div>
         </div>
-        <div class="scene scene--narrow" data-from="0.965" data-to="1.01">
+        <div class="scene scene--narrow" data-ch="Передача" data-from="0.965" data-to="1.01">
           <div class="card card--violet">
             <div class="card__head"><span class="card__num">04</span>Передача</div>
             <h2>Код и&nbsp;доступы&nbsp;— ваши</h2>
@@ -323,6 +372,7 @@
         </div>
 
         <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+        <ol class="chapters" id="chapters" aria-label="Этапы"></ol>
         <div class="hint" id="hint">Прокрутите вниз</div>
       </div>
     </section>
@@ -434,7 +484,34 @@
           var вид = показано >= +с.dataset.from && показано < +с.dataset.to
           с.classList.toggle('on', вид)
         })
+        отметитьЭтап(показано)
         requestAnimationFrame(тик)
+      }
+
+      /* ---------- Оглавление (телефон) ---------- */
+      var оглавление = document.getElementById('chapters')
+      сцены.forEach(function (с, n) {
+        var li = document.createElement('li')
+        var b = document.createElement('button')
+        b.type = 'button'
+        b.textContent = с.dataset.ch
+        // Нажатие переносит к началу этапа — чуть дальше его начала, чтобы карточка уже была видна
+        b.addEventListener('click', function () {
+          var путь = фильм.offsetHeight - window.innerHeight
+          var доляЭтапа = Math.min(+с.dataset.from + 0.01, 1)
+          window.scrollTo({ top: фильм.offsetTop + путь * доляЭтапа, behavior: 'smooth' })
+        })
+        li.appendChild(b)
+        оглавление.appendChild(li)
+      })
+      var пункты = оглавление.children
+      function отметитьЭтап(показано) {
+        var текущийЭтап = 0
+        сцены.forEach(function (с, n) { if (показано >= +с.dataset.from) текущийЭтап = n })
+        for (var n = 0; n < пункты.length; n++) {
+          пункты[n].classList.toggle('on', n === текущийЭтап)
+          пункты[n].classList.toggle('past', n < текущийЭтап)
+        }
       }
 
       window.addEventListener('resize', function () { размер() })
