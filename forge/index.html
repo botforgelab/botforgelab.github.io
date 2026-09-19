@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>botforge — кузница (пилот)</title>
+  <title>botforge — кузница</title>
   <meta name="description" content="Пилот фильма за прокруткой: как рождается бот.">
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#0B0B0D">
@@ -80,7 +80,7 @@
     /* ---------- Фильм ----------
        Высокий блок даёт длину прокрутки, холст внутри него прилипает
        к экрану. Номер кадра считается из того, сколько блока пройдено. */
-    .film { position: relative; height: 700vh; }
+    .film { position: relative; height: 2000vh; }
     .stage {
       position: sticky;
       top: 0;
@@ -112,6 +112,9 @@
       pointer-events: none;
     }
     .scene.on { opacity: 1; transform: none; pointer-events: auto; }
+    /* Во второй половине в кадре окна интерфейса — карточка уже, чтобы их не закрывать */
+    .scene--narrow { max-width: 380px; }
+    .scene--narrow .card h2 { font-size: clamp(24px, 2vw, 32px); }
 
     .scene h1 {
       margin: 0 0 18px;
@@ -196,12 +199,32 @@
       .top { height: 64px; }
       .wordmark { font-size: 20px; }
       .pill { height: 36px; padding: 0 15px; font-size: 13px; }
-      .scene { right: var(--gutter); bottom: 9vh; }
+
+      /* Фильм снят горизонтально, поэтому на телефоне он идёт широкой
+         полосой под шапкой, а текст лежит под полосой, а не поверх неё */
+      .stage canvas {
+        top: 64px;
+        bottom: auto;
+        height: 56.25vw;
+      }
+      .stage::after {
+        top: 64px;
+        bottom: auto;
+        height: 56.25vw;
+        background: linear-gradient(to top, var(--bg), transparent 42%);
+      }
+      .scene {
+        top: calc(64px + 56.25vw + 18px);
+        bottom: auto;
+        right: var(--gutter);
+        max-width: none;
+      }
+      .scene h1 { font-size: clamp(32px, 9.4vw, 46px); }
       .scene p { font-size: 15px; }
       .card { padding: 20px 20px 22px; }
       .card__head { margin-bottom: 18px; }
-      .stage::after { background: linear-gradient(to top, rgba(11, 11, 13, 0.9), transparent 55%); }
-      .progress { right: 8px; height: 90px; margin-top: -45px; }
+      .progress { right: 8px; top: auto; bottom: 4vh; margin-top: 0; height: 90px; }
+      .hint { bottom: 1.5vh; }
     }
   </style>
 </head>
@@ -224,24 +247,73 @@
         <canvas id="canvas" aria-hidden="true"></canvas>
 
         <!-- Карточки: from/to — доля фильма, на которой карточка видна -->
-        <div class="scene" data-from="0" data-to="0.28">
+        <div class="scene" data-from="0" data-to="0.1">
           <h1>Сайты и&nbsp;боты, которые работают вместе</h1>
-          <p>Кую их&nbsp;сам: от&nbsp;первой заготовки до&nbsp;кода, который вы&nbsp;получаете на&nbsp;руки.</p>
+          <p>Кую их&nbsp;сам: от&nbsp;первой заготовки до&nbsp;кода, который вы&nbsp;получаете на&nbsp;руки</p>
         </div>
 
-        <div class="scene" data-from="0.34" data-to="0.6">
+        <div class="scene" data-from="0.115" data-to="0.17">
           <div class="card">
-            <div class="card__head"><span class="card__num">01</span>Удар</div>
+            <div class="card__head"><span class="card__num">01</span>Анализ</div>
             <h2>Разбираемся в&nbsp;задаче</h2>
-            <p>Откуда приходит клиент, что он делает дальше и&nbsp;где сейчас теряются заявки.</p>
+            <p>Откуда приходит клиент, что он делает дальше и&nbsp;где сейчас теряются заявки</p>
           </div>
         </div>
-
-        <div class="scene" data-from="0.72" data-to="1.01">
+        <div class="scene" data-from="0.185" data-to="0.355">
           <div class="card card--violet">
-            <div class="card__head"><span class="card__num">02</span>Код</div>
-            <h2>Искры становятся кодом</h2>
-            <p>Составляю техническое задание и&nbsp;сценарии бота. Нет ТЗ&nbsp;— соберу по&nbsp;вашему описанию.</p>
+            <div class="card__head"><span class="card__num">02</span>Проектирование</div>
+            <h2>Рисую схему до&nbsp;первой строки кода</h2>
+            <p>Сценарии бота, структура сайта, какие данные где хранятся. Всё согласуем заранее</p>
+          </div>
+        </div>
+        <div class="scene" data-from="0.375" data-to="0.57">
+          <div class="card card--violet">
+            <div class="card__head"><span class="card__num">03</span>Разработка</div>
+            <h2>Собираю по&nbsp;деталям</h2>
+            <p>Пишу код и&nbsp;проверяю на&nbsp;живых ситуациях: занятое время, отмена, оплата, медленный интернет</p>
+          </div>
+        </div>
+        <div class="scene" data-from="0.585" data-to="0.68">
+          <div class="card card--violet">
+            <div class="card__head">Готово</div>
+            <h2>Бот просыпается</h2>
+            <p>Отвечает клиентам круглые сутки, записывает, напоминает и&nbsp;принимает оплату</p>
+          </div>
+        </div>
+        <div class="scene scene--narrow" data-from="0.7" data-to="0.78">
+          <div class="card card--violet">
+            <div class="card__head">Путь заявки · сайт</div>
+            <h2>Клиент выбирает время на&nbsp;сайте</h2>
+            <p>Свободные окошки видны сразу, звонить и&nbsp;ждать ответа не&nbsp;нужно</p>
+          </div>
+        </div>
+        <div class="scene scene--narrow" data-from="0.785" data-to="0.848">
+          <div class="card card--violet">
+            <div class="card__head">Путь заявки · бот</div>
+            <h2>Бот уточняет и&nbsp;берёт предоплату</h2>
+            <p>Сам предлагает мастера, называет сумму и&nbsp;присылает кнопку оплаты</p>
+          </div>
+        </div>
+        <div class="scene scene--narrow" data-from="0.872" data-to="0.915">
+          <div class="card card--violet">
+            <div class="card__head">Путь заявки · CRM</div>
+            <h2>Заявка сразу в&nbsp;системе</h2>
+            <p>Вы видите клиента, услугу, время и&nbsp;мастера. Ничего не&nbsp;нужно переписывать</p>
+          </div>
+        </div>
+        <div class="scene scene--narrow" data-from="0.924" data-to="0.96">
+          <div class="card card--violet">
+            <div class="card__head">Путь заявки · оплата</div>
+            <h2>Деньги пришли&nbsp;— запись подтверждена</h2>
+            <p>Статус меняется сам, клиенту уходит напоминание за&nbsp;день до&nbsp;визита</p>
+          </div>
+        </div>
+        <div class="scene scene--narrow" data-from="0.965" data-to="1.01">
+          <div class="card card--violet">
+            <div class="card__head"><span class="card__num">04</span>Передача</div>
+            <h2>Код и&nbsp;доступы&nbsp;— ваши</h2>
+            <p>Запускаю на&nbsp;сервере и&nbsp;передаю всё, чтобы работало без меня</p>
+            <a class="pill" style="margin-top:20px" href="https://t.me/Bro_piton" target="_blank" rel="noopener">Обсудить проект</a>
           </div>
         </div>
 
@@ -251,14 +323,14 @@
     </section>
 
     <section class="after">
-      <h2>Здесь фильм продолжится</h2>
-      <p>Это пилот из&nbsp;двух сцен. Дальше будут сборка робота, путь заявки через сайт, бота и&nbsp;CRM, а&nbsp;после фильма&nbsp;— проекты, цены и&nbsp;контакты.</p>
+      <h2>Дальше&nbsp;— проекты, цены и&nbsp;контакты</h2>
+      <p>Этот раздел соберу из&nbsp;блоков страницы Studio, когда фильм будет утверждён</p>
     </section>
   </main>
 
   <script>
     (function () {
-      var ВСЕГО = 165
+      var ВСЕГО = 565
       var холст = document.getElementById('canvas')
       var ctx = холст.getContext('2d')
       var фильм = document.getElementById('film')
@@ -266,15 +338,14 @@
       var подсказка = document.getElementById('hint')
       var сцены = Array.prototype.slice.call(document.querySelectorAll('.scene'))
 
-      // Телефонные кадры вертикальные, компьютерные горизонтальные
-      var набор = null
+      // Фильм один, горизонтальный: на телефоне он показывается полосой
       var кадры = []
+      var загружается = false
 
       function выбратьНабор() {
-        var нужен = window.innerWidth / window.innerHeight < 0.9 ? 'm' : 'd'
-        if (нужен === набор) return
-        набор = нужен
-        загрузить(нужен)
+        if (загружается) return
+        загружается = true
+        загрузить('f')
       }
 
       /* ---------- Загрузка кадров ----------
@@ -290,11 +361,12 @@
 
         function готов() {
           загружено++
-          var процент = Math.round(загружено / ВСЕГО * 100)
+          var процент = Math.min(100, Math.round(загружено / (ВСЕГО * 0.15) * 100))
           число.textContent = процент + '%'
           if (загружено === 1) нарисовать(0)
-          // Не ждём самых последних кадров: к ним ещё нужно докрутить
-          if (загружено >= ВСЕГО * 0.9) заставка.classList.add('done')
+          // Показываем фильм, как только загружено начало: пока человек
+          // смотрит первые сцены, остальные кадры догружаются
+          if (загружено >= ВСЕГО * 0.15) заставка.classList.add('done')
         }
 
         for (var i = 0; i < ВСЕГО; i++) {
@@ -360,7 +432,7 @@
         requestAnimationFrame(тик)
       }
 
-      window.addEventListener('resize', function () { размер(); выбратьНабор() })
+      window.addEventListener('resize', function () { размер() })
       размер()
       выбратьНабор()
       requestAnimationFrame(тик)
