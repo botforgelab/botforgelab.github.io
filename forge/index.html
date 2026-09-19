@@ -62,6 +62,15 @@
       justify-content: space-between;
       height: 76px;
       padding: 0 var(--gutter);
+      border-bottom: 1px solid transparent;
+      transition: background 0.4s, border-color 0.4s;
+    }
+    /* После фильма под шапкой идут блоки — нужна подложка, иначе текст наезжает */
+    .top.solid {
+      background: rgba(11, 11, 13, 0.86);
+      border-bottom-color: var(--line);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
     }
     .wordmark { font-size: 23px; font-weight: 500; letter-spacing: -0.04em; text-decoration: none; }
     .pill {
@@ -187,13 +196,160 @@
     .after {
       position: relative;
       z-index: 5;
-      min-height: 70vh;
-      padding: 90px var(--gutter);
+      display: grid;
+      gap: 48px;
+      padding: 110px var(--gutter) 120px;
       border-top: 1px solid var(--line);
       background: var(--bg);
     }
-    .after h2 { margin: 0 0 16px; font-size: clamp(32px, 4vw, 60px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; }
-    .after p { max-width: 36em; color: var(--muted); }
+    .after__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .after h2 {
+      margin: 0;
+      max-width: 14em;
+      font-size: clamp(34px, 4.4vw, 68px);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.045em;
+      text-wrap: balance;
+    }
+    .after h2 em { font-style: normal; color: var(--muted); }
+
+    /* Проекты: сетка карточек, каждая ведёт в живой проект */
+    .works {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 40px 24px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .work {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      text-decoration: none;
+    }
+    .work__pic {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 800 / 520;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #151518;
+    }
+    .work__pic img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.9s var(--ease), filter 0.5s;
+      filter: saturate(0.85);
+    }
+    .work__meta { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--muted); }
+    .work__title { font-size: 22px; font-weight: 500; line-height: 1.1; letter-spacing: -0.03em; }
+    .work__text { max-width: 34em; color: var(--muted); }
+    .work__go { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+    .work__go svg { width: 14px; height: 14px; transition: transform 0.4s var(--ease); }
+    .work:hover .work__pic img, .work:focus-visible .work__pic img { transform: scale(1.04); filter: none; }
+    .work:hover .work__go, .work:focus-visible .work__go { color: var(--hot); }
+    .work:hover .work__go svg, .work:focus-visible .work__go svg { transform: translate(2px, -2px); }
+
+    /* Ссылка-контур: на все проекты */
+    .ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      height: 44px;
+      padding: 0 22px;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      font-size: 14px;
+      text-decoration: none;
+      transition: border-color 0.3s, color 0.3s;
+    }
+    .ghost:hover, .ghost:focus-visible { border-color: var(--hot); color: var(--hot); }
+
+    /* Цены и сроки: крупное значение, над ним подпись, под ним пояснение */
+    .terms {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--line);
+    }
+    .terms li {
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      padding: 28px 28px 40px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .terms li + li { padding-left: 28px; border-left: 1px solid var(--line); }
+    .terms li:nth-child(3n + 1) { padding-left: 0; border-left: 0; }
+    .terms__label { font-size: 13px; color: var(--muted); }
+    .terms__value {
+      font-size: clamp(30px, 3.2vw, 48px);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+    .terms__note { max-width: 26em; color: var(--muted); }
+    /* Два главных числа — оранжевым, как раскалённый металл в фильме */
+    .terms li:nth-child(-n + 2) .terms__value { color: var(--hot); }
+
+    /* Написать: пояснение и огромная ссылка в Telegram */
+    .final { gap: 36px; padding-bottom: 100px; }
+    .final__lead { max-width: 30em; margin: 0; font-size: 19px; color: var(--muted); text-wrap: pretty; }
+    /* Строчный элемент, а не флекс: при переносе стрелка остаётся за последним словом */
+    .final__big {
+      justify-self: start;
+      font-size: clamp(48px, 9vw, 150px);
+      font-weight: 500;
+      line-height: 0.95;
+      letter-spacing: -0.055em;
+      text-decoration: none;
+      transition: color 0.4s;
+    }
+    .final__big svg { width: 0.55em; height: 0.55em; margin-left: 0.2em; vertical-align: 0.05em; transition: transform 0.5s var(--ease); }
+    .nowrap { white-space: nowrap; }
+    .final__big:hover, .final__big:focus-visible { color: var(--hot); }
+    .final__big:hover svg, .final__big:focus-visible svg { transform: translate(0.06em, -0.06em); }
+
+    .foot {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px 32px;
+      padding: 28px var(--gutter) max(28px, env(safe-area-inset-bottom));
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .foot nav { display: flex; flex-wrap: wrap; gap: 12px 28px; }
+    .foot a { text-decoration: none; transition: color 0.3s; }
+    .foot a:hover, .foot a:focus-visible { color: var(--ink); }
+
+    @media (max-width: 1000px) {
+      .works { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .terms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .terms li:nth-child(3n + 1) { padding-left: 28px; border-left: 1px solid var(--line); }
+      .terms li:nth-child(2n + 1) { padding-left: 0; border-left: 0; }
+    }
+    @media (max-width: 600px) {
+      .after { gap: 36px; padding: 72px var(--gutter) 80px; }
+      .works { grid-template-columns: 1fr; gap: 36px; }
+      .work__title { font-size: 20px; }
+      .terms { grid-template-columns: 1fr; }
+      .final__big { font-size: clamp(36px, 11vw, 48px); }
+      .terms li, .terms li + li, .terms li:nth-child(n) { gap: 8px; padding: 22px 0 24px; border-left: 0; }
+    }
 
     @media (max-width: 760px) {
       :root { --gutter: 16px; }
@@ -393,11 +549,86 @@
       </div>
     </section>
 
-    <section class="after">
-      <h2>Дальше&nbsp;— проекты, цены и&nbsp;контакты</h2>
-      <p>Этот раздел соберу из&nbsp;блоков страницы Studio, когда фильм будет утверждён</p>
+    <section class="after" id="projects">
+      <div class="after__head">
+        <h2>15 проектов&nbsp;— <em>сайты, боты, AI и&nbsp;CRM</em></h2>
+        <a class="ghost" href="../studio.html#projects">Все проекты<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+      <ul class="works">
+        <li><a class="work" href="../realty/" target="_blank" rel="noopener">
+          <span class="work__pic"><img src="../media/realty-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+          <span class="work__meta"><span>01</span><span>Сайт · видео-заставка</span></span>
+          <span class="work__title">REALTY — агентство недвижимости</span>
+          <span class="work__text">Камера въезжает в&nbsp;дом, последний кадр становится фоном. Переходы через раздвижные двери.</span>
+          <span class="work__go">Открыть сайт<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
+        </a></li>
+        <li><a class="work" href="../ton/" target="_blank" rel="noopener">
+          <span class="work__pic"><img src="../media/ton-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+          <span class="work__meta"><span>02</span><span>Сайт · примерка цвета</span></span>
+          <span class="work__title">ТОН — салон окрашивания</span>
+          <span class="work__text">Примерочная цвета волос и&nbsp;живое расписание записи прямо на&nbsp;первом экране.</span>
+          <span class="work__go">Открыть сайт<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
+        </a></li>
+        <li><a class="work" href="https://t.me/Beautybook1_bot" target="_blank" rel="noopener">
+          <span class="work__pic"><img src="../media/studio/beauty.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+          <span class="work__meta"><span>03</span><span>Telegram · Mini App · CRM</span></span>
+          <span class="work__title">BeautyBook</span>
+          <span class="work__text">Запись в&nbsp;один экран, CRM с&nbsp;выручкой и&nbsp;неявками, отзывы, программа лояльности.</span>
+          <span class="work__go">Открыть бота<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
+        </a></li>
+        <li><a class="work" href="https://vladislavbropiton.github.io/car/" target="_blank" rel="noopener">
+          <span class="work__pic"><img src="../media/peregon-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+          <span class="work__meta"><span>04</span><span>Сайт · калькулятор</span></span>
+          <span class="work__title">ПЕРЕГОН — авто из&nbsp;США</span>
+          <span class="work__text">Сайт компании, которая возит машины с&nbsp;аукционов. Считает смету и&nbsp;уводит в&nbsp;бота за&nbsp;лотами.</span>
+          <span class="work__go">Открыть сайт<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
+        </a></li>
+        <li><a class="work" href="../levelup/" target="_blank" rel="noopener">
+          <span class="work__pic"><img src="../media/levelup-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+          <span class="work__meta"><span>05</span><span>Веб-приложение · геймификация</span></span>
+          <span class="work__title">LevelUp</span>
+          <span class="work__text">Уровни, рейтинг и&nbsp;награды для школ, компаний, фитнеса и&nbsp;кофеен. Ниша, стиль и&nbsp;язык переключаются на&nbsp;лету.</span>
+          <span class="work__go">Открыть<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
+        </a></li>
+        <li><a class="work" href="https://t.me/DocuHelperForexBot" target="_blank" rel="noopener">
+          <span class="work__pic"><img src="../media/studio/ai.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+          <span class="work__meta"><span>06</span><span>AI · RAG · Telegram</span></span>
+          <span class="work__title">DocuHelper Forex</span>
+          <span class="work__text">Консультант на&nbsp;базе ваших документов. Отвечает на&nbsp;вопросы по&nbsp;трейдингу быстро и&nbsp;точно.</span>
+          <span class="work__go">Открыть бота<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
+        </a></li>
+      </ul>
+    </section>
+
+    <section class="after" id="terms">
+      <div class="after__head">
+        <h2>Сколько стоит <em>и&nbsp;сколько ждать</em></h2>
+      </div>
+      <ul class="terms">
+        <li><span class="terms__label">Бот</span><span class="terms__value">от&nbsp;30&nbsp;000&nbsp;₽</span><span class="terms__note">Простой бот: заявки, запись, ответы на&nbsp;вопросы.</span></li>
+        <li><span class="terms__label">Комплексное решение</span><span class="terms__value">от&nbsp;70&nbsp;000&nbsp;₽</span><span class="terms__note">С&nbsp;AI и&nbsp;интеграциями. Точная смета&nbsp;— после уточнения задачи.</span></li>
+        <li><span class="terms__label">Сроки</span><span class="terms__value">3–7 дней</span><span class="terms__note">Простые проекты. Сложные AI-решения и&nbsp;Mini Apps&nbsp;— от&nbsp;2&nbsp;недель.</span></li>
+        <li><span class="terms__label">Код</span><span class="terms__value">ваш</span><span class="terms__note">После полной оплаты передаю исключительные права и&nbsp;исходный код.</span></li>
+        <li><span class="terms__label">Для старта</span><span class="terms__value">описание задачи</span><span class="terms__note">Техническое задание или просто рассказ своими словами. Помогу составить ТЗ.</span></li>
+        <li><span class="terms__label">Ответ</span><span class="terms__value">в&nbsp;течение дня</span><span class="terms__note">Консультация бесплатная и&nbsp;ни&nbsp;к&nbsp;чему не&nbsp;обязывает.</span></li>
+      </ul>
+    </section>
+
+    <section class="after final" id="contact">
+      <p class="final__lead">Опишите задачу своими словами. Отвечу в&nbsp;течение дня и&nbsp;скажу, сколько это будет стоить и&nbsp;сколько займёт.</p>
+      <a class="final__big" href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BE%D0%B1%D1%81%D1%83%D0%B4%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82" target="_blank" rel="noopener">Обсудить <span class="nowrap">проект<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></a>
     </section>
   </main>
+
+  <footer class="foot">
+    <div>©&nbsp;2026 botforge</div>
+    <nav aria-label="Ссылки">
+      <a href="https://t.me/Bro_piton" target="_blank" rel="noopener">Telegram @Bro_piton</a>
+      <a href="../index.html">Главная</a>
+      <a href="../studio.html">Studio</a>
+      <a href="../classic.html">Классическая</a>
+    </nav>
+  </footer>
 
   <script>
     (function () {
@@ -407,6 +638,7 @@
       var фильм = document.getElementById('film')
       var полоска = document.getElementById('bar')
       var подсказка = document.getElementById('hint')
+      var шапка = document.querySelector('.top')
       var сцены = Array.prototype.slice.call(document.querySelectorAll('.scene'))
 
       // Фильм один, горизонтальный: на телефоне он показывается полосой
@@ -508,6 +740,7 @@
           с.classList.toggle('on', вид)
         })
         отметитьЭтап(показано)
+        шапка.classList.toggle('solid', фильм.getBoundingClientRect().bottom <= шапка.offsetHeight)
         requestAnimationFrame(тик)
       }
 
