@@ -202,19 +202,24 @@
 
       /* Фильм снят горизонтально, поэтому на телефоне он идёт широкой
          полосой под шапкой, а текст лежит под полосой, а не поверх неё */
+      /* Полоса занимает всё, что остаётся над карточкой (около 250 px),
+         но не меньше полной ширины кадра 16:9. Края кадра по бокам
+         обрезаются — предметы в фильме стоят по центру */
+      .stage { --band: max(56.25vw, calc(100svh - 64px - 250px)); }
       .stage canvas {
         top: 64px;
         bottom: auto;
-        height: 56.25vw;
+        height: var(--band);
       }
       .stage::after {
         top: 64px;
         bottom: auto;
-        height: 56.25vw;
-        background: linear-gradient(to top, var(--bg), transparent 42%);
+        height: var(--band);
+        background: linear-gradient(to top, var(--bg) 2%, transparent 30%);
       }
+      /* Карточка чуть заходит на низ полосы — так они читаются как одно целое */
       .scene {
-        top: calc(64px + 56.25vw + 18px);
+        top: calc(64px + var(--band) - 34px);
         bottom: auto;
         right: var(--gutter);
         max-width: none;
