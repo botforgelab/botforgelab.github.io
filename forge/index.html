@@ -101,7 +101,7 @@
     /* ---------- Фильм ----------
        Высокий блок даёт длину прокрутки, холст внутри него прилипает
        к экрану. Номер кадра считается из того, сколько блока пройдено. */
-    .film { position: relative; height: 2000vh; }
+    .film { position: relative; height: 2130vh; }
     .stage {
       position: sticky;
       top: 0;
@@ -158,6 +158,50 @@
     .card__num { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); }
     .card h2 { margin: 0 0 14px; font-size: clamp(28px, 2.6vw, 40px); font-weight: 500; line-height: 1.02; letter-spacing: -0.035em; }
     .card--violet .card__num { border-color: var(--violet); color: var(--violet); }
+
+    /* Затемнение кадра во время паузы перед «путём заявки» */
+    .veil {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: rgba(11, 11, 13, 0.78);
+      opacity: 0;
+      transition: opacity 0.7s var(--ease);
+      pointer-events: none;
+    }
+    .veil.on { opacity: 1; }
+
+    /* Карточка-пояснение: шире остальных, с цепочкой шагов */
+    .scene--intro { max-width: 620px; }
+    .card--hot .card__head { color: var(--hot); }
+    .route {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 22px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .route li {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 34px;
+      padding: 0 14px 0 6px;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      font-size: 14px;
+    }
+    .route span {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(139, 92, 246, 0.18);
+      color: var(--violet);
+      font-size: 11px;
+    }
 
     /* Полоска прогресса фильма справа */
     .progress {
@@ -442,6 +486,11 @@
       .chapters .on button { color: var(--ink); }
       .chapters .on button::before { background: var(--hot); transform: scale(1.4); }
       .chapters .past button::before { background: rgba(255, 122, 26, 0.45); }
+      /* Пауза перед «путём заявки»: карточка-пояснение большая, поэтому
+         она встаёт на затемнённую полосу фильма, а оглавление на это время прячется */
+      .chapters { transition: opacity 0.5s var(--ease); }
+      .stage.paused .chapters { opacity: 0; pointer-events: none; }
+      .scene--intro { top: calc(var(--head) + 14px); }
     }
     /* Повёрнутый телефон: высоты мало, поэтому шапка ниже, карточка компактнее */
     @media (orientation: landscape) and (max-height: 500px) {
@@ -496,70 +545,84 @@
     <section class="film" id="film">
       <div class="stage">
         <canvas id="canvas" aria-hidden="true"></canvas>
+        <div class="veil" id="veil" aria-hidden="true"></div>
 
         <!-- Карточки: from/to — доля фильма, на которой карточка видна -->
-        <div class="scene" data-ch="Замысел" data-from="0" data-to="0.1">
+        <div class="scene" data-ch="Замысел" data-from="0.0000" data-to="0.0940">
           <h1>Сайты и&nbsp;боты, которые работают вместе</h1>
           <p>Кую их&nbsp;сам: от&nbsp;первой заготовки до&nbsp;кода, который вы&nbsp;получаете на&nbsp;руки</p>
         </div>
 
-        <div class="scene" data-ch="Анализ" data-from="0.115" data-to="0.17">
+        <div class="scene" data-ch="Анализ" data-from="0.1081" data-to="0.1598">
           <div class="card">
             <div class="card__head"><span class="card__num">01</span>Анализ</div>
             <h2>Разбираемся в&nbsp;задаче</h2>
             <p>Откуда приходит клиент, что он делает дальше и&nbsp;где сейчас теряются заявки</p>
           </div>
         </div>
-        <div class="scene" data-ch="Проектирование" data-from="0.185" data-to="0.355">
+        <div class="scene" data-ch="Проектирование" data-from="0.1739" data-to="0.3337">
           <div class="card card--violet">
             <div class="card__head"><span class="card__num">02</span>Проектирование</div>
             <h2>Рисую схему до&nbsp;первой строки кода</h2>
             <p>Сценарии бота, структура сайта, какие данные где хранятся. Всё согласуем заранее</p>
           </div>
         </div>
-        <div class="scene" data-ch="Разработка" data-from="0.375" data-to="0.57">
+        <div class="scene" data-ch="Разработка" data-from="0.3525" data-to="0.5358">
           <div class="card card--violet">
             <div class="card__head"><span class="card__num">03</span>Разработка</div>
             <h2>Собираю по&nbsp;деталям</h2>
             <p>Пишу код и&nbsp;проверяю на&nbsp;живых ситуациях: занятое время, отмена, оплата, медленный интернет</p>
           </div>
         </div>
-        <div class="scene" data-ch="Бот готов" data-from="0.585" data-to="0.68">
+        <div class="scene" data-ch="Бот готов" data-from="0.5499" data-to="0.6392">
           <div class="card card--violet">
             <div class="card__head">Готово</div>
             <h2>Бот просыпается</h2>
             <p>Отвечает клиентам круглые сутки, записывает, напоминает и&nbsp;принимает оплату</p>
           </div>
         </div>
-        <div class="scene scene--narrow" data-ch="Сайт" data-from="0.7" data-to="0.78">
+        <div class="scene scene--intro" data-from="0.6450" data-to="0.7133">
+          <div class="card card--hot">
+            <div class="card__head">Дальше · пример из&nbsp;жизни</div>
+            <h2>Как одна заявка проходит путь от&nbsp;сайта до&nbsp;оплаты</h2>
+            <p>Покажу на&nbsp;примере салона окрашивания ТОН. Клиентка сама выбирает время на&nbsp;сайте, бот берёт предоплату, заявка попадает в&nbsp;CRM. В&nbsp;салоне никто ничего не&nbsp;делает руками</p>
+            <ol class="route" aria-label="Шаги">
+              <li><span>01</span>Сайт</li>
+              <li><span>02</span>Бот</li>
+              <li><span>03</span>CRM</li>
+              <li><span>04</span>Оплата</li>
+            </ol>
+          </div>
+        </div>
+        <div class="scene scene--narrow" data-ch="Сайт" data-from="0.7180" data-to="0.7932">
           <div class="card card--violet">
             <div class="card__head">Путь заявки · сайт</div>
             <h2>Клиент выбирает время на&nbsp;сайте</h2>
             <p>Свободные окошки видны сразу, звонить и&nbsp;ждать ответа не&nbsp;нужно</p>
           </div>
         </div>
-        <div class="scene scene--narrow" data-ch="Бот" data-from="0.785" data-to="0.848">
+        <div class="scene scene--narrow" data-ch="Бот" data-from="0.7979" data-to="0.8571">
           <div class="card card--violet">
             <div class="card__head">Путь заявки · бот</div>
             <h2>Бот уточняет и&nbsp;берёт предоплату</h2>
             <p>Сам предлагает мастера, называет сумму и&nbsp;присылает кнопку оплаты</p>
           </div>
         </div>
-        <div class="scene scene--narrow" data-ch="CRM" data-from="0.872" data-to="0.915">
+        <div class="scene scene--narrow" data-ch="CRM" data-from="0.8797" data-to="0.9201">
           <div class="card card--violet">
             <div class="card__head">Путь заявки · CRM</div>
             <h2>Заявка сразу в&nbsp;системе</h2>
             <p>Вы видите клиента, услугу, время и&nbsp;мастера. Ничего не&nbsp;нужно переписывать</p>
           </div>
         </div>
-        <div class="scene scene--narrow" data-ch="Оплата" data-from="0.924" data-to="0.96">
+        <div class="scene scene--narrow" data-ch="Оплата" data-from="0.9286" data-to="0.9624">
           <div class="card card--violet">
             <div class="card__head">Путь заявки · оплата</div>
             <h2>Деньги пришли&nbsp;— запись подтверждена</h2>
             <p>Статус меняется сам, клиенту уходит напоминание за&nbsp;день до&nbsp;визита</p>
           </div>
         </div>
-        <div class="scene scene--narrow" data-ch="Передача" data-from="0.965" data-to="1.01">
+        <div class="scene scene--narrow" data-ch="Передача" data-from="0.9671" data-to="1.0094">
           <div class="card card--violet">
             <div class="card__head"><span class="card__num">04</span>Передача</div>
             <h2>Код и&nbsp;доступы&nbsp;— ваши</h2>
@@ -665,6 +728,10 @@
       var подсказка = document.getElementById('hint')
       var шапка = document.querySelector('.top')
       var сцены = Array.prototype.slice.call(document.querySelectorAll('.scene'))
+      // В оглавление попадают только этапы, пояснение перед «путём заявки» — нет
+      var этапы = сцены.filter(function (с) { return с.dataset.ch })
+      var завеса = document.getElementById('veil')
+      var сцена = document.querySelector('.stage')
 
       // Фильм один, горизонтальный: на телефоне он показывается полосой
       var кадры = []
@@ -760,8 +827,19 @@
          Цель ставит прокрутка, а показываемый кадр плавно её догоняет.
          Резкий рывок колесом превращается в короткую мягкую перемотку,
          а не в скачок через полфильма. */
-      var цель = 0
-      var текущий = 0
+      var пройдено = 0
+
+      /* Пауза перед «путём заявки»: на этом отрезке прокрутки кадр стоит
+         на месте (392 — начало второй половины), экран затемнён и видна
+         карточка-пояснение. Сцены в разметке заданы долей прокрутки. */
+      var ПАУЗА_КАДР = 392 / (ВСЕГО - 1)
+      var ПАУЗА = 0.06
+      var паузаС = ПАУЗА_КАДР * (1 - ПАУЗА)
+      function кадрДоли(p) {
+        if (p < паузаС) return p / (1 - ПАУЗА)
+        if (p < паузаС + ПАУЗА) return ПАУЗА_КАДР
+        return (p - ПАУЗА) / (1 - ПАУЗА)
+      }
 
       function доля() {
         var r = фильм.getBoundingClientRect()
@@ -771,18 +849,20 @@
 
       function тик() {
         var p = доля()
-        цель = p * (ВСЕГО - 1)
-        текущий += (цель - текущий) * 0.18
-        if (Math.abs(цель - текущий) < 0.05) текущий = цель
-        нарисовать(Math.round(текущий))
+        пройдено += (p - пройдено) * 0.18
+        if (Math.abs(p - пройдено) < 0.00005) пройдено = p
+        нарисовать(Math.round(кадрДоли(пройдено) * (ВСЕГО - 1)))
 
-        var показано = текущий / (ВСЕГО - 1)
+        var показано = пройдено
         полоска.style.transform = 'scaleY(' + показано.toFixed(4) + ')'
         подсказка.style.opacity = показано > 0.03 ? 0 : 1
         сцены.forEach(function (с) {
           var вид = показано >= +с.dataset.from && показано < +с.dataset.to
           с.classList.toggle('on', вид)
         })
+        var пауза = показано >= паузаС - 0.009 && показано < паузаС + ПАУЗА
+        завеса.classList.toggle('on', пауза)
+        сцена.classList.toggle('paused', пауза)
         отметитьЭтап(показано)
         шапка.classList.toggle('solid', фильм.getBoundingClientRect().bottom <= шапка.offsetHeight)
         requestAnimationFrame(тик)
@@ -790,7 +870,7 @@
 
       /* ---------- Оглавление (телефон) ---------- */
       var оглавление = document.getElementById('chapters')
-      сцены.forEach(function (с, n) {
+      этапы.forEach(function (с, n) {
         var li = document.createElement('li')
         var b = document.createElement('button')
         b.type = 'button'
@@ -807,7 +887,7 @@
       var пункты = оглавление.children
       function отметитьЭтап(показано) {
         var текущийЭтап = 0
-        сцены.forEach(function (с, n) { if (показано >= +с.dataset.from) текущийЭтап = n })
+        этапы.forEach(function (с, n) { if (показано >= +с.dataset.from) текущийЭтап = n })
         for (var n = 0; n < пункты.length; n++) {
           пункты[n].classList.toggle('on', n === текущийЭтап)
           пункты[n].classList.toggle('past', n < текущийЭтап)
@@ -822,7 +902,7 @@
         размер()
         if (window.innerWidth === прошлаяШирина) return
         прошлаяШирина = window.innerWidth
-        var было = текущий / (ВСЕГО - 1)
+        var было = пройдено
         requestAnimationFrame(function () {
           var путь = фильм.offsetHeight - window.innerHeight
           if (было > 0 && было < 1) window.scrollTo(0, фильм.offsetTop + путь * было)
