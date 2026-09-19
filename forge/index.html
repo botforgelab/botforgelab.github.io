@@ -3,9 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>botforge — кузница</title>
-  <meta name="description" content="Пилот фильма за прокруткой: как рождается бот.">
-  <meta name="robots" content="noindex">
+  <title>botforge — кузница: как рождаются сайты и боты</title>
+  <meta name="description" content="Фильм о том, как я делаю сайты и Telegram-ботов: от разбора задачи до заявки, которая сама попадает в CRM и оплачивается. Проекты, цены и сроки.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="botforge — сайты и боты, которые работают вместе">
+  <meta property="og:description" content="Фильм о том, как проект проходит путь от задачи до оплаты на сайте клиента.">
+  <meta property="og:image" content="https://botforgelab.github.io/forge/og-forge.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://botforgelab.github.io/forge/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://botforgelab.github.io/forge/og-forge.jpg">
+  <link rel="canonical" href="https://botforgelab.github.io/forge/">
+  <link rel="preload" href="../fonts/inter-tight-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="frames/f/000.webp" as="image">
   <meta name="theme-color" content="#0B0B0D">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%230B0B0D'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-weight='700' font-size='34' text-anchor='middle' fill='%23F1F1F1'%3Eb%3C/text%3E%3Ccircle cx='47' cy='41' r='4' fill='%23FF7A1A'/%3E%3C/svg%3E">
 
@@ -35,6 +46,7 @@
       --hot: #FF7A1A;
       --violet: #8B5CF6;
       --gutter: 30px;
+      --head: 76px;
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
@@ -60,7 +72,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 76px;
+      height: var(--head);
       padding: 0 var(--gutter);
       border-bottom: 1px solid transparent;
       transition: background 0.4s, border-color 0.4s;
@@ -353,32 +365,32 @@
 
     @media (max-width: 760px) {
       :root { --gutter: 16px; }
-      .top { height: 64px; }
+      :root { --head: 64px; }
       .wordmark { font-size: 20px; }
       .pill { height: 36px; padding: 0 15px; font-size: 13px; }
     }
 
     /* Вертикальный телефон: фильм полосой сверху, текст и оглавление под ним.
        Повёрнутый телефон получает раскладку как у компьютера — фильм на весь экран */
-    @media (max-width: 760px) and (orientation: portrait) {
+    @media (max-width: 1100px) and (orientation: portrait) {
       /* Фильм снят горизонтально, поэтому на телефоне он идёт широкой
          полосой под шапкой, а текст лежит под полосой, а не поверх неё */
       /* Кадр целиком во всю ширину, без обрезки по бокам */
       .stage { --band: 56.25vw; }
       .stage canvas {
-        top: 64px;
+        top: var(--head);
         bottom: auto;
         height: var(--band);
       }
       .stage::after {
-        top: 64px;
+        top: var(--head);
         bottom: auto;
         height: var(--band);
         background: linear-gradient(to top, var(--bg) 2%, transparent 40%);
       }
       /* Карточка чуть заходит на низ полосы — так они читаются как одно целое */
       .scene {
-        top: calc(64px + var(--band) + 14px);
+        top: calc(var(--head) + var(--band) + 14px);
         bottom: auto;
         right: var(--gutter);
         max-width: none;
@@ -433,7 +445,7 @@
     }
     /* Повёрнутый телефон: высоты мало, поэтому шапка ниже, карточка компактнее */
     @media (orientation: landscape) and (max-height: 500px) {
-      .top { height: 56px; }
+      :root { --head: 56px; }
       .scene { bottom: 14px; max-width: 420px; }
       .scene h1 { font-size: 34px; margin-bottom: 10px; }
       .scene p { font-size: 13px; }
@@ -441,6 +453,14 @@
       .card__head { margin-bottom: 10px; }
       .card h2, .scene--narrow .card h2 { font-size: 22px; margin-bottom: 8px; }
       .hint { display: none; }
+    }
+
+    /* Вертикальный планшет: раскладка как у телефона, но карточка не растягивается на всю ширину */
+    @media (min-width: 761px) and (max-width: 1100px) and (orientation: portrait) {
+      .scene { right: auto; max-width: 640px; }
+      .scene h1 { font-size: clamp(40px, 6vw, 60px); }
+      .scene p { font-size: 17px; }
+      .chapters button { font-size: 15px; padding: 7px 0; }
     }
 
     /* На высоких телефонах места хватает на оглавление в одну колонку */
@@ -451,6 +471,11 @@
     @media (max-width: 760px) and (max-height: 700px) and (orientation: portrait) {
       .chapters button { padding: 3px 0; font-size: 12px; }
       .scene h1 { font-size: 30px; }
+      /* Низкий экран: карточка компактнее, чтобы не заходить на оглавление */
+      .card { padding: 16px 18px 18px; }
+      .card__head { margin-bottom: 12px; }
+      .card h2, .scene--narrow .card h2 { font-size: 24px; margin-bottom: 10px; }
+      .scene p { font-size: 14px; }
     }
   </style>
 </head>
@@ -704,7 +729,12 @@
         // (повёрнутый телефон, широкий монитор), кадр вписывается по высоте,
         // а по бокам остаются поля в цвет страницы. Если экран уже кадра,
         // он заполняется целиком, и немного срезаются только края по бокам.
-        var s = W / H > iw / ih ? H / ih : Math.max(W / iw, H / ih)
+        // Во второй половине (с кадра 392) в кадре окна интерфейса: их обрезать
+        // нельзя, поэтому кадр плавно переходит к вписыванию целиком. Края этих
+        // кадров почти в цвет страницы, поля сверху и снизу не видны.
+        var вписать = Math.min(Math.max((n - 392) / 8, 0), 1)
+        var обложка = Math.max(W / iw, H / ih)
+        var s = W / H > iw / ih ? H / ih : обложка + (W / iw - обложка) * вписать
         var w = iw * s, h = ih * s
         ctx.fillStyle = '#0B0B0D'
         ctx.fillRect(0, 0, W, H)
