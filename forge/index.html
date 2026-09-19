@@ -738,7 +738,21 @@
         var w = iw * s, h = ih * s
         ctx.fillStyle = '#0B0B0D'
         ctx.fillRect(0, 0, W, H)
-        ctx.drawImage(img, (W - w) / 2, (H - h) / 2, w, h)
+        var x0 = (W - w) / 2
+        ctx.drawImage(img, x0, (H - h) / 2, w, h)
+        // Если по бокам остались поля, края кадра растворяются в фоне,
+        // иначе видна резкая граница между фоном кадра и страницы
+        if (x0 > 1) {
+          var мягко = Math.min(w * 0.08, 160)
+          var g = ctx.createLinearGradient(x0, 0, x0 + мягко, 0)
+          g.addColorStop(0, '#0B0B0D'); g.addColorStop(1, 'rgba(11, 11, 13, 0)')
+          ctx.fillStyle = g
+          ctx.fillRect(x0, 0, мягко, H)
+          g = ctx.createLinearGradient(x0 + w, 0, x0 + w - мягко, 0)
+          g.addColorStop(0, '#0B0B0D'); g.addColorStop(1, 'rgba(11, 11, 13, 0)')
+          ctx.fillStyle = g
+          ctx.fillRect(x0 + w - мягко, 0, мягко, H)
+        }
         нарисованный = n
       }
 
