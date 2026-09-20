@@ -278,11 +278,10 @@
     .after h2 em { font-style: normal; color: var(--muted); }
 
     /* Проекты: сетка карточек, каждая ведёт в живой проект */
-    /* Две колонки: в строке пара «сайт и его бот» */
     .works {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 48px 28px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 40px 24px;
       margin: 0;
       padding: 0;
       list-style: none;
@@ -320,6 +319,7 @@
 
     /* Ссылка-контур: на все проекты */
     .ghost {
+      justify-self: start;
       display: inline-flex;
       align-items: center;
       gap: 10px;
@@ -395,6 +395,7 @@
     .foot a:hover, .foot a:focus-visible { color: var(--ink); }
 
     @media (max-width: 1000px) {
+      .works { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .terms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .terms li:nth-child(3n + 1) { padding-left: 28px; border-left: 1px solid var(--line); }
       .terms li:nth-child(2n + 1) { padding-left: 0; border-left: 0; }
@@ -641,7 +642,6 @@
     <section class="after" id="projects">
       <div class="after__head">
         <h2>15 проектов&nbsp;— <em>сайты, боты, AI и&nbsp;CRM</em></h2>
-        <a class="ghost" href="../studio.html#projects">Все проекты<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
       </div>
       <ul class="works">
         <li><a class="work" href="../realty/" target="_blank" rel="noopener">
@@ -687,6 +687,7 @@
           <span class="work__go">Открыть бота<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
         </a></li>
       </ul>
+      <a class="ghost" href="../studio.html#projects">Все проекты<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
     </section>
 
     <section class="after" id="terms">
