@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>botforge — кузница: как рождаются сайты и боты</title>
+  <meta name="description" content="Фильм о том, как я делаю сайты и Telegram-ботов: от разбора задачи до заявки, которая сама попадает в CRM и оплачивается. Проекты, цены и сроки.">
+  <meta name="robots" content="noindex">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="botforge — сайты и боты, которые работают вместе">
+  <meta property="og:description" content="Фильм о том, как проект проходит путь от задачи до оплаты на сайте клиента.">
+  <meta property="og:image" content="https://botforgelab.github.io/forge2/og-forge.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:url" content="https://botforgelab.github.io/forge2/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://botforgelab.github.io/forge2/og-forge.jpg">
+  <link rel="canonical" href="https://botforgelab.github.io/forge2/">
+  <link rel="preload" href="../fonts/inter-tight-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="frames/f/000.webp" as="image">
+  <meta name="theme-color" content="#0B0B0D">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%230B0B0D'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-weight='700' font-size='34' text-anchor='middle' fill='%23F1F1F1'%3Eb%3C/text%3E%3Ccircle cx='47' cy='41' r='4' fill='%23FF7A1A'/%3E%3C/svg%3E">
+
+  <!-- Разработка: botforge (t.me/Bro_piton) -->
+
+  <style>
+    @font-face {
+      font-family: 'Inter Tight';
+      font-weight: 400 500;
+      font-display: swap;
+      src: url(../fonts/inter-tight-cyrillic.woff2) format('woff2');
+      unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+    }
+    @font-face {
+      font-family: 'Inter Tight';
+      font-weight: 400 500;
+      font-display: swap;
+      src: url(../fonts/inter-tight-latin.woff2) format('woff2');
+      unicode-range: U+0000-00FF, U+2000-206F, U+2122, U+2191, U+2193;
+    }
+
+    :root {
+      --bg: #0B0B0D;
+      --ink: #F1F1F1;
+      --muted: rgba(241, 241, 241, 0.55);
+      --line: rgba(241, 241, 241, 0.16);
+      --hot: #FF7A1A;
+      --violet: #8B5CF6;
+      --gutter: 30px;
+      --head: 76px;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { color: inherit; }
+
+    /* ---------- Шапка ---------- */
+    .top {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: var(--head);
+      padding: 0 var(--gutter);
+      border-bottom: 1px solid transparent;
+      transition: background 0.4s, border-color 0.4s;
+    }
+    /* После фильма под шапкой идут блоки — нужна подложка, иначе текст наезжает */
+    .top.solid {
+      background: rgba(11, 11, 13, 0.86);
+      border-bottom-color: var(--line);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+    }
+    .wordmark { font-size: 23px; font-weight: 500; letter-spacing: -0.04em; text-decoration: none; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      height: 40px;
+      padding: 0 20px;
+      border-radius: 99px;
+      background: var(--ink);
+      color: var(--bg);
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    /* ---------- Фильм ----------
+       Высокий блок даёт длину прокрутки, холст внутри него прилипает
+       к экрану. Номер кадра считается из того, сколько блока пройдено. */
+    .film { position: relative; height: 2130vh; }
+    .stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      height: 100svh;
+      overflow: hidden;
+    }
+    .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    /* Затемнение снизу и слева — под текстом карточек */
+    .stage::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to top, rgba(11, 11, 13, 0.85), transparent 45%),
+        linear-gradient(to right, rgba(11, 11, 13, 0.75), transparent 55%);
+    }
+
+    .scene {
+      position: absolute;
+      z-index: 2;
+      left: var(--gutter);
+      bottom: 11vh;
+      max-width: 560px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s var(--ease), transform 0.8s var(--ease);
+      pointer-events: none;
+    }
+    .scene.on { opacity: 1; transform: none; pointer-events: auto; }
+    /* Во второй половине в кадре окна интерфейса — карточка уже, чтобы их не закрывать */
+    .scene--narrow { max-width: 380px; }
+    .scene--narrow .card h2 { font-size: clamp(24px, 2vw, 32px); }
+
+    .scene h1 {
+      margin: 0 0 18px;
+      font-size: clamp(40px, 5.6vw, 92px);
+      font-weight: 500;
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+    }
+    .scene p { margin: 0; max-width: 30em; font-size: 17px; color: var(--muted); }
+
+    .card {
+      padding: 26px 28px 28px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(20, 20, 24, 0.55);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+    }
+    .card__head { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; font-size: 12px; color: var(--muted); }
+    .card__num { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); }
+    .card h2 { margin: 0 0 14px; font-size: clamp(28px, 2.6vw, 40px); font-weight: 500; line-height: 1.02; letter-spacing: -0.035em; }
+    .card--violet .card__num { border-color: var(--violet); color: var(--violet); }
+
+    /* Затемнение кадра во время паузы перед «путём заявки» */
+    .veil {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: rgba(11, 11, 13, 0.78);
+      opacity: 0;
+      transition: opacity 0.7s var(--ease);
+      pointer-events: none;
+    }
+    .veil.on { opacity: 1; }
+
+    /* Карточка-пояснение: шире остальных, с цепочкой шагов */
+    .scene--intro { max-width: 620px; }
+    .card--hot .card__head { color: var(--hot); }
+    .route {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 22px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .route li {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 34px;
+      padding: 0 14px 0 6px;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      font-size: 14px;
+    }
+    .route span {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(139, 92, 246, 0.18);
+      color: var(--violet);
+      font-size: 11px;
+    }
+
+    /* Полоска прогресса фильма справа */
+    .progress {
+      position: absolute;
+      z-index: 3;
+      right: var(--gutter);
+      top: 50%;
+      width: 2px;
+      height: 140px;
+      margin-top: -70px;
+      background: var(--line);
+    }
+    .chapters { display: none; }
+    .progress i {
+      position: absolute;
+      inset: 0 0 auto;
+      height: 100%;
+      background: var(--hot);
+      transform-origin: top;
+      transform: scaleY(0);
+    }
+    .hint {
+      position: absolute;
+      z-index: 3;
+      left: 50%;
+      bottom: 3vh;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: var(--muted);
+      transition: opacity 0.4s;
+    }
+
+    /* ---------- Загрузка ---------- */
+    .loader {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      place-items: center;
+      background: var(--bg);
+      transition: opacity 0.6s, visibility 0s 0.6s;
+    }
+    .loader.done { opacity: 0; visibility: hidden; }
+    .loader__num { font-size: clamp(56px, 10vw, 140px); font-weight: 500; letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
+    .loader__label { margin-top: 6px; text-align: center; font-size: 13px; color: var(--muted); }
+
+    /* ---------- После фильма ---------- */
+    .after {
+      position: relative;
+      z-index: 5;
+      display: grid;
+      gap: 48px;
+      padding: 110px var(--gutter) 120px;
+      border-top: 1px solid var(--line);
+      background: var(--bg);
+    }
+    .after__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .after h2 {
+      margin: 0;
+      max-width: 14em;
+      font-size: clamp(34px, 4.4vw, 68px);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.045em;
+      text-wrap: balance;
+    }
+    .after h2 em { font-style: normal; color: var(--muted); }
+
+    /* Проекты: сетка карточек, каждая ведёт в живой проект */
+    .works {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 40px 24px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .work {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      text-decoration: none;
+    }
+    .work__pic {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 800 / 520;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #151518;
+    }
+    .work__pic img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.9s var(--ease), filter 0.5s;
+      filter: saturate(0.85);
+    }
+    .work__meta { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; color: var(--muted); }
+    .work__title { font-size: 22px; font-weight: 500; line-height: 1.1; letter-spacing: -0.03em; }
+    .work__text { max-width: 34em; color: var(--muted); }
+    .work__go { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+    .work__go svg { width: 14px; height: 14px; transition: transform 0.4s var(--ease); }
+    .work:hover .work__pic img, .work:focus-visible .work__pic img { transform: scale(1.04); filter: none; }
+    .work:hover .work__go, .work:focus-visible .work__go { color: var(--hot); }
+    .work:hover .work__go svg, .work:focus-visible .work__go svg { transform: translate(2px, -2px); }
+
+    /* Ссылка-контур: на все проекты */
+    .ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      height: 44px;
+      padding: 0 22px;
+      border: 1px solid var(--line);
+      border-radius: 99px;
+      font-size: 14px;
+      text-decoration: none;
+      transition: border-color 0.3s, color 0.3s;
+    }
+    .ghost:hover, .ghost:focus-visible { border-color: var(--hot); color: var(--hot); }
+
+    /* Цены и сроки: крупное значение, над ним подпись, под ним пояснение */
+    .terms {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--line);
+    }
+    .terms li {
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      padding: 28px 28px 40px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .terms li + li { padding-left: 28px; border-left: 1px solid var(--line); }
+    .terms li:nth-child(3n + 1) { padding-left: 0; border-left: 0; }
+    .terms__label { font-size: 13px; color: var(--muted); }
+    .terms__value {
+      font-size: clamp(30px, 3.2vw, 48px);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+    .terms__note { max-width: 26em; color: var(--muted); }
+    /* Два главных числа — оранжевым, как раскалённый металл в фильме */
+    .terms li:nth-child(-n + 2) .terms__value { color: var(--hot); }
+
+    /* Написать: пояснение и огромная ссылка в Telegram */
+    .final { gap: 36px; padding-bottom: 100px; }
+    .final__lead { max-width: 30em; margin: 0; font-size: 19px; color: var(--muted); text-wrap: pretty; }
+    /* Строчный элемент, а не флекс: при переносе стрелка остаётся за последним словом */
+    .final__big {
+      justify-self: start;
+      font-size: clamp(48px, 9vw, 150px);
+      font-weight: 500;
+      line-height: 0.95;
+      letter-spacing: -0.055em;
+      text-decoration: none;
+      transition: color 0.4s;
+    }
+    .final__big svg { width: 0.55em; height: 0.55em; margin-left: 0.2em; vertical-align: 0.05em; transition: transform 0.5s var(--ease); }
+    .nowrap { white-space: nowrap; }
+    .final__big:hover, .final__big:focus-visible { color: var(--hot); }
+    .final__big:hover svg, .final__big:focus-visible svg { transform: translate(0.06em, -0.06em); }
+
+    .foot {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 16px 32px;
+      padding: 28px var(--gutter) max(28px, env(safe-area-inset-bottom));
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .foot nav { display: flex; flex-wrap: wrap; gap: 12px 28px; }
+    .foot a { text-decoration: none; transition: color 0.3s; }
+    .foot a:hover, .foot a:focus-visible { color: var(--ink); }
+
+    @media (max-width: 1000px) {
+      .works { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .terms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .terms li:nth-child(3n + 1) { padding-left: 28px; border-left: 1px solid var(--line); }
+      .terms li:nth-child(2n + 1) { padding-left: 0; border-left: 0; }
+    }
+    @media (max-width: 600px) {
+      .after { gap: 36px; padding: 72px var(--gutter) 80px; }
+      .works { grid-template-columns: 1fr; gap: 36px; }
+      .work__title { font-size: 20px; }
+      .terms { grid-template-columns: 1fr; }
+      .final__big { font-size: clamp(36px, 11vw, 48px); }
+      .terms li, .terms li + li, .terms li:nth-child(n) { gap: 8px; padding: 22px 0 24px; border-left: 0; }
+    }
+
+    @media (max-width: 760px) {
+      :root { --gutter: 16px; }
+      :root { --head: 64px; }
+      .wordmark { font-size: 20px; }
+      .pill { height: 36px; padding: 0 15px; font-size: 13px; }
+    }
+
+    /* Вертикальный телефон: фильм полосой сверху, текст и оглавление под ним.
+       Повёрнутый телефон получает раскладку как у компьютера — фильм на весь экран */
+    @media (max-width: 1100px) and (orientation: portrait) {
+      /* Фильм снят горизонтально, поэтому на телефоне он идёт широкой
+         полосой под шапкой, а текст лежит под полосой, а не поверх неё */
+      /* Кадр целиком во всю ширину, без обрезки по бокам */
+      .stage { --band: 56.25vw; }
+      .stage canvas {
+        top: var(--head);
+        bottom: auto;
+        height: var(--band);
+      }
+      .stage::after {
+        top: var(--head);
+        bottom: auto;
+        height: var(--band);
+        background: linear-gradient(to top, var(--bg) 2%, transparent 40%);
+      }
+      /* Карточка чуть заходит на низ полосы — так они читаются как одно целое */
+      .scene {
+        top: calc(var(--head) + var(--band) + 14px);
+        bottom: auto;
+        right: var(--gutter);
+        max-width: none;
+      }
+      .scene h1 { font-size: clamp(32px, 9.4vw, 46px); }
+      .scene p { font-size: 15px; }
+      .card { padding: 20px 20px 22px; }
+      .card__head { margin-bottom: 18px; }
+      /* Вместо полоски прогресса — оглавление: заполняет низ экрана,
+         показывает, где ты в фильме, и по нажатию переносит к этапу */
+      .progress, .hint { display: none; }
+      .chapters {
+        position: absolute;
+        z-index: 3;
+        left: var(--gutter);
+        right: var(--gutter);
+        bottom: max(14px, env(safe-area-inset-bottom));
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 14px;
+        margin: 0;
+        padding: 12px 0 0;
+        border-top: 1px solid var(--line);
+        list-style: none;
+      }
+      .chapters button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        padding: 6px 0;
+        border: 0;
+        background: none;
+        color: var(--muted);
+        font: inherit;
+        font-size: 13px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .chapters button::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--line);
+        flex-shrink: 0;
+        transition: background 0.3s, transform 0.3s;
+      }
+      .chapters .on button { color: var(--ink); }
+      .chapters .on button::before { background: var(--hot); transform: scale(1.4); }
+      .chapters .past button::before { background: rgba(255, 122, 26, 0.45); }
+      /* Пауза перед «путём заявки»: карточка-пояснение большая, поэтому
+         она встаёт на затемнённую полосу фильма, а оглавление на это время прячется */
+      .chapters { transition: opacity 0.5s var(--ease); }
+      .stage.paused .chapters { opacity: 0; pointer-events: none; }
+      .scene--intro { top: calc(var(--head) + 14px); }
+    }
+    /* Повёрнутый телефон: высоты мало, поэтому шапка ниже, карточка компактнее */
+    @media (orientation: landscape) and (max-height: 500px) {
+      :root { --head: 56px; }
+      .scene { bottom: 14px; max-width: 420px; }
+      .scene h1 { font-size: 34px; margin-bottom: 10px; }
+      .scene p { font-size: 13px; }
+      .card { padding: 14px 18px 16px; }
+      .card__head { margin-bottom: 10px; }
+      .card h2, .scene--narrow .card h2 { font-size: 22px; margin-bottom: 8px; }
+      .hint { display: none; }
+    }
+
+    /* Вертикальный планшет: раскладка как у телефона, но карточка не растягивается на всю ширину */
+    @media (min-width: 761px) and (max-width: 1100px) and (orientation: portrait) {
+      .scene { right: auto; max-width: 640px; }
+      .scene h1 { font-size: clamp(40px, 6vw, 60px); }
+      .scene p { font-size: 17px; }
+      .chapters button { font-size: 15px; padding: 7px 0; }
+    }
+
+    /* На высоких телефонах места хватает на оглавление в одну колонку */
+    @media (max-width: 760px) and (min-width: 380px) and (min-height: 820px) and (orientation: portrait) {
+      .chapters { grid-template-columns: 1fr; }
+      .chapters button { padding: 4px 0; font-size: 14px; }
+    }
+    @media (max-width: 760px) and (max-height: 700px) and (orientation: portrait) {
+      .chapters button { padding: 3px 0; font-size: 12px; }
+      .scene h1 { font-size: 30px; }
+      /* Низкий экран: карточка компактнее, чтобы не заходить на оглавление */
+      .card { padding: 16px 18px 18px; }
+      .card__head { margin-bottom: 12px; }
+      .card h2, .scene--narrow .card h2 { font-size: 24px; margin-bottom: 10px; }
+      .scene p { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <a class="wordmark" href="../index.html">botforge</a>
+    <a class="pill" href="https://t.me/Bro_piton" target="_blank" rel="noopener">Обсудить проект</a>
+  </header>
+
+  <div class="loader" id="loader">
+    <div>
+      <div class="loader__num" id="loaderNum">0%</div>
+      <div class="loader__label">Разогреваем кузницу</div>
+    </div>
+  </div>
+
+  <main>
+    <section class="film" id="film">
+      <div class="stage">
+        <canvas id="canvas" aria-hidden="true"></canvas>
+        <div class="veil" id="veil" aria-hidden="true"></div>
+
+        <!-- Карточки: from/to — доля фильма, на которой карточка видна -->
+        <div class="scene" data-ch="Замысел" data-from="0.0000" data-to="0.0440">
+          <h1>Сайты и&nbsp;боты, которые работают вместе</h1>
+          <p>Кую их&nbsp;сам: от&nbsp;первой заготовки до&nbsp;кода, который вы&nbsp;получаете на&nbsp;руки</p>
+        </div>
+
+        <div class="scene" data-ch="Анализ" data-from="0.0497" data-to="0.1426">
+          <div class="card">
+            <div class="card__head"><span class="card__num">01</span>Анализ</div>
+            <h2>Разбираемся в&nbsp;задаче</h2>
+            <p>Откуда приходит клиент, что он делает дальше и&nbsp;где сейчас теряются заявки</p>
+          </div>
+        </div>
+        <div class="scene" data-ch="Проектирование" data-from="0.1492" data-to="0.3300">
+          <div class="card card--violet">
+            <div class="card__head"><span class="card__num">02</span>Проектирование</div>
+            <h2>Рисую схему до&nbsp;первой строки кода</h2>
+            <p>Сценарии бота, структура сайта, какие данные где хранятся. Всё согласуем заранее</p>
+          </div>
+        </div>
+        <div class="scene" data-ch="Разработка" data-from="0.3399" data-to="0.5405">
+          <div class="card card--violet">
+            <div class="card__head"><span class="card__num">03</span>Разработка</div>
+            <h2>Собираю по&nbsp;деталям</h2>
+            <p>Пишу код и&nbsp;проверяю на&nbsp;живых ситуациях: занятое время, отмена, оплата, медленный интернет</p>
+          </div>
+        </div>
+        <div class="scene" data-ch="Бот готов" data-from="0.5488" data-to="0.6340">
+          <div class="card card--violet">
+            <div class="card__head">Готово</div>
+            <h2>Бот просыпается</h2>
+            <p>Отвечает клиентам круглые сутки, записывает, напоминает и&nbsp;принимает оплату</p>
+          </div>
+        </div>
+        <div class="scene scene--intro" data-from="0.6342" data-to="0.7032">
+          <div class="card card--hot">
+            <div class="card__head">Дальше · пример из&nbsp;жизни</div>
+            <h2>Как одна заявка проходит путь от&nbsp;сайта до&nbsp;оплаты</h2>
+            <p>Покажу на&nbsp;примере салона окрашивания ТОН. Клиентка сама выбирает время на&nbsp;сайте, бот берёт предоплату, заявка попадает в&nbsp;CRM. В&nbsp;салоне никто ничего не&nbsp;делает руками</p>
+            <ol class="route" aria-label="Шаги">
+              <li><span>01</span>Сайт</li>
+              <li><span>02</span>Бот</li>
+              <li><span>03</span>CRM</li>
+              <li><span>04</span>Оплата</li>
+            </ol>
+          </div>
+        </div>
+        <div class="scene scene--narrow" data-ch="Сайт" data-from="0.7095" data-to="0.7866">
+          <div class="card card--violet">
+            <div class="card__head">Путь заявки · сайт</div>
+            <h2>Клиент выбирает время на&nbsp;сайте</h2>
+            <p>Свободные окошки видны сразу, звонить и&nbsp;ждать ответа не&nbsp;нужно</p>
+          </div>
+        </div>
+        <div class="scene scene--narrow" data-ch="Бот" data-from="0.7923" data-to="0.8610">
+          <div class="card card--violet">
+            <div class="card__head">Путь заявки · бот</div>
+            <h2>Бот уточняет и&nbsp;берёт предоплату</h2>
+            <p>Сам предлагает мастера, называет сумму и&nbsp;присылает кнопку оплаты</p>
+          </div>
+        </div>
+        <div class="scene scene--narrow" data-ch="CRM" data-from="0.8947" data-to="0.9408">
+          <div class="card card--violet">
+            <div class="card__head">Путь заявки · CRM</div>
+            <h2>Заявка сразу в&nbsp;системе</h2>
+            <p>Вы видите клиента, услугу, время и&nbsp;мастера. Ничего не&nbsp;нужно переписывать</p>
+          </div>
+        </div>
+        <div class="scene scene--narrow" data-ch="Оплата" data-from="0.9492" data-to="0.9878">
+          <div class="card card--violet">
+            <div class="card__head">Путь заявки · оплата</div>
+            <h2>Деньги пришли&nbsp;— запись подтверждена</h2>
+            <p>Статус меняется сам, клиенту уходит напоминание за&nbsp;день до&nbsp;визита</p>
+          </div>
+        </div>
+        <div class="scene scene--narrow" data-ch="Передача" data-from="0.9906" data-to="1.0047">
+          <div class="card card--violet">
+            <div class="card__head"><span class="card__num">04</span>Передача</div>
+            <h2>Код и&nbsp;доступы&nbsp;— ваши</h2>
+            <p>Запускаю на&nbsp;сервере и&nbsp;передаю всё, чтобы работало без меня</p>
+            <a class="pill" style="margin-top:20px" href="https://t.me/Bro_piton" target="_blank" rel="noopener">Обсудить проект</a>
+          </div>
+        </div>
+
+        <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+        <ol class="chapters" id="chapters" aria-label="Этапы"></ol>
+        <div class="hint" id="hint">Прокрутите вниз</div>
+      </div>
+    </section>
+
+    <section class="after" id="projects">
+      <div class="after__head">
+        <h2>15 проектов&nbsp;— <em>сайты, боты, AI и&nbsp;CRM</em></h2>
+        <a class="ghost" href="../studio.html#projects">Все проекты<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+      <ul class="works">
+        <li><a class="work" href="../realty/" target="_blank" rel="noopener">
+          <span class="work__pic"><img src="../media/realty-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+          <span class="work__meta"><span>01</span><span>Сайт · видео-заставка</span></span>
+          <span class="work__title">REALTY — агентство недвижимости</span>
+          <span class="work__text">Камера въезжает в&nbsp;дом, последний кадр становится фоном. Переходы через раздвижные двери.</span>
+          <span class="work__go">Открыть сайт<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
+        </a></li>
+        <li><a class="work" href="../ton/" target="_blank" rel="noopener">
+          <span class="work__pic"><img src="../media/ton-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+          <span class="work__meta"><span>02</span><span>Сайт · примерка цвета</span></span>
+          <span class="work__title">ТОН — салон окрашивания</span>
+          <span class="work__text">Примерочная цвета волос и&nbsp;живое расписание записи прямо на&nbsp;первом экране.</span>
+          <span class="work__go">Открыть сайт<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
+        </a></li>
+        <li><a class="work" href="https://t.me/Beautybook1_bot" target="_blank" rel="noopener">
+          <span class="work__pic"><img src="../media/studio/beauty.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+          <span class="work__meta"><span>03</span><span>Telegram · Mini App · CRM</span></span>
+          <span class="work__title">BeautyBook</span>
+          <span class="work__text">Запись в&nbsp;один экран, CRM с&nbsp;выручкой и&nbsp;неявками, отзывы, программа лояльности.</span>
+          <span class="work__go">Открыть бота<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
+        </a></li>
+        <li><a class="work" href="https://vladislavbropiton.github.io/car/" target="_blank" rel="noopener">
+          <span class="work__pic"><img src="../media/peregon-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+          <span class="work__meta"><span>04</span><span>Сайт · калькулятор</span></span>
+          <span class="work__title">ПЕРЕГОН — авто из&nbsp;США</span>
+          <span class="work__text">Сайт компании, которая возит машины с&nbsp;аукционов. Считает смету и&nbsp;уводит в&nbsp;бота за&nbsp;лотами.</span>
+          <span class="work__go">Открыть сайт<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
+        </a></li>
+        <li><a class="work" href="../levelup/" target="_blank" rel="noopener">
+          <span class="work__pic"><img src="../media/levelup-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+          <span class="work__meta"><span>05</span><span>Веб-приложение · геймификация</span></span>
+          <span class="work__title">LevelUp</span>
+          <span class="work__text">Уровни, рейтинг и&nbsp;награды для школ, компаний, фитнеса и&nbsp;кофеен. Ниша, стиль и&nbsp;язык переключаются на&nbsp;лету.</span>
+          <span class="work__go">Открыть<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
+        </a></li>
+        <li><a class="work" href="https://t.me/DocuHelperForexBot" target="_blank" rel="noopener">
+          <span class="work__pic"><img src="../media/studio/ai.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+          <span class="work__meta"><span>06</span><span>AI · RAG · Telegram</span></span>
+          <span class="work__title">DocuHelper Forex</span>
+          <span class="work__text">Консультант на&nbsp;базе ваших документов. Отвечает на&nbsp;вопросы по&nbsp;трейдингу быстро и&nbsp;точно.</span>
+          <span class="work__go">Открыть бота<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
+        </a></li>
+      </ul>
+    </section>
+
+    <section class="after" id="terms">
+      <div class="after__head">
+        <h2>Сколько стоит <em>и&nbsp;сколько ждать</em></h2>
+      </div>
+      <ul class="terms">
+        <li><span class="terms__label">Бот</span><span class="terms__value">от&nbsp;30&nbsp;000&nbsp;₽</span><span class="terms__note">Простой бот: заявки, запись, ответы на&nbsp;вопросы.</span></li>
+        <li><span class="terms__label">Комплексное решение</span><span class="terms__value">от&nbsp;70&nbsp;000&nbsp;₽</span><span class="terms__note">С&nbsp;AI и&nbsp;интеграциями. Точная смета&nbsp;— после уточнения задачи.</span></li>
+        <li><span class="terms__label">Сроки</span><span class="terms__value">3–7 дней</span><span class="terms__note">Простые проекты. Сложные AI-решения и&nbsp;Mini Apps&nbsp;— от&nbsp;2&nbsp;недель.</span></li>
+        <li><span class="terms__label">Код</span><span class="terms__value">ваш</span><span class="terms__note">После полной оплаты передаю исключительные права и&nbsp;исходный код.</span></li>
+        <li><span class="terms__label">Для старта</span><span class="terms__value">описание задачи</span><span class="terms__note">Техническое задание или просто рассказ своими словами. Помогу составить ТЗ.</span></li>
+        <li><span class="terms__label">Ответ</span><span class="terms__value">в&nbsp;течение дня</span><span class="terms__note">Консультация бесплатная и&nbsp;ни&nbsp;к&nbsp;чему не&nbsp;обязывает.</span></li>
+      </ul>
+    </section>
+
+    <section class="after final" id="contact">
+      <p class="final__lead">Опишите задачу своими словами. Отвечу в&nbsp;течение дня и&nbsp;скажу, сколько это будет стоить и&nbsp;сколько займёт.</p>
+      <a class="final__big" href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BE%D0%B1%D1%81%D1%83%D0%B4%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82" target="_blank" rel="noopener">Обсудить <span class="nowrap">проект<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span></a>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div>©&nbsp;2026 botforge</div>
+    <nav aria-label="Ссылки">
+      <a href="https://t.me/Bro_piton" target="_blank" rel="noopener">Telegram @Bro_piton</a>
+      <a href="../index.html">Главная</a>
+      <a href="../studio.html">Studio</a>
+      <a href="../classic.html">Классическая</a>
+    </nav>
+  </footer>
+
+  <script>
+    (function () {
+      var ВСЕГО = 568
+      var холст = document.getElementById('canvas')
+      var ctx = холст.getContext('2d')
+      var фильм = document.getElementById('film')
+      var полоска = document.getElementById('bar')
+      var подсказка = document.getElementById('hint')
+      var шапка = document.querySelector('.top')
+      var сцены = Array.prototype.slice.call(document.querySelectorAll('.scene'))
+      // В оглавление попадают только этапы, пояснение перед «путём заявки» — нет
+      var этапы = сцены.filter(function (с) { return с.dataset.ch })
+      var завеса = document.getElementById('veil')
+      var сцена = document.querySelector('.stage')
+
+      // Фильм один, горизонтальный: на телефоне он показывается полосой
+      var кадры = []
+      var загружается = false
+
+      function выбратьНабор() {
+        if (загружается) return
+        загружается = true
+        загрузить('f')
+      }
+
+      /* ---------- Загрузка кадров ----------
+         Сначала первый кадр, чтобы экран не был пустым, затем
+         все остальные параллельно. Счётчик идёт по мере загрузки. */
+      function загрузить(ключ) {
+        var загружено = 0
+        var список = new Array(ВСЕГО)
+        кадры = список
+        var число = document.getElementById('loaderNum')
+        var заставка = document.getElementById('loader')
+        заставка.classList.remove('done')
+
+        function готов() {
+          загружено++
+          var процент = Math.min(100, Math.round(загружено / (ВСЕГО * 0.15) * 100))
+          число.textContent = процент + '%'
+          if (загружено === 1) нарисовать(0)
+          // Показываем фильм, как только загружено начало: пока человек
+          // смотрит первые сцены, остальные кадры догружаются
+          if (загружено >= ВСЕГО * 0.15) заставка.classList.add('done')
+        }
+
+        for (var i = 0; i < ВСЕГО; i++) {
+          var img = new Image()
+          img.decoding = 'async'
+          img.onload = готов
+          img.onerror = готов
+          img.src = 'frames/' + ключ + '/' + String(i).padStart(3, '0') + '.webp'
+          список[i] = img
+        }
+      }
+
+      /* ---------- Рисование кадра «как обложка» ---------- */
+      var нарисованный = -1
+      function размер() {
+        var dpr = Math.min(window.devicePixelRatio || 1, 2)
+        холст.width = Math.round(холст.clientWidth * dpr)
+        холст.height = Math.round(холст.clientHeight * dpr)
+        нарисованный = -1
+      }
+
+      function нарисовать(n) {
+        // Кадр ещё не пришёл — берём ближайший загруженный до него
+        var img = null
+        for (var k = n; k >= 0; k--) {
+          if (кадры[k] && кадры[k].complete && кадры[k].naturalWidth) { img = кадры[k]; break }
+        }
+        if (!img || n === нарисованный) return
+        var W = холст.width, H = холст.height
+        var iw = img.naturalWidth, ih = img.naturalHeight
+        // Сверху и снизу кадр не обрезаем никогда: если экран шире кадра
+        // (повёрнутый телефон, широкий монитор), кадр вписывается по высоте,
+        // а по бокам остаются поля в цвет страницы. Если экран уже кадра,
+        // он заполняется целиком, и немного срезаются только края по бокам.
+        // Во второй половине (с кадра 388) в кадре окна интерфейса: их обрезать
+        // нельзя, поэтому кадр плавно переходит к вписыванию целиком. Края этих
+        // кадров почти в цвет страницы, поля сверху и снизу не видны.
+        var вписать = Math.min(Math.max((n - 388) / 8, 0), 1)
+        var обложка = Math.max(W / iw, H / ih)
+        var s = W / H > iw / ih ? H / ih : обложка + (W / iw - обложка) * вписать
+        var w = iw * s, h = ih * s
+        ctx.fillStyle = '#0B0B0D'
+        ctx.fillRect(0, 0, W, H)
+        var x0 = (W - w) / 2
+        ctx.drawImage(img, x0, (H - h) / 2, w, h)
+        // Если по бокам остались поля, края кадра растворяются в фоне,
+        // иначе видна резкая граница между фоном кадра и страницы
+        if (x0 > 1) {
+          var мягко = Math.min(w * 0.08, 160)
+          var g = ctx.createLinearGradient(x0, 0, x0 + мягко, 0)
+          g.addColorStop(0, '#0B0B0D'); g.addColorStop(1, 'rgba(11, 11, 13, 0)')
+          ctx.fillStyle = g
+          ctx.fillRect(x0, 0, мягко, H)
+          g = ctx.createLinearGradient(x0 + w, 0, x0 + w - мягко, 0)
+          g.addColorStop(0, '#0B0B0D'); g.addColorStop(1, 'rgba(11, 11, 13, 0)')
+          ctx.fillStyle = g
+          ctx.fillRect(x0 + w - мягко, 0, мягко, H)
+        }
+        нарисованный = n
+      }
+
+      /* ---------- Прокрутка → кадр ----------
+         Цель ставит прокрутка, а показываемый кадр плавно её догоняет.
+         Резкий рывок колесом превращается в короткую мягкую перемотку,
+         а не в скачок через полфильма. */
+      var пройдено = 0
+
+      /* Пауза перед «путём заявки»: на этом отрезке прокрутки кадр стоит
+         на месте (388 — начало второй половины), экран затемнён и видна
+         карточка-пояснение. Сцены в разметке заданы долей прокрутки. */
+      var ПАУЗА_КАДР = 388 / (ВСЕГО - 1)
+      var ПАУЗА = 0.06
+      var паузаС = ПАУЗА_КАДР * (1 - ПАУЗА)
+      function кадрДоли(p) {
+        if (p < паузаС) return p / (1 - ПАУЗА)
+        if (p < паузаС + ПАУЗА) return ПАУЗА_КАДР
+        return (p - ПАУЗА) / (1 - ПАУЗА)
+      }
+
+      function доля() {
+        var r = фильм.getBoundingClientRect()
+        var путь = фильм.offsetHeight - window.innerHeight
+        return Math.min(Math.max(-r.top / путь, 0), 1)
+      }
+
+      function тик() {
+        var p = доля()
+        пройдено += (p - пройдено) * 0.18
+        if (Math.abs(p - пройдено) < 0.00005) пройдено = p
+        нарисовать(Math.round(кадрДоли(пройдено) * (ВСЕГО - 1)))
+
+        var показано = пройдено
+        полоска.style.transform = 'scaleY(' + показано.toFixed(4) + ')'
+        подсказка.style.opacity = показано > 0.03 ? 0 : 1
+        сцены.forEach(function (с) {
+          var вид = показано >= +с.dataset.from && показано < +с.dataset.to
+          с.classList.toggle('on', вид)
+        })
+        var пауза = показано >= паузаС - 0.009 && показано < паузаС + ПАУЗА
+        завеса.classList.toggle('on', пауза)
+        сцена.classList.toggle('paused', пауза)
+        отметитьЭтап(показано)
+        шапка.classList.toggle('solid', фильм.getBoundingClientRect().bottom <= шапка.offsetHeight)
+        requestAnimationFrame(тик)
+      }
+
+      /* ---------- Оглавление (телефон) ---------- */
+      var оглавление = document.getElementById('chapters')
+      этапы.forEach(function (с, n) {
+        var li = document.createElement('li')
+        var b = document.createElement('button')
+        b.type = 'button'
+        b.textContent = с.dataset.ch
+        // Нажатие переносит к началу этапа — чуть дальше его начала, чтобы карточка уже была видна
+        b.addEventListener('click', function () {
+          var путь = фильм.offsetHeight - window.innerHeight
+          var доляЭтапа = Math.min(+с.dataset.from + 0.01, 1)
+          window.scrollTo({ top: фильм.offsetTop + путь * доляЭтапа, behavior: 'smooth' })
+        })
+        li.appendChild(b)
+        оглавление.appendChild(li)
+      })
+      var пункты = оглавление.children
+      function отметитьЭтап(показано) {
+        var текущийЭтап = 0
+        этапы.forEach(function (с, n) { if (показано >= +с.dataset.from) текущийЭтап = n })
+        for (var n = 0; n < пункты.length; n++) {
+          пункты[n].classList.toggle('on', n === текущийЭтап)
+          пункты[n].classList.toggle('past', n < текущийЭтап)
+        }
+      }
+
+      // При повороте экрана меняется высота, а с ней длина всей прокрутки.
+      // Запоминаем, какая доля фильма была пройдена, и возвращаемся туда же.
+      // Смена одной только высоты (прячется адресная строка) сюда не относится.
+      var прошлаяШирина = window.innerWidth
+      window.addEventListener('resize', function () {
+        размер()
+        if (window.innerWidth === прошлаяШирина) return
+        прошлаяШирина = window.innerWidth
+        var было = пройдено
+        requestAnimationFrame(function () {
+          var путь = фильм.offsetHeight - window.innerHeight
+          if (было > 0 && было < 1) window.scrollTo(0, фильм.offsetTop + путь * было)
+        })
+      })
+      размер()
+      выбратьНабор()
+      requestAnimationFrame(тик)
+    })()
+  </script>
+</body>
+</html>
