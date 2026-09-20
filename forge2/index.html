@@ -743,44 +743,66 @@
       var сцена = document.querySelector('.stage')
 
       // Фильм один, горизонтальный: на телефоне он показывается полосой
-      var кадры = []
-      var загружается = false
-
-      function выбратьНабор() {
-        if (загружается) return
-        загружается = true
-        загрузить('f')
-      }
+      var кадры = new Array(ВСЕГО)
+      var запрошен = new Array(ВСЕГО)
+      var активных = 0
+      var загружено = 0
+      var ОДНОВРЕМЕННО = 8
+      var ПОКАЗАТЬ_ПОСЛЕ = 16
 
       /* ---------- Загрузка кадров ----------
-         Сначала первый кадр, чтобы экран не был пустым, затем
-         все остальные параллельно. Счётчик идёт по мере загрузки. */
-      function загрузить(ключ) {
-        var загружено = 0
-        var список = new Array(ВСЕГО)
-        кадры = список
-        var число = document.getElementById('loaderNum')
-        var заставка = document.getElementById('loader')
-        заставка.classList.remove('done')
-
-        function готов() {
+         Кадров много (весь фильм — почти 19 МБ), поэтому грузим не всё сразу,
+         а по ходу прокрутки: сначала те, что нужны прямо сейчас и чуть вперёд,
+         остальные подтягиваются в фоне. Так фильм виден через пару секунд. */
+      function запросить(i) {
+        if (i < 0 || i >= ВСЕГО || запрошен[i]) return false
+        запрошен[i] = true
+        активных++
+        var img = new Image()
+        img.decoding = 'async'
+        img.onload = img.onerror = function () {
+          активных--
           загружено++
-          var процент = Math.min(100, Math.round(загружено / (ВСЕГО * 0.15) * 100))
-          число.textContent = процент + '%'
           if (загружено === 1) нарисовать(0)
-          // Показываем фильм, как только загружено начало: пока человек
-          // смотрит первые сцены, остальные кадры догружаются
-          if (загружено >= ВСЕГО * 0.15) заставка.classList.add('done')
+          var число = document.getElementById('loaderNum')
+          число.textContent = Math.min(100, Math.round(загружено / ПОКАЗАТЬ_ПОСЛЕ * 100)) + '%'
+          if (загружено >= ПОКАЗАТЬ_ПОСЛЕ) document.getElementById('loader').classList.add('done')
+          качать()
         }
+        img.src = 'frames/f/' + String(i).padStart(3, '0') + '.webp'
+        кадры[i] = img
+        return true
+      }
 
-        for (var i = 0; i < ВСЕГО; i++) {
-          var img = new Image()
-          img.decoding = 'async'
-          img.onload = готов
-          img.onerror = готов
-          img.src = 'frames/' + ключ + '/' + String(i).padStart(3, '0') + '.webp'
-          список[i] = img
+      function качать() {
+        var n = Math.round(кадрДоли(пройдено) * (ВСЕГО - 1))
+        while (активных < ОДНОВРЕМЕННО) {
+          var i = -1
+          // сначала кадр, который нужен сейчас, и несколько следующих
+          for (var d = 0; d < ВСЕГО && i < 0; d++) {
+            if (n + d < ВСЕГО && !запрошен[n + d]) i = n + d
+          }
+          // потом всё остальное, с начала фильма
+          for (var k = 0; k < ВСЕГО && i < 0; k++) {
+            if (!запрошен[k]) i = k
+          }
+          if (i < 0) return
+          запросить(i)
         }
+      }
+
+      // При прокрутке подтягиваем кадры, которые вот-вот понадобятся
+      var последнийЗапрос = 0
+      function если_надо_качать() {
+        var t = Date.now()
+        if (t - последнийЗапрос < 200 || активных >= ОДНОВРЕМЕННО) return
+        последнийЗапрос = t
+        качать()
+      }
+
+      function выбратьНабор() {
+        document.getElementById('loader').classList.remove('done')
+        качать()
       }
 
       /* ---------- Рисование кадра «как обложка» ---------- */
@@ -879,6 +901,7 @@
           ((window.innerWidth / 2 - базаX) * кЦентру).toFixed(1) + 'px,' +
           ((window.innerHeight / 2 - базаY) * кЦентру).toFixed(1) + 'px)'
         отметитьЭтап(показано)
+        если_надо_качать()
         шапка.classList.toggle('solid', фильм.getBoundingClientRect().bottom <= шапка.offsetHeight)
         requestAnimationFrame(тик)
       }
