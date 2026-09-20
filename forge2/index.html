@@ -278,10 +278,11 @@
     .after h2 em { font-style: normal; color: var(--muted); }
 
     /* Проекты: сетка карточек, каждая ведёт в живой проект */
+    /* Две колонки: в строке пара «сайт и его бот» */
     .works {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 40px 24px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 48px 28px;
       margin: 0;
       padding: 0;
       list-style: none;
@@ -394,7 +395,6 @@
     .foot a:hover, .foot a:focus-visible { color: var(--ink); }
 
     @media (max-width: 1000px) {
-      .works { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .terms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .terms li:nth-child(3n + 1) { padding-left: 28px; border-left: 1px solid var(--line); }
       .terms li:nth-child(2n + 1) { padding-left: 0; border-left: 0; }
@@ -651,39 +651,39 @@
           <span class="work__text">Камера въезжает в&nbsp;дом, последний кадр становится фоном. Переходы через раздвижные двери.</span>
           <span class="work__go">Открыть сайт<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
         </a></li>
+        <li><a class="work" href="https://t.me/realty1_crm_bot" target="_blank" rel="noopener">
+          <span class="work__pic"><img src="../media/studio/realtybot.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+          <span class="work__meta"><span>02</span><span>Telegram · Mini App · CRM</span></span>
+          <span class="work__title">RealtyBotCRM</span>
+          <span class="work__text">Бот того&nbsp;же агентства: воронка, подбор объектов, ИИ-оценка и&nbsp;аналитика в&nbsp;CRM.</span>
+          <span class="work__go">Открыть бота<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
+        </a></li>
         <li><a class="work" href="../ton/" target="_blank" rel="noopener">
           <span class="work__pic"><img src="../media/ton-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
-          <span class="work__meta"><span>02</span><span>Сайт · примерка цвета</span></span>
+          <span class="work__meta"><span>03</span><span>Сайт · примерка цвета</span></span>
           <span class="work__title">ТОН — салон окрашивания</span>
           <span class="work__text">Примерочная цвета волос и&nbsp;живое расписание записи прямо на&nbsp;первом экране.</span>
           <span class="work__go">Открыть сайт<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
         </a></li>
         <li><a class="work" href="https://t.me/Beautybook1_bot" target="_blank" rel="noopener">
           <span class="work__pic"><img src="../media/studio/beauty.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
-          <span class="work__meta"><span>03</span><span>Telegram · Mini App · CRM</span></span>
+          <span class="work__meta"><span>04</span><span>Telegram · Mini App · CRM</span></span>
           <span class="work__title">BeautyBook</span>
-          <span class="work__text">Запись в&nbsp;один экран, CRM с&nbsp;выручкой и&nbsp;неявками, отзывы, программа лояльности.</span>
+          <span class="work__text">Бот записи для салона: один экран для клиента, CRM с&nbsp;выручкой и&nbsp;неявками, отзывы, лояльность.</span>
           <span class="work__go">Открыть бота<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
         </a></li>
         <li><a class="work" href="https://vladislavbropiton.github.io/car/" target="_blank" rel="noopener">
           <span class="work__pic"><img src="../media/peregon-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
-          <span class="work__meta"><span>04</span><span>Сайт · калькулятор</span></span>
+          <span class="work__meta"><span>05</span><span>Сайт · калькулятор</span></span>
           <span class="work__title">ПЕРЕГОН — авто из&nbsp;США</span>
           <span class="work__text">Сайт компании, которая возит машины с&nbsp;аукционов. Считает смету и&nbsp;уводит в&nbsp;бота за&nbsp;лотами.</span>
           <span class="work__go">Открыть сайт<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
         </a></li>
-        <li><a class="work" href="../levelup/" target="_blank" rel="noopener">
-          <span class="work__pic"><img src="../media/levelup-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
-          <span class="work__meta"><span>05</span><span>Веб-приложение · геймификация</span></span>
-          <span class="work__title">LevelUp</span>
-          <span class="work__text">Уровни, рейтинг и&nbsp;награды для школ, компаний, фитнеса и&nbsp;кофеен. Ниша, стиль и&nbsp;язык переключаются на&nbsp;лету.</span>
-          <span class="work__go">Открыть<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
-        </a></li>
-        <li><a class="work" href="https://t.me/DocuHelperForexBot" target="_blank" rel="noopener">
-          <span class="work__pic"><img src="../media/studio/ai.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
-          <span class="work__meta"><span>06</span><span>AI · RAG · Telegram</span></span>
-          <span class="work__title">DocuHelper Forex</span>
-          <span class="work__text">Консультант на&nbsp;базе ваших документов. Отвечает на&nbsp;вопросы по&nbsp;трейдингу быстро и&nbsp;точно.</span>
+        <li><a class="work" href="https://t.me/yasuperparserbot" target="_blank" rel="noopener">
+          <span class="work__pic"><img src="../media/parser-thumb.webp" alt="" width="800" height="520" loading="lazy" decoding="async"></span>
+          <span class="work__meta"><span>06</span><span>Telegram · Mini App · парсинг</span></span>
+          <span class="work__title">Парсер авто с&nbsp;аукционов</span>
+          <span class="work__text">Бот того&nbsp;же проекта: следит за&nbsp;Copart, Auto.ru, Дромом и&nbsp;Авито и&nbsp;присылает лоты со&nbsp;сметой.</span>
           <span class="work__go">Открыть бота<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12L12 4M5.5 4H12v6.5"/></svg></span>
         </a></li>
       </ul>
