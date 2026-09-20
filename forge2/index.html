@@ -172,8 +172,9 @@
     }
     .veil.on { opacity: 1; }
 
-    /* Карточка-пояснение: шире остальных, с цепочкой шагов */
-    .scene--intro { max-width: 620px; }
+    /* Карточка-пояснение: шире остальных, с цепочкой шагов.
+       Во время паузы прокрутка плавно уводит её в центр экрана (transform ставит скрипт). */
+    .scene--intro { max-width: 620px; transition: opacity 0.6s var(--ease); }
     .card--hot .card__head { color: var(--hot); }
     .route {
       display: flex;
@@ -731,6 +732,14 @@
       // В оглавление попадают только этапы, пояснение перед «путём заявки» — нет
       var этапы = сцены.filter(function (с) { return с.dataset.ch })
       var завеса = document.getElementById('veil')
+      var пояснение = document.querySelector('.scene--intro')
+      var базаX = 0, базаY = 0
+      function замеритьПояснение() {
+        пояснение.style.transform = 'none'
+        var r = пояснение.getBoundingClientRect()
+        базаX = r.left + r.width / 2
+        базаY = r.top + r.height / 2
+      }
       var сцена = document.querySelector('.stage')
 
       // Фильм один, горизонтальный: на телефоне он показывается полосой
@@ -863,6 +872,12 @@
         var пауза = показано >= паузаС - 0.009 && показано < паузаС + ПАУЗА
         завеса.classList.toggle('on', пауза)
         сцена.classList.toggle('paused', пауза)
+        // Пока идёт пауза, карточка плавно уезжает из угла в центр экрана
+        var кЦентру = Math.min(Math.max((показано - (паузаС - 0.009)) / (ПАУЗА * 0.6), 0), 1)
+        кЦентру = кЦентру * кЦентру * (3 - 2 * кЦентру)
+        пояснение.style.transform = 'translate(' +
+          ((window.innerWidth / 2 - базаX) * кЦентру).toFixed(1) + 'px,' +
+          ((window.innerHeight / 2 - базаY) * кЦентру).toFixed(1) + 'px)'
         отметитьЭтап(показано)
         шапка.classList.toggle('solid', фильм.getBoundingClientRect().bottom <= шапка.offsetHeight)
         requestAnimationFrame(тик)
@@ -909,6 +924,8 @@
         })
       })
       размер()
+      замеритьПояснение()
+      window.addEventListener('resize', замеритьПояснение)
       выбратьНабор()
       requestAnimationFrame(тик)
     })()
