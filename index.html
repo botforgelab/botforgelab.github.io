@@ -711,7 +711,7 @@
     box-shadow: 0 0 20px var(--accent);
   }
 
-  .portfolio-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 30px; }
+  .portfolio-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
   .project-card {
     background: var(--surface);
     border-radius: 32px;
@@ -5908,16 +5908,7 @@
 
 <div class="portfolio-grid" id="portfolioGrid">
   <!-- Шахтёрская глубина -->
-  <div class="project-card magnetic" data-category="site" data-modal="forge">
-    <div class="project-thumb" style="background-image: url('media/forge-thumb.webp');"></div>
-    <div class="project-content">
-      <div class="project-tag">Сайт · фильм за прокруткой · HTML/CSS/JS</div>
-      <h4>Кузница — фильм за прокруткой</h4>
-      <p>Страница-фильм: прокрутка перематывает кадры. Сначала рождение бота, потом путь одной заявки от сайта до оплаты.</p>
-      <span class="project-link">Подробнее →</span>
-    </div>
-  </div>
-  <div class="project-card magnetic hidden-card" data-category="site" data-modal="peregon">
+  <div class="project-card magnetic" data-category="site" data-modal="peregon">
     <div class="project-thumb" style="background-image: url('media/peregon-thumb.webp');"></div>
     <div class="project-content">
       <div class="project-tag">Сайт · видео-заставка · калькулятор</div>
@@ -5926,30 +5917,12 @@
       <span class="project-link">Подробнее →</span>
     </div>
   </div>
-  <div class="project-card magnetic hidden-card" data-category="telegram miniapp" data-modal="parser">
+  <div class="project-card magnetic" data-category="telegram miniapp" data-modal="parser">
     <div class="project-thumb" style="background-image: url('media/parser-thumb.webp');"></div>
     <div class="project-content">
       <div class="project-tag">Telegram · Mini App · PostgreSQL · парсинг</div>
       <h4>Парсер авто с аукционов</h4>
       <p>Следит за аукционом Copart в США и Канаде. Новый подходящий лот — сразу в Telegram со сметой.</p>
-      <span class="project-link">Подробнее →</span>
-    </div>
-  </div>
-  <div class="project-card magnetic" data-category="site miniapp" data-modal="levelup">
-    <div class="project-thumb" style="background-image: url('media/levelup-thumb.webp');"></div>
-    <div class="project-content">
-      <div class="project-tag">Веб-приложение · геймификация · HTML/CSS/JS</div>
-      <h4>LevelUp — обучение и покупки как игра</h4>
-      <p>Уровни, рейтинг и награды для школ, компаний, фитнеса и кофеен. Ниша, стиль и язык переключаются на лету.</p>
-      <span class="project-link">Подробнее →</span>
-    </div>
-  </div>
-  <div class="project-card magnetic" data-category="site" data-modal="realty">
-    <div class="project-thumb" style="background-image: url('media/realty-thumb.webp');"></div>
-    <div class="project-content">
-      <div class="project-tag">Сайт · Видео-заставка · HTML/CSS/JS</div>
-      <h4>REALTY — агентство недвижимости</h4>
-      <p>Камера въезжает в дом, последний кадр становится фоном. Переходы через раздвижные двери.</p>
       <span class="project-link">Подробнее →</span>
     </div>
   </div>
@@ -5959,6 +5932,56 @@
       <div class="project-tag">Сайт · HTML/CSS/JS · без библиотек</div>
       <h4>ТОН — салон окрашивания</h4>
       <p>Примерочная цвета волос и живое расписание записи прямо на первом экране.</p>
+      <span class="project-link">Подробнее →</span>
+    </div>
+  </div>
+  <div class="project-card magnetic" data-category="telegram crm" data-modal="beauty">
+    <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/PswcdkTZ/image.webp');"></div>
+    <div class="project-content">
+      <div class="project-tag">Telegram · Mini App · CRM · PostgreSQL</div>
+      <h4>BeautyBook</h4>
+      <p>Запись в один экран, CRM с выручкой и неявками, отзывы, программа лояльности.</p>
+      <span class="project-link">Подробнее →</span>
+    </div>
+  </div>
+  <!-- Quiz Trader -->
+  <div class="project-card magnetic" data-category="site" data-modal="realty">
+    <div class="project-thumb" style="background-image: url('media/realty-thumb.webp');"></div>
+    <div class="project-content">
+      <div class="project-tag">Сайт · Видео-заставка · HTML/CSS/JS</div>
+      <h4>REALTY — агентство недвижимости</h4>
+      <p>Камера въезжает в дом, последний кадр становится фоном. Переходы через раздвижные двери.</p>
+      <span class="project-link">Подробнее →</span>
+    </div>
+  </div>
+
+
+  <div class="project-card magnetic" data-category="telegram miniapp crm" data-modal="realtybot">
+    <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/ynbQ14D7/1.png');"></div>
+    <div class="project-content">
+      <div class="project-tag">Telegram · Mini App · FastAPI · PostgreSQL</div>
+      <h4>RealtyBotCRM</h4>
+      <p>Полноценная CRM для агентств недвижимости: бот с мини-аппом, воронка продаж, ИИ-оценка объектов и аналитика в реальном времени.</p>
+      <span class="project-link">Подробнее →</span>
+    </div>
+  </div>
+
+  <!-- BookingBot CRM -->
+  <div class="project-card magnetic hidden-card" data-category="site" data-modal="forge">
+    <div class="project-thumb" style="background-image: url('media/forge-thumb.webp');"></div>
+    <div class="project-content">
+      <div class="project-tag">Сайт · фильм за прокруткой · HTML/CSS/JS</div>
+      <h4>Кузница — фильм за прокруткой</h4>
+      <p>Страница-фильм: прокрутка перематывает кадры. Сначала рождение бота, потом путь одной заявки от сайта до оплаты.</p>
+      <span class="project-link">Подробнее →</span>
+    </div>
+  </div>
+  <div class="project-card magnetic hidden-card" data-category="site miniapp" data-modal="levelup">
+    <div class="project-thumb" style="background-image: url('media/levelup-thumb.webp');"></div>
+    <div class="project-content">
+      <div class="project-tag">Веб-приложение · геймификация · HTML/CSS/JS</div>
+      <h4>LevelUp — обучение и покупки как игра</h4>
+      <p>Уровни, рейтинг и награды для школ, компаний, фитнеса и кофеен. Ниша, стиль и язык переключаются на лету.</p>
       <span class="project-link">Подробнее →</span>
     </div>
   </div>
@@ -5972,16 +5995,6 @@
     </div>
   </div>
   <!-- BeautyBook -->
-  <div class="project-card magnetic" data-category="telegram crm" data-modal="beauty">
-    <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/PswcdkTZ/image.webp');"></div>
-    <div class="project-content">
-      <div class="project-tag">Telegram · Mini App · CRM · PostgreSQL</div>
-      <h4>BeautyBook</h4>
-      <p>Запись в один экран, CRM с выручкой и неявками, отзывы, программа лояльности.</p>
-      <span class="project-link">Подробнее →</span>
-    </div>
-  </div>
-  <!-- Quiz Trader -->
   <div class="project-card magnetic hidden-card" data-category="telegram miniapp" data-modal="quiz">
     <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/3y5bsdbQ/image.webp');"></div>
     <div class="project-content">
@@ -6024,19 +6037,6 @@
       <span class="project-link">Подробнее →</span>
     </div>
   </div>
-
-
-  <div class="project-card magnetic hidden-card" data-category="telegram miniapp crm" data-modal="realtybot">
-    <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/ynbQ14D7/1.png');"></div>
-    <div class="project-content">
-      <div class="project-tag">Telegram · Mini App · FastAPI · PostgreSQL</div>
-      <h4>RealtyBotCRM</h4>
-      <p>Полноценная CRM для агентств недвижимости: бот с мини-аппом, воронка продаж, ИИ-оценка объектов и аналитика в реальном времени.</p>
-      <span class="project-link">Подробнее →</span>
-    </div>
-  </div>
-
-  <!-- BookingBot CRM -->
   <div class="project-card magnetic hidden-card" data-category="telegram miniapp crm" data-modal="bookingbot">
     <div class="project-thumb" style="background: linear-gradient(135deg, #1a0a2e 0%, #0d1f3c 50%, #0a2a1a 100%); display:flex; align-items:center; justify-content:center; font-size:48px;">💆‍♀️</div>
     <div class="project-content">

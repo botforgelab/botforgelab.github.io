@@ -711,7 +711,7 @@
     box-shadow: 0 0 20px var(--accent);
   }
 
-  .portfolio-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 30px; }
+  .portfolio-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
   .project-card {
     background: var(--surface);
     border-radius: 32px;
@@ -5437,16 +5437,7 @@
 
 <div class="portfolio-grid" id="portfolioGrid">
   <!-- Шахтёрская глубина -->
-  <div class="project-card magnetic" data-category="site" data-modal="forge">
-    <div class="project-thumb" style="background-image: url('media/forge-thumb.webp');"></div>
-    <div class="project-content">
-      <div class="project-tag">Сайт · фильм за прокруткой · HTML/CSS/JS</div>
-      <h4>Кузница — фильм за прокруткой</h4>
-      <p>Страница-фильм: прокрутка перематывает кадры. Сначала рождение бота, потом путь одной заявки от сайта до оплаты.</p>
-      <span class="project-link">Подробнее →</span>
-    </div>
-  </div>
-    <div class="project-card magnetic hidden-card" data-category="site" data-modal="peregon">
+    <div class="project-card magnetic" data-category="site" data-modal="peregon">
     <div class="project-thumb" style="background-image: url('media/peregon-thumb.webp');"></div>
     <div class="project-content">
       <div class="project-tag">Сайт · видео-заставка · калькулятор</div>
@@ -5455,30 +5446,12 @@
       <span class="project-link">Подробнее →</span>
     </div>
   </div>
-  <div class="project-card magnetic hidden-card" data-category="telegram miniapp" data-modal="parser">
+  <div class="project-card magnetic" data-category="telegram miniapp" data-modal="parser">
     <div class="project-thumb" style="background-image: url('media/parser-thumb.webp');"></div>
     <div class="project-content">
       <div class="project-tag">Telegram · Mini App · PostgreSQL · парсинг</div>
       <h4>Парсер авто с аукционов</h4>
       <p>Следит за аукционом Copart в США и Канаде. Новый подходящий лот — сразу в Telegram со сметой.</p>
-      <span class="project-link">Подробнее →</span>
-    </div>
-  </div>
-  <div class="project-card magnetic" data-category="site miniapp" data-modal="levelup">
-    <div class="project-thumb" style="background-image: url('media/levelup-thumb.webp');"></div>
-    <div class="project-content">
-      <div class="project-tag">Веб-приложение · геймификация · HTML/CSS/JS</div>
-      <h4>LevelUp — обучение и покупки как игра</h4>
-      <p>Уровни, рейтинг и награды для школ, компаний, фитнеса и кофеен. Ниша, стиль и язык переключаются на лету.</p>
-      <span class="project-link">Подробнее →</span>
-    </div>
-  </div>
-  <div class="project-card magnetic" data-category="site" data-modal="realty">
-    <div class="project-thumb" style="background-image: url('media/realty-thumb.webp');"></div>
-    <div class="project-content">
-      <div class="project-tag">Сайт · Видео-заставка · HTML/CSS/JS</div>
-      <h4>REALTY — агентство недвижимости</h4>
-      <p>Камера въезжает в дом, последний кадр становится фоном. Переходы через раздвижные двери.</p>
       <span class="project-link">Подробнее →</span>
     </div>
   </div>
@@ -5491,16 +5464,6 @@
       <span class="project-link">Подробнее →</span>
     </div>
   </div>
-  <div class="project-card magnetic hidden-card" data-category="miniapp" data-modal="game">
-    <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/VpNDtqMY/image.webp');"></div>
-    <div class="project-content">
-      <div class="project-tag">Python · Three.js · Telegram Mini App · PostgreSQL</div>
-      <h4>Шахтёрская глубина</h4>
-      <p>3D-кликер с 13 боссами, крафтом, достижениями и рейтингами. Полноценная игра в Telegram.</p>
-      <span class="project-link">Подробнее →</span>
-    </div>
-  </div>
-  <!-- BeautyBook -->
   <div class="project-card magnetic" data-category="telegram crm" data-modal="beauty">
     <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/PswcdkTZ/image.webp');"></div>
     <div class="project-content">
@@ -5511,45 +5474,12 @@
     </div>
   </div>
   <!-- Quiz Trader -->
-  <div class="project-card magnetic hidden-card" data-category="telegram miniapp" data-modal="quiz">
-    <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/3y5bsdbQ/image.webp');"></div>
+  <div class="project-card magnetic" data-category="site" data-modal="realty">
+    <div class="project-thumb" style="background-image: url('media/realty-thumb.webp');"></div>
     <div class="project-content">
-      <div class="project-tag">Telegram · Mini App · Google Sheets · PostgreSQL</div>
-      <h4>Quiz Trader</h4>
-      <p>Персонализированный квиз с анимациями, темами и автосохранением результатов в Google Sheets.</p>
-      <span class="project-link">Подробнее →</span>
-    </div>
-  </div>
-  
-  <!-- DocuHelper Forex -->
-  <div class="project-card magnetic" data-category="ai" data-modal="ai">
-    <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/Rrjmn0v/Copilot-20260503-140821.webp');"></div>
-    <div class="project-content">
-      <div class="project-tag">AI · RAG · Telegram Mini App</div>
-      <h4>DocuHelper Forex</h4>
-      <p>Умный консультант на базе ваших документов. Отвечает на вопросы по Форекс, трейдингу и аналитике — быстро, точно, 24/7.</p>
-      <span class="project-link">Подробнее →</span>
-    </div>
-  </div>
-
-  <!-- DocuHelper Mini App -->
-  <div class="project-card magnetic" data-category="ai miniapp" data-modal="docuhelper-mini">
-    <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/twhfpCt4/Copilot-2.png');"></div>
-    <div class="project-content">
-      <div class="project-tag">AI · RAG · Telegram Mini App · pgvector · Cohere</div>
-      <h4>DocuHelper Mini App</h4>
-      <p>AI‑консультант по трейдингу с чат‑интерфейсом. Гибридный поиск, быстрые вопросы, источник и похожесть ответа.</p>
-      <span class="project-link">Подробнее →</span>
-    </div>
-  </div>
-
-  <!-- ShopBot (исправленная карточка) -->
-  <div class="project-card magnetic" data-category="telegram crm" data-modal="shop">
-    <div class="project-thumb" style="background-image: url('https://i.ibb.co/WN2xQj7Q/Copilot-20260513-223058.png');"></div>
-    <div class="project-content">
-      <div class="project-tag">Telegram · ЮKassa · PostgreSQL · Render</div>
-      <h4>ShopBot</h4>
-      <p>Полноценный интернет-магазин в Telegram: каталог, корзина, оплата через ЮKassa, админ‑панель и отчёты в Google Sheets.</p>
+      <div class="project-tag">Сайт · Видео-заставка · HTML/CSS/JS</div>
+      <h4>REALTY — агентство недвижимости</h4>
+      <p>Камера въезжает в дом, последний кадр становится фоном. Переходы через раздвижные двери.</p>
       <span class="project-link">Подробнее →</span>
     </div>
   </div>
@@ -5566,7 +5496,77 @@
   </div>
 
   <!-- BookingBot CRM -->
-  <div class="project-card magnetic" data-category="telegram miniapp crm" data-modal="bookingbot">
+  <div class="project-card magnetic hidden-card" data-category="site" data-modal="forge">
+    <div class="project-thumb" style="background-image: url('media/forge-thumb.webp');"></div>
+    <div class="project-content">
+      <div class="project-tag">Сайт · фильм за прокруткой · HTML/CSS/JS</div>
+      <h4>Кузница — фильм за прокруткой</h4>
+      <p>Страница-фильм: прокрутка перематывает кадры. Сначала рождение бота, потом путь одной заявки от сайта до оплаты.</p>
+      <span class="project-link">Подробнее →</span>
+    </div>
+  </div>
+  <div class="project-card magnetic hidden-card" data-category="site miniapp" data-modal="levelup">
+    <div class="project-thumb" style="background-image: url('media/levelup-thumb.webp');"></div>
+    <div class="project-content">
+      <div class="project-tag">Веб-приложение · геймификация · HTML/CSS/JS</div>
+      <h4>LevelUp — обучение и покупки как игра</h4>
+      <p>Уровни, рейтинг и награды для школ, компаний, фитнеса и кофеен. Ниша, стиль и язык переключаются на лету.</p>
+      <span class="project-link">Подробнее →</span>
+    </div>
+  </div>
+  <div class="project-card magnetic hidden-card" data-category="miniapp" data-modal="game">
+    <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/VpNDtqMY/image.webp');"></div>
+    <div class="project-content">
+      <div class="project-tag">Python · Three.js · Telegram Mini App · PostgreSQL</div>
+      <h4>Шахтёрская глубина</h4>
+      <p>3D-кликер с 13 боссами, крафтом, достижениями и рейтингами. Полноценная игра в Telegram.</p>
+      <span class="project-link">Подробнее →</span>
+    </div>
+  </div>
+  <!-- BeautyBook -->
+  <div class="project-card magnetic hidden-card" data-category="telegram miniapp" data-modal="quiz">
+    <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/3y5bsdbQ/image.webp');"></div>
+    <div class="project-content">
+      <div class="project-tag">Telegram · Mini App · Google Sheets · PostgreSQL</div>
+      <h4>Quiz Trader</h4>
+      <p>Персонализированный квиз с анимациями, темами и автосохранением результатов в Google Sheets.</p>
+      <span class="project-link">Подробнее →</span>
+    </div>
+  </div>
+  
+  <!-- DocuHelper Forex -->
+  <div class="project-card magnetic hidden-card" data-category="ai" data-modal="ai">
+    <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/Rrjmn0v/Copilot-20260503-140821.webp');"></div>
+    <div class="project-content">
+      <div class="project-tag">AI · RAG · Telegram Mini App</div>
+      <h4>DocuHelper Forex</h4>
+      <p>Умный консультант на базе ваших документов. Отвечает на вопросы по Форекс, трейдингу и аналитике — быстро, точно, 24/7.</p>
+      <span class="project-link">Подробнее →</span>
+    </div>
+  </div>
+
+  <!-- DocuHelper Mini App -->
+  <div class="project-card magnetic hidden-card" data-category="ai miniapp" data-modal="docuhelper-mini">
+    <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/twhfpCt4/Copilot-2.png');"></div>
+    <div class="project-content">
+      <div class="project-tag">AI · RAG · Telegram Mini App · pgvector · Cohere</div>
+      <h4>DocuHelper Mini App</h4>
+      <p>AI‑консультант по трейдингу с чат‑интерфейсом. Гибридный поиск, быстрые вопросы, источник и похожесть ответа.</p>
+      <span class="project-link">Подробнее →</span>
+    </div>
+  </div>
+
+  <!-- ShopBot (исправленная карточка) -->
+  <div class="project-card magnetic hidden-card" data-category="telegram crm" data-modal="shop">
+    <div class="project-thumb" style="background-image: url('https://i.ibb.co/WN2xQj7Q/Copilot-20260513-223058.png');"></div>
+    <div class="project-content">
+      <div class="project-tag">Telegram · ЮKassa · PostgreSQL · Render</div>
+      <h4>ShopBot</h4>
+      <p>Полноценный интернет-магазин в Telegram: каталог, корзина, оплата через ЮKassa, админ‑панель и отчёты в Google Sheets.</p>
+      <span class="project-link">Подробнее →</span>
+    </div>
+  </div>
+  <div class="project-card magnetic hidden-card" data-category="telegram miniapp crm" data-modal="bookingbot">
     <div class="project-thumb" style="background: linear-gradient(135deg, #1a0a2e 0%, #0d1f3c 50%, #0a2a1a 100%); display:flex; align-items:center; justify-content:center; font-size:48px;">💆‍♀️</div>
     <div class="project-content">
       <div class="project-tag">Python · aiogram 3 · Mini App · PostgreSQL · ЮКасса</div>
@@ -5579,7 +5579,7 @@
   <!-- Скрытые проекты roadmap -->
 
   <!-- EncarBot -->
-  <div class="project-card magnetic" data-category="telegram" data-modal="encar">
+  <div class="project-card magnetic hidden-card" data-category="telegram" data-modal="encar">
     <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/JRdpk1KS/Copilot-20260627-001754.png');"></div>
     <div class="project-content">
       <div class="project-tag">Python · aiogram 3 · Telegram · Encar API</div>
@@ -5591,7 +5591,7 @@
 
 
   <!-- VoiceBot -->
-  <div class="project-card magnetic" data-category="ai telegram miniapp" data-modal="voicebot">
+  <div class="project-card magnetic hidden-card" data-category="ai telegram miniapp" data-modal="voicebot">
     <div class="project-thumb" style="background-image: url('https://i.ibb.co.com/23S30NbV/154.png');"></div>
     <div class="project-content">
       <div class="project-tag">AI · Python · aiogram 3 · ElevenLabs · Mini App · PostgreSQL</div>
