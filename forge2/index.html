@@ -517,6 +517,18 @@
         padding-top: 10px;
       }
       body.set-m .chapters button { font-size: 12px; padding: 4px 0; }
+      /* Карточки на телефоне полупрозрачные: кадр под ними должен быть виден.
+         Читаемость держат размытие и затемнение низа кадра, а не плотный фон. */
+      body.set-m .card {
+        background: rgba(12, 12, 16, 0.32);
+        border-color: rgba(241, 241, 241, 0.13);
+        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
+      }
+      body.set-m .scene h1,
+      body.set-m .card h2 { text-shadow: 0 2px 18px rgba(0, 0, 0, 0.75); }
+      body.set-m .scene p,
+      body.set-m .card p { color: rgba(241, 241, 241, 0.78); text-shadow: 0 1px 14px rgba(0, 0, 0, 0.8); }
     }
 
     /* Повёрнутый телефон: высоты мало, поэтому шапка ниже, карточка компактнее */
