@@ -17,7 +17,6 @@
   <meta name="twitter:image" content="https://botforgelab.github.io/forge2/og-forge.jpg">
   <link rel="canonical" href="https://botforgelab.github.io/forge2/">
   <link rel="preload" href="../fonts/inter-tight-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="frames/f/000.webp" as="image">
   <meta name="theme-color" content="#0B0B0D">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%230B0B0D'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-weight='700' font-size='34' text-anchor='middle' fill='%23F1F1F1'%3Eb%3C/text%3E%3Ccircle cx='47' cy='41' r='4' fill='%23FF7A1A'/%3E%3C/svg%3E">
 
@@ -493,6 +492,33 @@
       .stage.paused .chapters { opacity: 0; pointer-events: none; }
       .scene--intro { top: calc(var(--head) + 14px); }
     }
+    /* ---------- Вертикальный телефон со своим набором кадров ----------
+       Кадры сняты вертикально, поэтому фильм занимает весь экран,
+       карточка лежит поверх него внизу, оглавление — у самого низа. */
+    @media (orientation: portrait) {
+      body.set-m .stage canvas,
+      body.set-m .stage::after { top: 0; bottom: 0; width: 100%; height: 100%; }
+      body.set-m .stage::after {
+        background:
+          linear-gradient(to top, rgba(11, 11, 13, 0.92) 4%, rgba(11, 11, 13, 0.5) 34%, transparent 58%),
+          linear-gradient(to bottom, rgba(11, 11, 13, 0.6), transparent 22%);
+      }
+      body.set-m .scene {
+        top: auto;
+        bottom: 19vh;
+        left: var(--gutter);
+        right: var(--gutter);
+        max-width: none;
+      }
+      body.set-m .scene--intro { top: auto; bottom: 19vh; }
+      body.set-m .chapters {
+        grid-template-columns: 1fr 1fr;
+        bottom: max(12px, env(safe-area-inset-bottom));
+        padding-top: 10px;
+      }
+      body.set-m .chapters button { font-size: 12px; padding: 4px 0; }
+    }
+
     /* Повёрнутый телефон: высоты мало, поэтому шапка ниже, карточка компактнее */
     @media (orientation: landscape) and (max-height: 500px) {
       :root { --head: 56px; }
@@ -721,7 +747,24 @@
 
   <script>
     (function () {
-      var ВСЕГО = 568
+      /* ---------- Какой набор кадров показывать ----------
+         Фильм снят в трёх форматах: 16:9 для компьютера, 9:16 для телефона
+         и снова 16:9 для повёрнутого телефона, но с другой композицией:
+         там верх и низ кадра срезаются. Кадры в папках f, m, l. */
+      var НАБОРЫ = {
+        f: { всего: 568, часть2: 388, сцены: [[0, 27], [30, 87], [90, 202], [205, 328], [331, 387], [392, 440], [442, 501], [503, 534], [536, 559], [561, 569]] },
+        m: { всего: 573, часть2: 393, сцены: [[0, 23], [26, 84], [88, 207], [210, 329], [332, 389], [396, 445], [447, 506], [508, 540], [542, 566], [568, 574]] },
+        l: { всего: 552, часть2: 372, сцены: [[0, 20], [23, 67], [71, 190], [193, 312], [315, 371], [375, 424], [426, 485], [487, 519], [521, 545], [547, 553]] },
+      }
+      function какойНабор() {
+        var узкий = window.innerWidth <= 1100 && window.innerHeight > window.innerWidth
+        var повёрнутый = window.innerHeight <= 520 && window.innerWidth > window.innerHeight
+        return узкий ? 'm' : (повёрнутый ? 'l' : 'f')
+      }
+      var КЛЮЧ = какойНабор()
+      var НАБОР = НАБОРЫ[КЛЮЧ]
+      document.body.classList.add('set-' + КЛЮЧ)
+      var ВСЕГО = НАБОР.всего
       var холст = document.getElementById('canvas')
       var ctx = холст.getContext('2d')
       var фильм = document.getElementById('film')
@@ -769,7 +812,7 @@
           if (загружено >= ПОКАЗАТЬ_ПОСЛЕ) document.getElementById('loader').classList.add('done')
           качать()
         }
-        img.src = 'frames/f/' + String(i).padStart(3, '0') + '.webp'
+        img.src = 'frames/' + КЛЮЧ + '/' + String(i).padStart(3, '0') + '.webp'
         кадры[i] = img
         return true
       }
@@ -798,6 +841,23 @@
         if (t - последнийЗапрос < 200 || активных >= ОДНОВРЕМЕННО) return
         последнийЗапрос = t
         качать()
+      }
+
+      /* Карточки привязаны к номерам кадров своего набора, а в разметке
+         хранятся доли прокрутки — пересчитываем их с учётом паузы. */
+      function расставитьКарточки() {
+        function вДолю(кадр) {
+          var x = кадр / (ВСЕГО - 1)
+          return x < ПАУЗА_КАДР ? x * (1 - ПАУЗА) : x * (1 - ПАУЗА) + ПАУЗА
+        }
+        этапы.forEach(function (с, n) {
+          var пара = НАБОР.сцены[n]
+          if (!пара) return
+          с.dataset.from = вДолю(пара[0]).toFixed(4)
+          с.dataset.to = вДолю(пара[1]).toFixed(4)
+        })
+        пояснение.dataset.from = (паузаС - 0.009).toFixed(4)
+        пояснение.dataset.to = (паузаС + ПАУЗА).toFixed(4)
       }
 
       function выбратьНабор() {
@@ -830,7 +890,7 @@
         // Во второй половине (с кадра 388) в кадре окна интерфейса: их обрезать
         // нельзя, поэтому кадр плавно переходит к вписыванию целиком. Края этих
         // кадров почти в цвет страницы, поля сверху и снизу не видны.
-        var вписать = Math.min(Math.max((n - 388) / 8, 0), 1)
+        var вписать = Math.min(Math.max((n - НАБОР.часть2) / 8, 0), 1)
         var обложка = Math.max(W / iw, H / ih)
         var s = W / H > iw / ih ? H / ih : обложка + (W / iw - обложка) * вписать
         var w = iw * s, h = ih * s
@@ -863,7 +923,7 @@
       /* Пауза перед «путём заявки»: на этом отрезке прокрутки кадр стоит
          на месте (388 — начало второй половины), экран затемнён и видна
          карточка-пояснение. Сцены в разметке заданы долей прокрутки. */
-      var ПАУЗА_КАДР = 388 / (ВСЕГО - 1)
+      var ПАУЗА_КАДР = НАБОР.часть2 / (ВСЕГО - 1)
       var ПАУЗА = 0.035
       var паузаС = ПАУЗА_КАДР * (1 - ПАУЗА)
       function кадрДоли(p) {
@@ -947,6 +1007,7 @@
         })
       })
       размер()
+      расставитьКарточки()
       замеритьПояснение()
       window.addEventListener('resize', замеритьПояснение)
       выбратьНабор()
