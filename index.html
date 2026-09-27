@@ -5709,7 +5709,7 @@
             <span class="skin-dot" style="background: radial-gradient(circle at 50% 50%, #7C3AED 0 30%, #F1F1F1 34%);"></span>
             <span><div class="skin-name">Studio</div><div class="skin-sub">Светлая, журнальная</div></span>
           </a>
-          <a class="skin-link" href="forge/">
+          <a class="skin-link" href="forge2/">
             <span class="skin-dot" style="background: radial-gradient(circle at 50% 50%, #FF7A1A 0 30%, #0B0B0D 34%);"></span>
             <span><div class="skin-name">Кузница</div><div class="skin-sub">Фильм: как рождается бот</div></span>
           </a>
@@ -5908,6 +5908,15 @@
 
 <div class="portfolio-grid" id="portfolioGrid">
   <!-- Шахтёрская глубина -->
+  <div class="project-card magnetic" data-category="site" data-modal="forge">
+    <div class="project-thumb" style="background-image: url('media/forge-thumb.webp');"></div>
+    <div class="project-content">
+      <div class="project-tag">Сайт · фильм за прокруткой · HTML/CSS/JS</div>
+      <h4>Кузница — фильм за прокруткой</h4>
+      <p>Страница-фильм: прокрутка перематывает кадры. Сначала рождение бота, потом путь одной заявки от сайта до оплаты.</p>
+      <span class="project-link">Подробнее →</span>
+    </div>
+  </div>
   <div class="project-card magnetic hidden-card" data-category="site" data-modal="peregon">
     <div class="project-thumb" style="background-image: url('media/peregon-thumb.webp');"></div>
     <div class="project-content">
@@ -6258,6 +6267,59 @@
 
 
 <!-- LevelUp Modal -->
+<div class="modal" id="modal-forge">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Кузница — фильм за прокруткой</h3>
+      <button class="modal-close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img src="media/forge-thumb.webp" alt="Кадр фильма: робот с горящим ядром в кузнице" />
+
+      <h4>📋 Что это</h4>
+      <p>Страница, где вместо обычных блоков идёт фильм: прокрутка перематывает
+      кадры вперёд и назад, а поверх кадра появляются короткие пояснения.
+      Первая половина — как рождается бот, вторая — путь одной заявки:
+      клиент выбирает время на сайте, бот берёт предоплату, заявка попадает
+      в CRM, приходит оплата.</p>
+
+      <h4>✨ Что можно посмотреть</h4>
+      <ul style="padding-left:20px; color: var(--text-dim);">
+        <li><strong>Фильм слушается прокрутки.</strong> Быстрее крутите — быстрее идёт,
+        остановились — кадр замер. Можно отмотать назад и пересмотреть любой момент.</li>
+        <li><strong>Пауза с пояснением</strong> перед второй половиной: фильм замирает,
+        карточка выезжает в центр и рассказывает, что будет дальше.</li>
+        <li><strong>Три версии съёмки.</strong> Для компьютера, для телефона и для
+        телефона в повёрнутом виде — у каждой своя композиция кадра, а не обрезка одной.</li>
+        <li><strong>Оглавление этапов</strong> на телефоне: нажали — перенесло к нужной сцене.</li>
+      </ul>
+
+      <h4>⚙️ Как сделано</h4>
+      <p><strong>Вёрстка:</strong> одна страница, чистый HTML, CSS и JavaScript, без библиотек.<br>
+      <strong>Фильм:</strong> последовательность кадров, которую рисует canvas; кадр выбирается
+      по положению прокрутки и плавно догоняет её, поэтому нет рывков.<br>
+      <strong>Загрузка:</strong> кадры подтягиваются по ходу просмотра, а не все сразу,
+      поэтому фильм виден через пару секунд даже на небыстром интернете.<br>
+      <strong>Съёмка:</strong> первая половина — генерация видео по кадрам-раскадровкам,
+      вторая половина нарисована кодом, поэтому интерфейсы в ней чёткие.</p>
+
+      <h4>📱 Проверено</h4>
+      <p>Компьютер, ноутбук, планшет в двух положениях, телефон вертикально и повёрнутым.
+      Проверено по кадрам: карточки совпадают со сценами, стыки сцен без скачков,
+      ничего не вылезает за край экрана.</p>
+
+      <h4>📦 Кому подойдёт</h4>
+      <p>Тем, кому нужно показать процесс или устройство продукта: производство, сервис,
+      сложная услуга. Фильм держит внимание там, где обычный текст пролистывают.</p>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+        <a href="forge2/" target="_blank" class="btn-outline" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">🎬 Смотреть фильм</a>
+        <a href="https://t.me/Bro_piton?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5%21%20%D0%A5%D0%BE%D1%87%D1%83%20%D1%81%D0%B0%D0%B9%D1%82%20%D1%81%20%D1%84%D0%B8%D0%BB%D1%8C%D0%BC%D0%BE%D0%BC%20%D0%B7%D0%B0%20%D0%BF%D1%80%D0%BE%D0%BA%D1%80%D1%83%D1%82%D0%BA%D0%BE%D0%B9" target="_blank" class="btn-primary" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">💬 Хочу такое же</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="modal-levelup">
   <div class="modal-content">
     <div class="modal-header">
