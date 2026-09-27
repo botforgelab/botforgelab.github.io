@@ -520,15 +520,16 @@
       /* Карточки на телефоне полупрозрачные: кадр под ними должен быть виден.
          Читаемость держат размытие и затемнение низа кадра, а не плотный фон. */
       body.set-m .card {
-        background: rgba(12, 12, 16, 0.32);
-        border-color: rgba(241, 241, 241, 0.13);
-        -webkit-backdrop-filter: blur(16px);
-        backdrop-filter: blur(16px);
+        background: rgba(12, 12, 16, 0.16);
+        border-color: rgba(241, 241, 241, 0.10);
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
       }
       body.set-m .scene h1,
-      body.set-m .card h2 { text-shadow: 0 2px 18px rgba(0, 0, 0, 0.75); }
+      body.set-m .card h2 { text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9), 0 2px 26px rgba(0, 0, 0, 0.8); }
       body.set-m .scene p,
-      body.set-m .card p { color: rgba(241, 241, 241, 0.78); text-shadow: 0 1px 14px rgba(0, 0, 0, 0.8); }
+      body.set-m .card p { color: rgba(241, 241, 241, 0.82); text-shadow: 0 1px 8px rgba(0, 0, 0, 0.95), 0 1px 20px rgba(0, 0, 0, 0.85); }
+      body.set-m .card__head { text-shadow: 0 1px 10px rgba(0, 0, 0, 0.9); }
     }
 
     /* Повёрнутый телефон: высоты мало, поэтому шапка ниже, карточка компактнее */
